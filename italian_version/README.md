@@ -14,9 +14,9 @@ Un sistema di agenti cognitivi per il decision-making strutturato, ispirato ai S
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
 mkdir -p ~/.claude/agents ~/.claude/commands
-cp aits-agents/italian_version/meta-orchestratore.md ~/.claude/agents/
-cp aits-agents/italian_version/analitico.md aits-agents/italian_version/emotivo-intuitivo.md aits-agents/italian_version/critico-validatore.md aits-agents/italian_version/ottimizzatore.md aits-agents/italian_version/creativo-generativo.md aits-agents/italian_version/etico-governance.md aits-agents/italian_version/predittivo-strategico.md ~/.claude/agents/
-cp aits-agents/italian_version/systemic.md aits-agents/italian_version/foresight.md ~/.claude/agents/
+cp aits-agents/italian_version/aits-meta-orchestratore.md ~/.claude/agents/
+cp aits-agents/italian_version/aits-analitico.md aits-agents/italian_version/aits-emotivo-intuitivo.md aits-agents/italian_version/aits-critico-validatore.md aits-agents/italian_version/aits-ottimizzatore.md aits-agents/italian_version/aits-creativo-generativo.md aits-agents/italian_version/aits-etico-governance.md aits-agents/italian_version/aits-predittivo-strategico.md ~/.claude/agents/
+cp aits-agents/italian_version/aits-systemic.md aits-agents/italian_version/aits-foresight.md ~/.claude/agents/
 cp aits-agents/italian_version/aits-full.md aits-agents/italian_version/aits-quick.md aits-agents/italian_version/aits-diverge.md ~/.claude/commands/
 ```
 
@@ -25,9 +25,9 @@ cp aits-agents/italian_version/aits-full.md aits-agents/italian_version/aits-qui
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
 mkdir -p .claude/agents .claude/commands
-cp aits-agents/italian_version/meta-orchestratore.md .claude/agents/
-cp aits-agents/italian_version/analitico.md aits-agents/italian_version/emotivo-intuitivo.md aits-agents/italian_version/critico-validatore.md aits-agents/italian_version/ottimizzatore.md aits-agents/italian_version/creativo-generativo.md aits-agents/italian_version/etico-governance.md aits-agents/italian_version/predittivo-strategico.md .claude/agents/
-cp aits-agents/italian_version/systemic.md aits-agents/italian_version/foresight.md .claude/agents/
+cp aits-agents/italian_version/aits-meta-orchestratore.md .claude/agents/
+cp aits-agents/italian_version/aits-analitico.md aits-agents/italian_version/aits-emotivo-intuitivo.md aits-agents/italian_version/aits-critico-validatore.md aits-agents/italian_version/aits-ottimizzatore.md aits-agents/italian_version/aits-creativo-generativo.md aits-agents/italian_version/aits-etico-governance.md aits-agents/italian_version/aits-predittivo-strategico.md .claude/agents/
+cp aits-agents/italian_version/aits-systemic.md aits-agents/italian_version/aits-foresight.md .claude/agents/
 cp aits-agents/italian_version/aits-full.md aits-agents/italian_version/aits-quick.md aits-agents/italian_version/aits-diverge.md .claude/commands/
 ```
 
@@ -116,16 +116,16 @@ aits-agents/
 ├── README.md                          # Documentazione (inglese)
 ├── AITS.md                            # Manifesto e teoria (inglese)
 │
-├── meta-orchestrator.md               # 🔵 Il regista del sistema
-├── analytical.md                      # ⚪ Base fattuale
-├── emotional-intuitive.md             # 🔴 Dimensione percettiva
-├── critical-validator.md              # ⚫ Stress test
-├── optimizer.md                       # 🟡 Valore e opportunità
-├── creative-generative.md             # 🟢 Alternative e innovazione
-├── ethical-governance.md              # 🟣 Fairness e compliance
-├── predictive-strategic.md            # 🔮 Scenari futuri
-├── systemic.md                        # 🌐 Sistema e feedback loop
-├── foresight.md                       # 🔭 Matrice opzioni-scenari
+├── aits-meta-orchestrator.md          # 🔵 Il regista del sistema
+├── aits-analytical.md                 # ⚪ Base fattuale
+├── aits-emotional-intuitive.md        # 🔴 Dimensione percettiva
+├── aits-critical-validator.md         # ⚫ Stress test
+├── aits-optimizer.md                  # 🟡 Valore e opportunità
+├── aits-creative-generative.md        # 🟢 Alternative e innovazione
+├── aits-ethical-governance.md         # 🟣 Fairness e compliance
+├── aits-predictive-strategic.md       # 🔮 Scenari futuri
+├── aits-systemic.md                   # 🌐 Sistema e feedback loop
+├── aits-foresight.md                  # 🔭 Matrice opzioni-scenari
 ├── aits-full.md                       # Analisi completa
 ├── aits-quick.md                      # Decisione rapida
 ├── aits-diverge.md                    # Brainstorming divergente
@@ -133,8 +133,8 @@ aits-agents/
 └── italian_version/                   # 🇮🇹 Versione originale italiana
     ├── README.md
     ├── AITS.md
-    ├── meta-orchestratore.md
-    ├── analitico.md
+    ├── aits-meta-orchestratore.md
+    ├── aits-analitico.md
     ├── ...
 ```
 

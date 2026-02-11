@@ -14,9 +14,9 @@ A system of cognitive agents for structured decision-making, inspired by the Six
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
 mkdir -p ~/.claude/agents ~/.claude/commands
-cp aits-agents/meta-orchestrator.md ~/.claude/agents/
-cp aits-agents/analytical.md aits-agents/emotional-intuitive.md aits-agents/critical-validator.md aits-agents/optimizer.md aits-agents/creative-generative.md aits-agents/ethical-governance.md aits-agents/predictive-strategic.md ~/.claude/agents/
-cp aits-agents/systemic.md aits-agents/foresight.md ~/.claude/agents/
+cp aits-agents/aits-meta-orchestrator.md ~/.claude/agents/
+cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md ~/.claude/agents/
+cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md ~/.claude/agents/
 cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md ~/.claude/commands/
 ```
 
@@ -25,9 +25,9 @@ cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.m
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
 mkdir -p .claude/agents .claude/commands
-cp aits-agents/meta-orchestrator.md .claude/agents/
-cp aits-agents/analytical.md aits-agents/emotional-intuitive.md aits-agents/critical-validator.md aits-agents/optimizer.md aits-agents/creative-generative.md aits-agents/ethical-governance.md aits-agents/predictive-strategic.md .claude/agents/
-cp aits-agents/systemic.md aits-agents/foresight.md .claude/agents/
+cp aits-agents/aits-meta-orchestrator.md .claude/agents/
+cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md .claude/agents/
+cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md .claude/agents/
 cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md .claude/commands/
 ```
 
@@ -116,18 +116,18 @@ aits-agents/
 ├── README.md
 ├── AITS.md                            # Manifesto and model theory
 │
-├── meta-orchestrator.md               # 🔵 The system director (orchestration)
+├── aits-meta-orchestrator.md          # 🔵 The system director (orchestration)
 │
-├── analytical.md                      # ⚪ Factual base (core)
-├── emotional-intuitive.md             # 🔴 Perceptive dimension (core)
-├── critical-validator.md              # ⚫ Stress test (core)
-├── optimizer.md                       # 🟡 Value and opportunities (core)
-├── creative-generative.md             # 🟢 Alternatives and innovation (core)
-├── ethical-governance.md              # 🟣 Fairness and compliance (core)
-├── predictive-strategic.md            # 🔮 Future scenarios (core)
+├── aits-analytical.md                 # ⚪ Factual base (core)
+├── aits-emotional-intuitive.md        # 🔴 Perceptive dimension (core)
+├── aits-critical-validator.md         # ⚫ Stress test (core)
+├── aits-optimizer.md                  # 🟡 Value and opportunities (core)
+├── aits-creative-generative.md        # 🟢 Alternatives and innovation (core)
+├── aits-ethical-governance.md         # 🟣 Fairness and compliance (core)
+├── aits-predictive-strategic.md       # 🔮 Future scenarios (core)
 │
-├── systemic.md                        # 🌐 System and feedback loops (extended)
-├── foresight.md                       # 🔭 Options-scenarios matrix (extended)
+├── aits-systemic.md                   # 🌐 System and feedback loops (extended)
+├── aits-foresight.md                  # 🔭 Options-scenarios matrix (extended)
 │
 ├── aits-full.md                       # Full analysis (command)
 ├── aits-quick.md                      # Quick decision (command)

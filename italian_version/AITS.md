@@ -70,3 +70,4 @@ Il risultato è un framework di decision-making che puoi invocare con un singolo
 
 *"Il pensiero è l'ultima skill che ancora non abbiamo strutturato. AITS è un tentativo."*
 — Fabio Lalli
+

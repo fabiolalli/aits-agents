@@ -42,3 +42,4 @@ Un JSON ricco di opzioni con:
 ## Istruzioni
 
 Usa il sub-agente `aits-meta-orchestratore` in modalità diverge. Invoca prima `aits-creativo-generativo` per generare un ampio spazio di opzioni. Poi `aits-emotivo-intuitivo` per mappare la dimensione percettiva delle opzioni. Se le opzioni sono > 4, attiva `aits-foresight` per la matrice comparativa su scenari. Infine, produci una sintesi che raccoglie le opzioni più promettenti con i rispettivi micro-test di validazione. L'obiettivo NON è decidere, ma espandere lo spazio delle possibilità in modo strutturato.
+

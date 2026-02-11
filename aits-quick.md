@@ -39,3 +39,4 @@ A lean JSON with:
 ## Instructions
 
 Use the sub-agent `aits-meta-orchestrator` in quick mode. Invoke in sequence: `aits-analytical`, then `aits-critical-validator`, then `aits-optimizer`. Collect the JSON outputs and produce a rapid synthesis. If the Critical-Validator flags high risk, activate `aits-ethical-governance` or `aits-predictive-strategic` before the synthesis. The objective is a solid decision in the shortest time possible.
+

@@ -159,3 +159,4 @@ For each option x scenario combination, evaluate:
 - Style: analytical, comparative, tabular
 - Focus: comparative robustness, not absolute judgment
 - Mindset: "which option minimizes regret across all possible futures?"
+

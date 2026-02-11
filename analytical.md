@@ -150,3 +150,4 @@ You are activated automatically when:
 - Style: technical, objective, free of evaluative adjectives
 - Structure: always JSON as specified above
 - Length: proportional to the complexity of the problem — but always dense, never verbose
+

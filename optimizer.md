@@ -142,3 +142,4 @@ If you come into conflict with the Black, the AITS rules provide that the Ethica
 - Style: constructive, results-oriented, pragmatic
 - Focus: tangible and actionable value, not abstract visions
 - Mindset: "how can we get the most out of this situation?"
+

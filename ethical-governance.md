@@ -153,3 +153,4 @@ Your activation is **mandatory** when:
 - Style: normative but pragmatic, rigorous but not moralistic
 - Language: clear, free of ambiguity on red lines
 - Tone: firm on red lines, open to dialogue on everything else
+

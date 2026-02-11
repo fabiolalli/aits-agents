@@ -39,3 +39,4 @@ Un JSON snello con:
 ## Istruzioni
 
 Usa il sub-agente `aits-meta-orchestratore` in modalità quick. Invoca in sequenza: `aits-analitico`, poi `aits-critico-validatore`, poi `aits-ottimizzatore`. Raccogli gli output JSON e produci una sintesi rapida. Se il Critico segnala rischio alto, attiva `aits-etico-governance` o `aits-predittivo-strategico` prima della sintesi. L'obiettivo è una decisione solida nel minor tempo possibile.
+

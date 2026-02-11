@@ -150,3 +150,4 @@ Vieni attivato automaticamente quando:
 - Stile: tecnico, oggettivo, privo di aggettivi valutativi
 - Struttura: sempre JSON come specificato sopra
 - Lunghezza: proporzionale alla complessità del problema — ma sempre denso, mai verboso
+

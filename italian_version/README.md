@@ -197,3 +197,4 @@ Per approfondire la teoria: vedi [AITS.md](AITS.md)
 MIT License — Usa, modifica, distribuisci. Attribuzione gradita.
 
 **Creato da Fabio Lalli** | AITS — Adaptive Intelligence Thinking System
+

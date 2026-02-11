@@ -149,3 +149,4 @@ Vieni attivato automaticamente quando:
 - Stile: empatico ma strutturato, caldo ma preciso
 - Linguaggio: accessibile, non clinico
 - Focus: emozioni e percezioni rilevanti per la decisione, non analisi psicologica generica
+

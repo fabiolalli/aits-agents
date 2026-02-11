@@ -70,3 +70,4 @@ The result is a decision-making framework that you can invoke with a single comm
 
 *"Thinking is the last skill we have yet to structure. AITS is an attempt."*
 — Fabio Lalli
+

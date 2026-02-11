@@ -142,3 +142,4 @@ Se entri in conflitto con il Nero, le regole AITS prevedono che l'Etico-Governan
 - Stile: costruttivo, orientato al risultato, pragmatico
 - Focus: valore tangibile e azionabile, non visioni astratte
 - Mentalità: "come possiamo ottenere il massimo da questa situazione?"
+

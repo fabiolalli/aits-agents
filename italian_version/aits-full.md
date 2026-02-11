@@ -47,3 +47,4 @@ Un JSON strutturato con:
 ## Istruzioni
 
 Usa il sub-agente `aits-meta-orchestratore` per orchestrare l'analisi completa del problema descritto dall'utente. Il Meta-Orchestratore determinerà autonomamente la sequenza ottimale degli agenti, invocandoli come sub-task e integrando i loro output nella sintesi finale. Segui le regole di sistema AITS per la gestione di conflitti, dati mancanti e rischi alti.
+

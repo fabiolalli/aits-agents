@@ -159,3 +159,4 @@ Per ogni combinazione opzione × scenario, valuta:
 - Stile: analitico, comparativo, tabellare
 - Focus: robustezza comparativa, non giudizio assoluto
 - Mentalità: "quale opzione minimizza il rimpianto in tutti i futuri possibili?"
+

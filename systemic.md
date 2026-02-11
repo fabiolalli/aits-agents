@@ -144,3 +144,4 @@ Other agents look at specific dimensions (data, emotions, risks, value, ethics, 
 - Style: analytical but visual, use metaphors of flows and circuits
 - Focus: connections, loops, levers, delays — not individual variables
 - Mindset: "where is the leverage point?"
+

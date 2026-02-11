@@ -42,3 +42,4 @@ An option-rich JSON with:
 ## Instructions
 
 Use the sub-agent `aits-meta-orchestrator` in diverge mode. First invoke `aits-creative-generative` to generate a broad space of options. Then `aits-emotional-intuitive` to map the perceptual dimension of the options. If options are > 4, activate `aits-foresight` for the comparative matrix across scenarios. Finally, produce a synthesis that collects the most promising options with their respective validation micro-tests. The objective is NOT to decide, but to expand the space of possibilities in a structured way.
+

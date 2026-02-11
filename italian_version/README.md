@@ -13,10 +13,11 @@ Un sistema di agenti cognitivi per il decision-making strutturato, ispirato ai S
 
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
-cp -r aits-agents/orchestration/* ~/.claude/agents/
-cp -r aits-agents/core/* ~/.claude/agents/
-cp -r aits-agents/extended/* ~/.claude/agents/
-cp -r aits-agents/commands/* ~/.claude/commands/
+mkdir -p ~/.claude/agents ~/.claude/commands
+cp aits-agents/italian_version/meta-orchestratore.md ~/.claude/agents/
+cp aits-agents/italian_version/analitico.md aits-agents/italian_version/emotivo-intuitivo.md aits-agents/italian_version/critico-validatore.md aits-agents/italian_version/ottimizzatore.md aits-agents/italian_version/creativo-generativo.md aits-agents/italian_version/etico-governance.md aits-agents/italian_version/predittivo-strategico.md ~/.claude/agents/
+cp aits-agents/italian_version/systemic.md aits-agents/italian_version/foresight.md ~/.claude/agents/
+cp aits-agents/italian_version/aits-full.md aits-agents/italian_version/aits-quick.md aits-agents/italian_version/aits-diverge.md ~/.claude/commands/
 ```
 
 ### Opzione 2: Per progetto (solo nel progetto corrente)
@@ -24,10 +25,10 @@ cp -r aits-agents/commands/* ~/.claude/commands/
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
 mkdir -p .claude/agents .claude/commands
-cp -r aits-agents/orchestration/* .claude/agents/
-cp -r aits-agents/core/* .claude/agents/
-cp -r aits-agents/extended/* .claude/agents/
-cp -r aits-agents/commands/* .claude/commands/
+cp aits-agents/italian_version/meta-orchestratore.md .claude/agents/
+cp aits-agents/italian_version/analitico.md aits-agents/italian_version/emotivo-intuitivo.md aits-agents/italian_version/critico-validatore.md aits-agents/italian_version/ottimizzatore.md aits-agents/italian_version/creativo-generativo.md aits-agents/italian_version/etico-governance.md aits-agents/italian_version/predittivo-strategico.md .claude/agents/
+cp aits-agents/italian_version/systemic.md aits-agents/italian_version/foresight.md .claude/agents/
+cp aits-agents/italian_version/aits-full.md aits-agents/italian_version/aits-quick.md aits-agents/italian_version/aits-diverge.md .claude/commands/
 ```
 
 Riavvia Claude Code per caricare gli agenti.
@@ -112,29 +113,29 @@ Puoi anche chiamare un singolo agente:
 
 ```
 aits-agents/
-├── README.md
-├── AITS.md                            # Manifesto e teoria del modello
+├── README.md                          # Documentazione (inglese)
+├── AITS.md                            # Manifesto e teoria (inglese)
 │
-├── orchestration/
-│   └── meta-orchestratore.md          # 🔵 Il regista del sistema
+├── meta-orchestrator.md               # 🔵 Il regista del sistema
+├── analytical.md                      # ⚪ Base fattuale
+├── emotional-intuitive.md             # 🔴 Dimensione percettiva
+├── critical-validator.md              # ⚫ Stress test
+├── optimizer.md                       # 🟡 Valore e opportunità
+├── creative-generative.md             # 🟢 Alternative e innovazione
+├── ethical-governance.md              # 🟣 Fairness e compliance
+├── predictive-strategic.md            # 🔮 Scenari futuri
+├── systemic.md                        # 🌐 Sistema e feedback loop
+├── foresight.md                       # 🔭 Matrice opzioni-scenari
+├── aits-full.md                       # Analisi completa
+├── aits-quick.md                      # Decisione rapida
+├── aits-diverge.md                    # Brainstorming divergente
 │
-├── core/
-│   ├── analitico.md                   # ⚪ Base fattuale
-│   ├── emotivo-intuitivo.md           # 🔴 Dimensione percettiva
-│   ├── critico-validatore.md          # ⚫ Stress test
-│   ├── ottimizzatore.md               # 🟡 Valore e opportunità
-│   ├── creativo-generativo.md         # 🟢 Alternative e innovazione
-│   ├── etico-governance.md            # 🟣 Fairness e compliance
-│   └── predittivo-strategico.md       # 🔮 Scenari futuri
-│
-├── extended/
-│   ├── systemic.md                    # 🌐 Sistema e feedback loop
-│   └── foresight.md                   # 🔭 Matrice opzioni-scenari
-│
-└── commands/
-    ├── aits-full.md                   # Analisi completa
-    ├── aits-quick.md                  # Decisione rapida
-    └── aits-diverge.md               # Brainstorming divergente
+└── italian_version/                   # 🇮🇹 Versione originale italiana
+    ├── README.md
+    ├── AITS.md
+    ├── meta-orchestratore.md
+    ├── analitico.md
+    ├── ...
 ```
 
 ---

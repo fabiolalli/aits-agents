@@ -1,44 +1,44 @@
-# AITS Diverge — Brainstorming Creativo
+# AITS Diverge — Creative Brainstorming
 
-Esegui un'esplorazione divergente con il sistema AITS — per generare opzioni, rompere schemi e trovare lo spazio delle possibilità prima di convergere.
+Run a divergent exploration with the AITS system — to generate options, break patterns, and find the space of possibilities before converging.
 
-## Cosa fa
+## What It Does
 
-Attiva una sequenza orientata alla generazione creativa:
+Activates a sequence oriented toward creative generation:
 
-1. **Creativo-Generativo (Verde)** → Opzioni, analogie cross-industry, idee radicali
-2. **Emotivo-Intuitivo (Rosso)** → Quale opzione genera entusiasmo? Quale resistenza?
-3. **Foresight (Foresight)** → Le opzioni generate reggono su scenari diversi?
-4. **Meta-Orchestratore (Blu)** → Sintesi delle opzioni più promettenti con prossimi passi
+1. **Creative-Generative (Green)** -> Options, cross-industry analogies, radical ideas
+2. **Emotional-Intuitive (Red)** -> Which option generates enthusiasm? Which resistance?
+3. **Foresight (Foresight)** -> Do the generated options hold up across different scenarios?
+4. **Meta-Orchestrator (Blue)** -> Synthesis of the most promising options with next steps
 
-Se il Verde genera > 4 opzioni, il Foresight viene attivato automaticamente (regola AITS).
+If the Green generates > 4 options, the Foresight is activated automatically (AITS rule).
 
-## Come usarlo
+## How to Use It
 
-Descrivi lo spazio esplorativo:
-- Cosa stiamo cercando? (nuovo prodotto, modello di business, strategia di differenziazione...)
-- Quali vincoli ci sono? (budget, tecnologia, mercato...)
-- Cosa abbiamo già provato o scartato?
-- Quanto possiamo essere radicali?
+Describe the exploratory space:
+- What are we looking for? (new product, business model, differentiation strategy...)
+- What constraints are there? (budget, technology, market...)
+- What have we already tried or discarded?
+- How radical can we be?
 
-## Quando usarlo
+## When to Use It
 
-- Brainstorming su nuovi prodotti o servizi
-- Ricerca di differenziazione competitiva
-- Stallo decisionale (le opzioni note non funzionano)
-- Innovation sprint e design thinking
-- Quando serve "pensare fuori dalla scatola" con struttura
+- Brainstorming on new products or services
+- Searching for competitive differentiation
+- Decision deadlock (known options don't work)
+- Innovation sprints and design thinking
+- When you need to "think outside the box" with structure
 
-## Output atteso
+## Expected Output
 
-Un JSON ricco di opzioni con:
-- 5-7+ alternative (incluse almeno 1-2 radicali)
-- Analogie da altri settori
-- Micro-test per validare le idee più promettenti
-- Mappa emotiva: quali opzioni generano energia positiva
-- Matrice robustezza (se Foresight attivato)
-- Le 2-3 opzioni raccomandate per approfondimento
+An option-rich JSON with:
+- 5-7+ alternatives (including at least 1-2 radical ones)
+- Analogies from other industries
+- Micro-tests to validate the most promising ideas
+- Emotional map: which options generate positive energy
+- Robustness matrix (if Foresight activated)
+- The 2-3 recommended options for deeper exploration
 
-## Istruzioni
+## Instructions
 
-Usa il sub-agente `aits-meta-orchestratore` in modalità diverge. Invoca prima `aits-creativo-generativo` per generare un ampio spazio di opzioni. Poi `aits-emotivo-intuitivo` per mappare la dimensione percettiva delle opzioni. Se le opzioni sono > 4, attiva `aits-foresight` per la matrice comparativa su scenari. Infine, produci una sintesi che raccoglie le opzioni più promettenti con i rispettivi micro-test di validazione. L'obiettivo NON è decidere, ma espandere lo spazio delle possibilità in modo strutturato.
+Use the sub-agent `aits-meta-orchestrator` in diverge mode. First invoke `aits-creative-generative` to generate a broad space of options. Then `aits-emotional-intuitive` to map the perceptual dimension of the options. If options are > 4, activate `aits-foresight` for the comparative matrix across scenarios. Finally, produce a synthesis that collects the most promising options with their respective validation micro-tests. The objective is NOT to decide, but to expand the space of possibilities in a structured way.

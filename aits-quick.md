@@ -1,41 +1,41 @@
 # AITS Quick Decision
 
-Esegui un'analisi decisionale rapida con il sistema AITS — fast track per decisioni che richiedono rigore ma non il flusso completo.
+Run a rapid decision analysis with the AITS system — fast track for decisions that require rigor but not the full flow.
 
-## Cosa fa
+## What It Does
 
-Attiva una sequenza ridotta di 3 agenti + sintesi:
+Activates a reduced sequence of 3 agents + synthesis:
 
-1. **Analitico (Bianco)** → Base fattuale essenziale
-2. **Critico-Validatore (Nero)** → Rischi principali e deal-breaker
-3. **Ottimizzatore (Giallo)** → Valore catturabile e quick wins
-4. **Meta-Orchestratore (Blu)** → Sintesi e decisione rapida
+1. **Analytical (White)** -> Essential factual base
+2. **Critical-Validator (Black)** -> Main risks and deal-breakers
+3. **Optimizer (Yellow)** -> Capturable value and quick wins
+4. **Meta-Orchestrator (Blue)** -> Synthesis and rapid decision
 
-Se il Nero segnala rischio "alto", il Blu attiverà automaticamente l'Etico o il Predittivo (regola AITS inviolabile).
+If the Black flags "high" risk, the Blue will automatically activate the Ethical or the Predictive (inviolable AITS rule).
 
-## Come usarlo
+## How to Use It
 
-Descrivi il problema in modo conciso. Il focus è su:
-- Cosa devo decidere?
-- Quali sono i vincoli principali?
-- Entro quando serve la decisione?
+Describe the problem concisely. The focus is on:
+- What do I need to decide?
+- What are the main constraints?
+- By when is the decision needed?
 
-## Quando usarlo
+## When to Use It
 
-- Decisioni operative day-to-day che richiedono comunque struttura
-- Go/no-go rapidi
-- Valutazioni preliminari prima di un'analisi completa
-- Quando il tempo è il vincolo principale
+- Day-to-day operational decisions that still require structure
+- Rapid go/no-go decisions
+- Preliminary assessments before a full analysis
+- When time is the main constraint
 
-## Output atteso
+## Expected Output
 
-Un JSON snello con:
-- Fatti chiave verificati
-- Top 3 rischi
-- Business case sintetico
-- Decisione con livello di confidenza
-- Eventuali flag per analisi approfondita
+A lean JSON with:
+- Key verified facts
+- Top 3 risks
+- Concise business case
+- Decision with confidence level
+- Any flags for deeper analysis
 
-## Istruzioni
+## Instructions
 
-Usa il sub-agente `aits-meta-orchestratore` in modalità quick. Invoca in sequenza: `aits-analitico`, poi `aits-critico-validatore`, poi `aits-ottimizzatore`. Raccogli gli output JSON e produci una sintesi rapida. Se il Critico segnala rischio alto, attiva `aits-etico-governance` o `aits-predittivo-strategico` prima della sintesi. L'obiettivo è una decisione solida nel minor tempo possibile.
+Use the sub-agent `aits-meta-orchestrator` in quick mode. Invoke in sequence: `aits-analytical`, then `aits-critical-validator`, then `aits-optimizer`. Collect the JSON outputs and produce a rapid synthesis. If the Critical-Validator flags high risk, activate `aits-ethical-governance` or `aits-predictive-strategic` before the synthesis. The objective is a solid decision in the shortest time possible.

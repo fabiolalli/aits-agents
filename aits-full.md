@@ -1,49 +1,49 @@
 # AITS Full Analysis
 
-Esegui un'analisi decisionale completa con il sistema AITS (Adaptive Intelligence Thinking System).
+Run a complete decision analysis with the AITS system (Adaptive Intelligence Thinking System).
 
-## Cosa fa
+## What It Does
 
-Attiva il Meta-Orchestratore (Blu) che orchestra una sequenza completa di agenti cognitivi per analizzare il problema da ogni dimensione:
+Activates the Meta-Orchestrator (Blue) which orchestrates a complete sequence of cognitive agents to analyze the problem from every dimension:
 
-1. **Analitico (Bianco)** → Base fattuale: dati, metriche, lacune
-2. **Emotivo-Intuitivo (Rosso)** → Percezioni, emozioni, resistenze degli stakeholder
-3. **Creativo-Generativo (Verde)** → Alternative e opzioni non convenzionali
-4. **Critico-Validatore (Nero)** → Stress test: rischi, fallacie, guardrail
-5. **Ottimizzatore (Giallo)** → Business case, quick wins, leve di valore
-6. **Etico-Governance (Viola)** → Fairness, compliance, red lines
-7. **Predittivo-Strategico (Indaco)** → Scenari futuri, sensibilità
-8. **Systemic (opzionale)** → Se il problema ha interdipendenze complesse
-9. **Foresight (opzionale)** → Se le opzioni sono > 4
-10. **Meta-Orchestratore (Blu)** → Sintesi integrata, decisione, piano d'azione
+1. **Analytical (White)** -> Factual base: data, metrics, gaps
+2. **Emotional-Intuitive (Red)** -> Perceptions, emotions, stakeholder resistance
+3. **Creative-Generative (Green)** -> Alternatives and unconventional options
+4. **Critical-Validator (Black)** -> Stress test: risks, fallacies, guardrails
+5. **Optimizer (Yellow)** -> Business case, quick wins, value levers
+6. **Ethical-Governance (Purple)** -> Fairness, compliance, red lines
+7. **Predictive-Strategic (Indigo)** -> Future scenarios, sensitivity
+8. **Systemic (optional)** -> If the problem has complex interdependencies
+9. **Foresight (optional)** -> If options are > 4
+10. **Meta-Orchestrator (Blue)** -> Integrated synthesis, decision, action plan
 
-## Come usarlo
+## How to Use It
 
-Descrivi il problema decisionale in modo completo, includendo:
-- Il contesto di business
-- Gli stakeholder coinvolti
-- I vincoli (tempo, budget, risorse)
-- Le opzioni già considerate (se presenti)
-- I KPI rilevanti
+Describe the decision problem completely, including:
+- The business context
+- The stakeholders involved
+- The constraints (time, budget, resources)
+- The options already considered (if any)
+- The relevant KPIs
 
-Il Blu deciderà autonomamente se attivare tutti gli agenti o solo quelli necessari, e gestirà conflitti e iterazioni secondo le regole AITS.
+The Blue will autonomously decide whether to activate all agents or only those needed, and will manage conflicts and iterations according to AITS rules.
 
-## Quando usarlo
+## When to Use It
 
-- Decisioni strategiche importanti
-- Problemi con dimensioni multiple (finanziarie, umane, etiche, tecnologiche)
-- Scelte irreversibili o con impatto a lungo termine
-- Situazioni dove serve il massimo rigore decisionale
+- Important strategic decisions
+- Problems with multiple dimensions (financial, human, ethical, technological)
+- Irreversible choices or those with long-term impact
+- Situations where maximum decision-making rigor is needed
 
-## Output atteso
+## Expected Output
 
-Un JSON strutturato con:
-- Sintesi integrata che unisce tutte le prospettive
-- Decisione chiara e azionabile
-- Piano d'azione con owner, timeline e dipendenze
-- Decision log che traccia il contributo di ogni agente
-- Livello di confidenza e dimensioni non coperte
+A structured JSON with:
+- Integrated synthesis that unifies all perspectives
+- Clear and actionable decision
+- Action plan with owners, timelines, and dependencies
+- Decision log that traces each agent's contribution
+- Confidence level and uncovered dimensions
 
-## Istruzioni
+## Instructions
 
-Usa il sub-agente `aits-meta-orchestratore` per orchestrare l'analisi completa del problema descritto dall'utente. Il Meta-Orchestratore determinerà autonomamente la sequenza ottimale degli agenti, invocandoli come sub-task e integrando i loro output nella sintesi finale. Segui le regole di sistema AITS per la gestione di conflitti, dati mancanti e rischi alti.
+Use the sub-agent `aits-meta-orchestrator` to orchestrate the complete analysis of the problem described by the user. The Meta-Orchestrator will autonomously determine the optimal sequence of agents, invoking them as sub-tasks and integrating their outputs into the final synthesis. Follow the AITS system rules for managing conflicts, missing data, and high risks.

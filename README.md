@@ -13,22 +13,42 @@ A system of cognitive agents for structured decision-making, inspired by the Six
 
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
-mkdir -p ~/.claude/agents ~/.claude/commands
+mkdir -p ~/.claude/agents ~/.claude/commands ~/.claude/playbooks
+
+# Core agents
 cp aits-agents/aits-meta-orchestrator.md ~/.claude/agents/
 cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md ~/.claude/agents/
 cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md ~/.claude/agents/
+
+# Memory & Dashboard system
+cp aits-agents/aits-memory.md aits-agents/aits-dashboard.md ~/.claude/agents/
+
+# Commands
 cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md aits-agents/aits-board.md ~/.claude/commands/
+
+# Playbooks
+cp aits-agents/playbooks/*.md ~/.claude/playbooks/
 ```
 
 ### Option 2: Per project (only in the current project)
 
 ```bash
 git clone https://github.com/fabiolalli/aits-agents.git
-mkdir -p .claude/agents .claude/commands
+mkdir -p .claude/agents .claude/commands .claude/playbooks
+
+# Core agents
 cp aits-agents/aits-meta-orchestrator.md .claude/agents/
 cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md .claude/agents/
 cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md .claude/agents/
+
+# Memory & Dashboard system
+cp aits-agents/aits-memory.md aits-agents/aits-dashboard.md .claude/agents/
+
+# Commands
 cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md aits-agents/aits-board.md .claude/commands/
+
+# Playbooks
+cp aits-agents/playbooks/*.md .claude/playbooks/
 ```
 
 Restart Claude Code to load the agents.
@@ -74,6 +94,57 @@ Creative-Generative → Emotional-Intuitive → Foresight → Blue Synthesis. Ru
 ```
 
 Check the current state of an ongoing analysis: which agents have completed, what they found, any open gates, and your options to intervene.
+
+### Using Playbooks
+
+Playbooks are pre-configured analysis templates optimized for common decision types. They set the agent sequence, focus areas, cognitive bias checklists, and output format automatically.
+
+```
+/aits-full
+"Should we acquire company Z?" → Automatically loads the M&A Due Diligence playbook
+```
+
+Available playbooks:
+
+| Playbook | Best for | Agent Focus |
+|----------|----------|-------------|
+| **Go/No-Go** | Binary strategic decisions | White → Black → Yellow → Ethical → Predictive |
+| **Product Launch** | Launch readiness assessment | White → Red → Green → Black → Yellow → Predictive |
+| **M&A Due Diligence** | Merger & acquisition evaluation | White → Systemic → Black → Yellow → Ethical → Predictive → Foresight |
+| **Risk Assessment** | Comprehensive risk identification | White → Black → Systemic → Ethical → Predictive → Yellow |
+| **Innovation Sprint** | Rapid idea generation & validation | Green → Red → Green(v2) → Foresight → Yellow |
+| **Ethical Impact** | Ethical & social impact analysis | White → Ethical → Red → Black → Systemic → Predictive |
+| **Competitive Response** | Responding to competitive threats | White → Red → Green → Black → Yellow → Predictive → Foresight |
+
+The Meta-Orchestrator automatically detects which playbook matches your problem. You can also specify one: "Use the M&A playbook for this analysis."
+
+### Visual Dashboard
+
+Generate an interactive HTML dashboard to visualize your analysis:
+
+```
+/aits-full generate dashboard
+"Should we launch product X in market Y?"
+```
+
+Or after any analysis: "Generate a visual dashboard for this analysis"
+
+The dashboard shows: agent flow graph, key findings, risk heatmap, confidence meter, conflict timeline, action plan, and HITL log. Open the generated HTML file in any browser.
+
+### Decision Memory
+
+AITS learns from your past decisions. After each analysis, the decision record is saved to `.aits/memory/`. On subsequent analyses, the Meta-Orchestrator recalls similar past decisions and applies learned patterns:
+
+- Which agent sequences worked best for similar problems
+- Recurring risks and how they were mitigated
+- Where human overrides improved the analysis
+- Cognitive biases that appeared in similar decisions
+
+```
+"What similar decisions have I made?"     → Search memory
+"Show me patterns from past decisions"    → Display learned patterns
+"Rate the outcome of the Q1 launch"       → Update retrospective
+```
 
 ### Direct invocation
 
@@ -180,10 +251,35 @@ aits-agents/
 ├── aits-systemic.md                   # 🌐 System and feedback loops (extended)
 ├── aits-foresight.md                  # 🔭 Options-scenarios matrix (extended)
 │
+├── aits-memory.md                     # 🧠 Decision Memory system
+├── aits-dashboard.md                  # 📊 Visual Dashboard HTML generator
+│
 ├── aits-full.md                       # Full analysis — supervised mode (command)
 ├── aits-quick.md                      # Quick decision — autonomous mode (command)
 ├── aits-diverge.md                    # Divergent brainstorming — review mode (command)
-└── aits-board.md                      # Decision dashboard (command)
+├── aits-board.md                      # Decision dashboard (command)
+│
+└── playbooks/                         # 📋 Pre-configured decision playbooks
+    ├── go-no-go.md                    # Strategic Go/No-Go decisions
+    ├── product-launch.md              # Product launch assessment
+    ├── ma-due-diligence.md            # M&A due diligence
+    ├── risk-assessment.md             # Comprehensive risk analysis
+    ├── innovation-sprint.md           # Rapid idea generation
+    ├── ethical-impact.md              # Ethical impact analysis
+    └── competitive-response.md        # Competitive threat response
+```
+
+### Runtime directories (auto-created)
+
+```
+.aits/                                 # Created automatically during use
+├── memory/                            # Decision Memory (local, private)
+│   ├── index.json                     # Index of all past decisions
+│   ├── patterns.json                  # Extracted patterns (auto-updated)
+│   └── *.json                         # Individual decision records
+│
+└── dashboard/                         # Visual Dashboards (HTML files)
+    └── *.html                         # One file per analysis
 ```
 
 ---

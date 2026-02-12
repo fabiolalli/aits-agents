@@ -6,12 +6,27 @@ Run a divergent exploration with the AITS system — to generate options, break 
 
 Activates a sequence oriented toward creative generation:
 
-1. **Creative-Generative (Green)** -> Options, cross-industry analogies, radical ideas
-2. **Emotional-Intuitive (Red)** -> Which option generates enthusiasm? Which resistance?
-3. **Foresight (Foresight)** -> Do the generated options hold up across different scenarios?
-4. **Meta-Orchestrator (Blue)** -> Synthesis of the most promising options with next steps
+1. **Creative-Generative (Green)** → Options, cross-industry analogies, radical ideas
+2. **Emotional-Intuitive (Red)** → Which option generates enthusiasm? Which resistance?
+3. **Foresight (Foresight)** → Do the generated options hold up across different scenarios?
+4. **Meta-Orchestrator (Blue)** → Synthesis of the most promising options with next steps
 
 If the Green generates > 4 options, the Foresight is activated automatically (AITS rule).
+
+## Human-in-the-Loop
+
+Default mode: **REVIEW** — Blue runs the full creative sequence without interruption, then presents everything for review at the end.
+
+In review mode you can:
+- ✅ Accept the creative output as-is
+- 🔍 Drill down into a specific agent's output
+- 🔁 Re-run an agent with a different creative focus
+- ➕ Add an agent (e.g., "also run the Critical-Validator on the top 3 options")
+- 🔄 Recalculate the synthesis after modifications
+
+Mandatory gates still apply (e.g., if Ethical red lines are flagged).
+
+To override: say "supervised mode" if you want to review and redirect after each creative agent.
 
 ## How to Use It
 
@@ -38,8 +53,8 @@ An option-rich JSON with:
 - Emotional map: which options generate positive energy
 - Robustness matrix (if Foresight activated)
 - The 2-3 recommended options for deeper exploration
+- HITL summary
 
 ## Instructions
 
-Use the sub-agent `aits-meta-orchestrator` in diverge mode. First invoke `aits-creative-generative` to generate a broad space of options. Then `aits-emotional-intuitive` to map the perceptual dimension of the options. If options are > 4, activate `aits-foresight` for the comparative matrix across scenarios. Finally, produce a synthesis that collects the most promising options with their respective validation micro-tests. The objective is NOT to decide, but to expand the space of possibilities in a structured way.
-
+Use the sub-agent `aits-meta-orchestrator` in diverge mode. Set HITL mode to REVIEW (unless the user requests otherwise). First invoke `aits-creative-generative` to generate a broad space of options. Then `aits-emotional-intuitive` to map the perceptual dimension of the options. If options are > 4, activate `aits-foresight` for the comparative matrix across scenarios. Present the complete output for user review with drill-down and modification options. The objective is NOT to decide, but to expand the space of possibilities in a structured way.

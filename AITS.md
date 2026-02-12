@@ -3,7 +3,7 @@
 ## Adaptive Intelligence Thinking System
 
 **Author**: Fabio Lalli
-**Version**: 1.0
+**Version**: 1.1
 **Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985)
 
 ---
@@ -42,6 +42,7 @@ De Bono proposed a mental exercise. AITS is a **system with formal rules**:
 - **Conflict management**: when two agents conflict, there is a designated arbiter
 - **Decision log**: every decision is traceable and reproducible
 - **Quality metrics**: the system measures its own effectiveness
+- **Human-in-the-loop**: the human decision-maker maintains control at every stage
 
 ## Design Principles
 
@@ -49,7 +50,7 @@ De Bono proposed a mental exercise. AITS is a **system with formal rules**:
 Each agent has one and only one function. The Critic does not optimize. The Optimizer does not criticize. This separation prevents biases: when you wear all hats at once, the dominant hat always wins.
 
 ### 2. Sequence first, content second
-The order in which you activate agents changes the outcome. The Meta-Orchestrator decides the optimal sequence based on the type of problem. An analysis that starts from data (White -> Black -> Yellow) produces different outputs than one that starts from creativity (Green -> Red -> Foresight).
+The order in which you activate agents changes the outcome. The Meta-Orchestrator decides the optimal sequence based on the type of problem. An analysis that starts from data (White → Black → Yellow) produces different outputs than one that starts from creativity (Green → Red → Foresight).
 
 ### 3. Productive conflict
 Conflict between agents is not a bug, it is a feature. When Black (risks) and Yellow (opportunities) conflict, a tension emerges that Ethics can arbitrate. Without this tension, decisions are either too cautious or too optimistic.
@@ -60,14 +61,24 @@ Every claim has a source or is marked as a hypothesis. Every risk has a probabil
 ### 5. Controlled completeness
 Not every decision needs 11 perspectives. AITS provides three operational modes: full analysis, rapid decision, divergent brainstorming. The Meta-Orchestrator calibrates depth based on the problem.
 
+### 6. Human-in-the-loop by design
+AITS is a collaborative system, not an autonomous one. The human decision-maker is always the ultimate authority. The system provides three levels of human involvement:
+
+- **Supervised**: the human reviews and can redirect after every agent — maximum control, maximum depth
+- **Autonomous**: the system runs freely but stops at mandatory gates — speed with safety nets
+- **Review**: the system completes the full analysis, then the human reviews everything — creative flow with structured review
+
+**Mandatory gates** ensure that critical moments always require human judgment, regardless of mode: high risks, data gaps, agent conflicts, and ethical red lines. These gates cannot be bypassed because the most consequential moments in a decision process are precisely the ones where human judgment matters most.
+
+The decision log tracks not only what each agent produced, but also what the human corrected, redirected, or overrode — making the entire decision process transparent and reproducible.
+
 ## Implementation in Claude Code
 
-This repository implements AITS as a sub-agent system for Claude Code. Each AITS agent becomes a `.md` file with a system prompt, tool access, and output format. The Meta-Orchestrator uses the `Task` tool to invoke other agents as sub-tasks, collect their JSON outputs, and produce the final synthesis.
+This repository implements AITS as a sub-agent system for Claude Code. Each AITS agent becomes a `.md` file with a system prompt, tool access, and output format. The Meta-Orchestrator uses the `Task` tool to invoke other agents as sub-tasks, collect their JSON outputs, present checkpoints to the user, and produce the final synthesis.
 
-The result is a decision-making framework that you can invoke with a single command and that produces a multi-dimensional analysis that is traceable, repeatable, and actionable.
+The result is a decision-making framework that you can invoke with a single command and that produces a multi-dimensional analysis that is traceable, repeatable, and actionable — with the human always in control.
 
 ---
 
 *"Thinking is the last skill we have yet to structure. AITS is an attempt."*
 — Fabio Lalli
-

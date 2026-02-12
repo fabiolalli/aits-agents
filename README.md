@@ -17,7 +17,7 @@ mkdir -p ~/.claude/agents ~/.claude/commands
 cp aits-agents/aits-meta-orchestrator.md ~/.claude/agents/
 cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md ~/.claude/agents/
 cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md ~/.claude/agents/
-cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md ~/.claude/commands/
+cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md aits-agents/aits-board.md ~/.claude/commands/
 ```
 
 ### Option 2: Per project (only in the current project)
@@ -28,7 +28,7 @@ mkdir -p .claude/agents .claude/commands
 cp aits-agents/aits-meta-orchestrator.md .claude/agents/
 cp aits-agents/aits-analytical.md aits-agents/aits-emotional-intuitive.md aits-agents/aits-critical-validator.md aits-agents/aits-optimizer.md aits-agents/aits-creative-generative.md aits-agents/aits-ethical-governance.md aits-agents/aits-predictive-strategic.md .claude/agents/
 cp aits-agents/aits-systemic.md aits-agents/aits-foresight.md .claude/agents/
-cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md .claude/commands/
+cp aits-agents/aits-full.md aits-agents/aits-quick.md aits-agents/aits-diverge.md aits-agents/aits-board.md .claude/commands/
 ```
 
 Restart Claude Code to load the agents.
@@ -45,7 +45,7 @@ Restart Claude Code to load the agents.
 "Should we launch product X in market Y by Q2?"
 ```
 
-The Meta-Orchestrator (Blue) automatically activates the necessary agents, collects JSON outputs, manages conflicts, and produces an integrated synthesis with a decision and action plan.
+The Meta-Orchestrator (Blue) automatically activates the necessary agents, collects JSON outputs, manages conflicts, and produces an integrated synthesis with a decision and action plan. In full mode, you get a **checkpoint after every agent** where you can approve, correct, or redirect.
 
 ### Quick decision
 
@@ -55,7 +55,7 @@ The Meta-Orchestrator (Blue) automatically activates the necessary agents, colle
 "Is it worth acquiring company Z?"
 ```
 
-Fast track: Analytical → Critical-Validator → Optimizer → Blue Synthesis. For when you need solid answers in a short time.
+Fast track: Analytical → Critical-Validator → Optimizer → Blue Synthesis. Runs **autonomously** — only stops if a mandatory gate triggers (high risk, data gaps, conflicts).
 
 ### Divergent brainstorming
 
@@ -65,7 +65,15 @@ Fast track: Analytical → Critical-Validator → Optimizer → Blue Synthesis. 
 "How can we differentiate ourselves in the premium wellness market?"
 ```
 
-Creative-Generative → Emotional-Intuitive → Foresight → Blue Synthesis. To explore opportunity spaces before converging.
+Creative-Generative → Emotional-Intuitive → Foresight → Blue Synthesis. Runs the full creative sequence, then presents everything for **review** at the end.
+
+### Decision dashboard
+
+```
+/aits-board
+```
+
+Check the current state of an ongoing analysis: which agents have completed, what they found, any open gates, and your options to intervene.
 
 ### Direct invocation
 
@@ -77,6 +85,49 @@ You can also call a single agent:
 "Map the ethical risks of this decision"                  → Ethical-Governance
 "What future scenarios should we consider?"               → Predictive-Strategic
 ```
+
+---
+
+## 🤝 Human-in-the-Loop
+
+AITS is designed for **collaborative decision-making** between the AI system and the human decision-maker. The human is always the ultimate authority — AITS provides the structured process.
+
+### Three Modes
+
+| Mode | Behavior | Default for |
+|------|----------|-------------|
+| **Supervised** | Checkpoint after every agent. You approve, correct, or redirect before proceeding. | `/aits-full` |
+| **Autonomous** | No checkpoints except at mandatory gates. Fast execution with safety stops. | `/aits-quick` |
+| **Review** | Full execution, then complete review with drill-down and modification options. | `/aits-diverge` |
+
+### Switching modes
+
+You can switch at any time during an analysis:
+- "Switch to supervised" — start getting checkpoints
+- "Switch to autonomous" — let it run, stop only at gates
+- "Switch to review" — complete remaining agents and present everything
+
+### Mandatory Gates
+
+These always pause the flow regardless of mode — because the decision requires human judgment:
+
+- ⚠️ **High risk** — the Critical-Validator flags risk level "high" or "critical"
+- ⚠️ **Data gaps** — the Analytical reports missing data with high impact
+- ⚠️ **Agent conflict** — two agents produce contradictory recommendations
+- ⚠️ **Red line** — the Ethical-Governance flags an inviolable ethical limit
+- ⚠️ **Loop detected** — the flow returns to an already-completed agent (e.g., back to White for missing data)
+
+### At every checkpoint you can
+
+1. ✅ **Proceed** — continue to the next agent
+2. ✏️ **Correct** — modify the output or add context
+3. 🔀 **Redirect** — change the sequence
+4. 🔁 **Redo** — re-run the agent with different focus
+5. ⏭️ **Switch mode** — change to autonomous or review
+
+### Decision traceability
+
+Every human intervention is logged in the `decision_log`, including what was modified and why. This ensures full traceability of the decision-making process.
 
 ---
 
@@ -129,11 +180,10 @@ aits-agents/
 ├── aits-systemic.md                   # 🌐 System and feedback loops (extended)
 ├── aits-foresight.md                  # 🔭 Options-scenarios matrix (extended)
 │
-├── aits-full.md                       # Full analysis (command)
-├── aits-quick.md                      # Quick decision (command)
-├── aits-diverge.md                    # Divergent brainstorming (command)
-│
-└── italian_version/                   # 🇮🇹 Original Italian version
+├── aits-full.md                       # Full analysis — supervised mode (command)
+├── aits-quick.md                      # Quick decision — autonomous mode (command)
+├── aits-diverge.md                    # Divergent brainstorming — review mode (command)
+└── aits-board.md                      # Decision dashboard (command)
 ```
 
 ---
@@ -147,6 +197,8 @@ These rules are encoded in the Meta-Orchestrator and govern the flow automatical
 3. **High risk → Ethical or Predictive** — if Black flags a "high" risk, activating Ethical-Governance or Predictive-Strategic is mandatory
 4. **Black/Yellow conflict → Ethical arbitrates** — when criticism and optimism clash, Ethical-Governance decides the direction
 5. **Numerous options → Foresight** — too many alternatives? Foresight evaluates them across multiple scenarios
+6. **Red line violation → mandatory human gate** — ethical limits always require explicit human acknowledgment
+7. **Mandatory gates are inviolable** — they always pause the flow regardless of HITL mode
 
 ---
 
@@ -158,18 +210,23 @@ The AITS system tracks decision-making process quality:
 - **Inter-agent coherence**: outputs are logically consistent with each other
 - **Iterations before convergence**: how many cycles are needed to reach the decision
 - **% valid JSON outputs**: agents produce output in the expected format
-- **Human override**: how many times the user had to correct the flow
+- **Human override**: how many times the user corrected or redirected the flow
 - **Scenario robustness**: the decision holds under different conditions
+- **Mandatory gates triggered**: how many safety stops were needed
+- **Human corrections**: what the user changed and how it affected the outcome
 
 ---
 
 ## 💡 Best Practices
 
 1. **Start with context**: the more context you provide for the initial problem, the better each agent's analysis will be
-2. **Use `/aits-full` for important decisions**: the full flow covers all cognitive dimensions
-3. **Use `/aits-quick` for day-to-day**: not every decision needs 11 perspectives
-4. **Trust Blue**: the Meta-Orchestrator knows when to activate whom — let it work
-5. **Read the decision log**: traceability is one of the key advantages of AITS
+2. **Use `/aits-full` for important decisions**: the full flow covers all cognitive dimensions with human oversight at every step
+3. **Use `/aits-quick` for day-to-day**: fast execution with safety stops only when they matter
+4. **Use `/aits-diverge` for creativity**: uninterrupted generation followed by structured review
+5. **Use `/aits-board` to check progress**: the dashboard gives you control without disrupting the flow
+6. **Trust Blue, but verify**: the Meta-Orchestrator makes good sequencing decisions, but your corrections at checkpoints improve the output
+7. **Read the decision log**: traceability — including your own interventions — is one of the key advantages of AITS
+8. **Switch modes freely**: start supervised, switch to autonomous when you're confident, switch back if something unexpected emerges
 
 ---
 
@@ -196,4 +253,3 @@ To dive deeper into the theory: see [AITS.md](AITS.md)
 MIT License — Use, modify, distribute. Attribution appreciated.
 
 **Created by Fabio Lalli** | AITS — Adaptive Intelligence Thinking System
-

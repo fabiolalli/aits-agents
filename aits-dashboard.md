@@ -1,322 +1,350 @@
-# AITS Dashboard — Visual Decision Dashboard
+---
+name: aits-dashboard
+description: HTML template and generator spec for AITS 2.0 visual dashboards. The Meta-Orchestrator reads this file when producing a dashboard. Defines the full HTML structure, CSS, and placeholder syntax. Produces a self-contained file (no external dependencies) suitable for sharing, archival, and print.
+---
 
-Generate an interactive HTML dashboard that visualizes the current or completed AITS analysis. Open it in a browser for a visual overview of the decision-making process.
+# aits-dashboard — HTML Dashboard Template
 
-## What It Does
+This file defines the template the Meta-Orchestrator uses to produce HTML dashboards for AITS 2.0 analyses. The template is a single self-contained HTML file with inlined CSS and inlined SVG.
 
-After an AITS analysis completes (or at any checkpoint during a supervised analysis), the Meta-Orchestrator can generate a self-contained HTML file that visualizes:
+## When this is used
 
-1. **Agent Flow Graph** — Which agents were activated, in what order, with directional arrows showing information flow
-2. **Agent Status** — Color-coded status for each agent (completed, in progress, pending, not in sequence)
-3. **Key Findings Cards** — Expandable cards with each agent's key output
-4. **Risk Heatmap** — Visual risk matrix (probability × impact) from the Critical-Validator
-5. **Conflict Timeline** — Where agents disagreed and how conflicts were resolved
-6. **Confidence Meter** — Overall decision confidence with breakdown by dimension
-7. **Decision Summary** — The final synthesis and action plan
-8. **HITL Log** — Visual timeline of human interventions
+- When the user invokes `/aits-full generate dashboard` or `/aits-board for [decision]`
+- When any Meta-Orchestrator synthesis explicitly requests dashboard generation
 
-## How to Use
+## Output location
 
-### Automatic generation
-Add "generate dashboard" to any AITS command:
-```
-/aits-full generate dashboard
-"Should we launch product X in market Y?"
-```
+`.aits/dashboard/[title-slug].html`
 
-### After analysis
-```
-"Generate a visual dashboard for this analysis"
-```
+## Placeholder syntax
 
-### The dashboard file
-The HTML file is written to `.aits/dashboard/[decision-title].html` and can be opened in any browser. It is fully self-contained (no external dependencies).
+The template uses `{{PLACEHOLDER}}` syntax for substitution. The Meta-Orchestrator fills these before writing.
 
-## Instructions
-
-When asked to generate a dashboard, the Meta-Orchestrator should use the Write tool to create an HTML file at `.aits/dashboard/[decision-title].html`. The HTML must be self-contained with inline CSS and JavaScript (no external CDN dependencies). Use the template structure below, filling in the actual data from the completed analysis.
-
-### HTML Template Structure
-
-Write the following HTML structure, replacing all `{{PLACEHOLDER}}` values with actual analysis data:
+## Full template
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{LANGUAGE}}" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AITS Dashboard — {{DECISION_TITLE}}</title>
-<style>
-  :root {
-    --blue: #3b82f6; --white-agent: #94a3b8; --red: #ef4444;
-    --black: #1e293b; --yellow: #eab308; --green: #22c55e;
-    --purple: #a855f7; --indigo: #6366f1; --teal: #14b8a6;
-    --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --border: #334155;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
-  .header { text-align: center; margin-bottom: 32px; }
-  .header h1 { font-size: 28px; color: var(--blue); margin-bottom: 8px; }
-  .header .subtitle { color: #94a3b8; font-size: 14px; }
-  .meta-bar { display: flex; justify-content: center; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
-  .meta-item { background: var(--card); padding: 8px 16px; border-radius: 8px; font-size: 13px; border: 1px solid var(--border); }
-  .meta-item strong { color: var(--blue); }
-
-  /* Grid Layout */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-  .grid-full { grid-column: 1 / -1; }
-
-  /* Cards */
-  .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
-  .card h2 { font-size: 16px; color: var(--blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .card h2 .icon { font-size: 20px; }
-
-  /* Agent Flow */
-  .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 16px; }
-  .agent-node { padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; color: white; text-align: center; min-width: 100px; position: relative; }
-  .agent-node.completed { opacity: 1; }
-  .agent-node.pending { opacity: 0.4; }
-  .agent-node.active { animation: pulse 2s infinite; }
-  .flow-arrow { color: #475569; font-size: 20px; }
-  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); } 50% { box-shadow: 0 0 0 10px rgba(59,130,246,0); } }
-
-  /* Findings */
-  .finding { margin-bottom: 12px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid var(--border); }
-  .finding .agent-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-  .finding .content { font-size: 13px; line-height: 1.5; color: #cbd5e1; }
-
-  /* Risk Matrix */
-  .risk-matrix { display: grid; grid-template-columns: auto repeat(5, 1fr); grid-template-rows: auto repeat(5, 1fr); gap: 2px; font-size: 11px; }
-  .risk-cell { padding: 8px 4px; text-align: center; border-radius: 4px; min-height: 36px; display: flex; align-items: center; justify-content: center; }
-  .risk-label { font-weight: 600; color: #94a3b8; display: flex; align-items: center; justify-content: center; }
-  .risk-low { background: rgba(34,197,94,0.15); }
-  .risk-med { background: rgba(234,179,8,0.15); }
-  .risk-high { background: rgba(249,115,22,0.15); }
-  .risk-critical { background: rgba(239,68,68,0.2); }
-  .risk-item { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); }
-
-  /* Confidence */
-  .confidence-bar { height: 24px; background: #1e293b; border-radius: 12px; overflow: hidden; margin: 8px 0; }
-  .confidence-fill { height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
-  .confidence-high { background: linear-gradient(90deg, var(--green), #16a34a); }
-  .confidence-medium { background: linear-gradient(90deg, var(--yellow), #ca8a04); }
-  .confidence-low { background: linear-gradient(90deg, var(--red), #dc2626); }
-
-  /* Conflicts */
-  .conflict { margin-bottom: 12px; padding: 12px; background: rgba(239,68,68,0.05); border-radius: 8px; border-left: 3px solid var(--red); }
-  .conflict .agents { font-weight: 600; color: var(--red); font-size: 13px; }
-  .conflict .resolution { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-
-  /* Decision Box */
-  .decision-box { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(99,102,241,0.1)); border: 1px solid var(--blue); border-radius: 12px; padding: 24px; text-align: center; }
-  .decision-box h3 { color: var(--blue); font-size: 14px; margin-bottom: 8px; }
-  .decision-box .decision-text { font-size: 18px; font-weight: 700; line-height: 1.4; }
-
-  /* Action Plan */
-  .action { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .action:last-child { border-bottom: none; }
-  .action-num { background: var(--blue); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
-  .action-details { flex: 1; }
-  .action-details .action-title { font-weight: 600; }
-  .action-details .action-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-
-  /* HITL Log */
-  .hitl-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .hitl-item:last-child { border-bottom: none; }
-  .hitl-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-  .hitl-checkpoint { background: rgba(59,130,246,0.2); color: var(--blue); }
-  .hitl-gate { background: rgba(239,68,68,0.2); color: var(--red); }
-  .hitl-correction { background: rgba(234,179,8,0.2); color: var(--yellow); }
-
-  /* Footer */
-  .footer { text-align: center; margin-top: 32px; padding: 16px; color: #475569; font-size: 12px; }
-  .footer a { color: var(--blue); text-decoration: none; }
-
-  /* Responsive */
-  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .flow { flex-direction: column; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AITS 2.0 · {{DECISION_TITLE}}</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --card: #f8fafc;
+      --accent: #2563eb;
+      --white: #f1f5f9;
+      --red: #dc2626;
+      --black: #0f172a;
+      --yellow: #d97706;
+      --green: #059669;
+      --purple: #7c3aed;
+      --indigo: #4338ca;
+      --cyan: #0891b2;
+      --magenta: #c026d3;
+      --gray: #6b7280;
+      --risk-critical: #991b1b;
+      --risk-high: #dc2626;
+      --risk-medium: #d97706;
+      --risk-low: #65a30d;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --fg: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+      --card: #1e293b;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); margin: 0; padding: 0; line-height: 1.6; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    h1 { margin: 0 0 0.5rem 0; font-size: 1.75rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .meta-item { background: var(--card); padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border); }
+    .meta-item-label { font-size: 0.75rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
+    .meta-item-value { font-size: 1.1rem; font-weight: 500; margin-top: 0.25rem; }
+    section { margin-bottom: 3rem; }
+    h2 { font-size: 1.25rem; border-left: 4px solid var(--accent); padding-left: 0.75rem; margin-bottom: 1rem; }
+    .agent-card { background: var(--card); border: 1px solid var(--border); border-left-width: 4px; border-radius: 0.5rem; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .agent-card[data-color="white"] { border-left-color: var(--white); }
+    .agent-card[data-color="red"] { border-left-color: var(--red); }
+    .agent-card[data-color="black"] { border-left-color: var(--black); }
+    .agent-card[data-color="yellow"] { border-left-color: var(--yellow); }
+    .agent-card[data-color="green"] { border-left-color: var(--green); }
+    .agent-card[data-color="purple"] { border-left-color: var(--purple); }
+    .agent-card[data-color="indigo"] { border-left-color: var(--indigo); }
+    .agent-card[data-color="cyan"] { border-left-color: var(--cyan); }
+    .agent-card[data-color="magenta"] { border-left-color: var(--magenta); }
+    .agent-card[data-color="blue"] { border-left-color: var(--accent); }
+    .agent-card[data-color="gray"] { border-left-color: var(--gray); }
+    .agent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .agent-name { font-weight: 600; font-size: 1.05rem; }
+    .confidence-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 500; }
+    .conf-high { background: #dcfce7; color: #166534; }
+    .conf-medium { background: #fef9c3; color: #854d0e; }
+    .conf-low { background: #fee2e2; color: #991b1b; }
+    .risk-grid { display: grid; grid-template-columns: 60px repeat(5, 1fr); gap: 2px; margin-top: 1rem; font-size: 0.85rem; }
+    .risk-cell { padding: 0.5rem; text-align: center; border-radius: 0.25rem; min-height: 3rem; display: flex; align-items: center; justify-content: center; }
+    .risk-axis { font-weight: 600; color: var(--muted); }
+    .risk-s-low { background: #d1fae5; }
+    .risk-s-medium { background: #fef3c7; }
+    .risk-s-high { background: #fecaca; }
+    .risk-s-critical { background: #fca5a5; color: white; font-weight: 600; }
+    .conflict-item { border-left: 3px solid var(--accent); padding: 0.5rem 1rem; margin-bottom: 0.75rem; background: var(--card); }
+    .conflict-severity { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--muted); }
+    .robustness-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 1rem; }
+    .robustness-table th, .robustness-table td { padding: 0.5rem; border: 1px solid var(--border); text-align: center; }
+    .robustness-table th { background: var(--card); }
+    .perf-excellent { background: #bbf7d0; }
+    .perf-good { background: #d9f99d; }
+    .perf-acceptable { background: #fef9c3; }
+    .perf-poor { background: #fed7aa; }
+    .perf-failure { background: #fecaca; }
+    .action-item { padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 0.5rem; margin-bottom: 0.5rem; background: var(--card); }
+    .action-meta { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+    .ethical-radar { max-width: 400px; margin: 1rem auto; }
+    .hitl-entry { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .hitl-entry:last-child { border-bottom: none; }
+    .theme-toggle { position: fixed; top: 1rem; right: 1rem; padding: 0.5rem 0.75rem; background: var(--card); border: 1px solid var(--border); border-radius: 0.375rem; cursor: pointer; font-size: 0.85rem; }
+    @media print {
+      .theme-toggle { display: none; }
+      section { page-break-inside: avoid; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      h1 { font-size: 1.4rem; }
+      .risk-grid { font-size: 0.7rem; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>AITS Decision Dashboard</h1>
-  <div class="subtitle">Adaptive Intelligence Thinking System — by Fabio Lalli</div>
-</div>
-
-<div class="meta-bar">
-  <div class="meta-item"><strong>Problem:</strong> {{PROBLEM_TITLE}}</div>
-  <div class="meta-item"><strong>Mode:</strong> {{MODE}} | HITL: {{HITL_MODE}}</div>
-  <div class="meta-item"><strong>Date:</strong> {{DATE}}</div>
-  <div class="meta-item"><strong>Agents:</strong> {{AGENT_COUNT}} activated</div>
-</div>
-
-<!-- AGENT FLOW -->
-<div class="card grid-full" style="margin-bottom: 20px;">
-  <h2><span class="icon">🔄</span> Agent Flow</h2>
-  <div class="flow">
-    <!-- Repeat for each agent in sequence -->
-    <!-- Example: -->
-    <!-- <div class="agent-node completed" style="background: var(--white-agent);">⚪ Analytical</div> -->
-    <!-- <span class="flow-arrow">→</span> -->
-    {{AGENT_FLOW_NODES}}
-  </div>
-</div>
-
-<div class="grid">
-
-  <!-- KEY FINDINGS -->
-  <div class="card">
-    <h2><span class="icon">🔍</span> Key Findings</h2>
-    {{FINDINGS_HTML}}
-  </div>
-
-  <!-- RISK HEATMAP -->
-  <div class="card">
-    <h2><span class="icon">⚠️</span> Risk Matrix</h2>
-    <div class="risk-matrix">
-      <div class="risk-label"></div>
-      <div class="risk-label">Negligible</div>
-      <div class="risk-label">Low</div>
-      <div class="risk-label">Medium</div>
-      <div class="risk-label">High</div>
-      <div class="risk-label">Critical</div>
-
-      <div class="risk-label">Very Likely</div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-high"></div>
-      <div class="risk-cell risk-critical"></div>
-      <div class="risk-cell risk-critical"></div>
-      <div class="risk-cell risk-critical"></div>
-
-      <div class="risk-label">Likely</div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-high"></div>
-      <div class="risk-cell risk-critical"></div>
-      <div class="risk-cell risk-critical"></div>
-
-      <div class="risk-label">Possible</div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-high"></div>
-      <div class="risk-cell risk-critical"></div>
-
-      <div class="risk-label">Unlikely</div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-high"></div>
-
-      <div class="risk-label">Rare</div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-low"></div>
-      <div class="risk-cell risk-med"></div>
-      <div class="risk-cell risk-med"></div>
-    </div>
-    <!-- Place risk items as overlays or below the matrix -->
-    <div style="margin-top: 12px;">
-      {{RISK_ITEMS_HTML}}
-    </div>
-  </div>
-
-  <!-- CONFIDENCE -->
-  <div class="card">
-    <h2><span class="icon">📊</span> Confidence Level</h2>
-    <div class="confidence-bar">
-      <div class="confidence-fill {{CONFIDENCE_CLASS}}" style="width: {{CONFIDENCE_PCT}}%;">
-        {{CONFIDENCE_LEVEL}} — {{CONFIDENCE_PCT}}%
+  <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+  <div class="container">
+    <header>
+      <h1>{{DECISION_TITLE}}</h1>
+      <div class="meta">{{DECISION_DATE}} · AITS 2.0 analysis</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-item-label">Decision</div>
+          <div class="meta-item-value">{{DECISION_TYPE}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Confidence</div>
+          <div class="meta-item-value">{{CONFIDENCE_LEVEL}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">HITL Mode</div>
+          <div class="meta-item-value">{{HITL_MODE}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Pattern</div>
+          <div class="meta-item-value">{{PATTERN_MATCH}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Playbook</div>
+          <div class="meta-item-value">{{PLAYBOOK_USED}}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Agents</div>
+          <div class="meta-item-value">{{AGENTS_COUNT}}</div>
+        </div>
       </div>
-    </div>
-    <div style="margin-top: 12px; font-size: 13px;">
-      {{CONFIDENCE_BREAKDOWN_HTML}}
-    </div>
+    </header>
+
+    <section>
+      <h2>Decision Statement</h2>
+      <p style="font-size: 1.1rem;">{{DECISION_STATEMENT}}</p>
+      {{#CONDITIONS}}
+      <div style="margin-top: 1rem;">
+        <strong>Conditions:</strong>
+        <ul>{{CONDITIONS_LIST}}</ul>
+      </div>
+      {{/CONDITIONS}}
+    </section>
+
+    <section>
+      <h2>Integrated Synthesis</h2>
+      <p>{{INTEGRATED_SYNTHESIS}}</p>
+    </section>
+
+    <section>
+      <h2>Agent Findings</h2>
+      {{AGENT_CARDS}}
+      <!-- Each agent produces a card like:
+      <div class="agent-card" data-color="{{COLOR}}">
+        <div class="agent-header">
+          <div class="agent-name">{{SYMBOL}} {{AGENT_NAME}}</div>
+          <span class="confidence-badge conf-{{CONF_LEVEL}}">{{CONF_LEVEL}}</span>
+        </div>
+        <p>{{KEY_FINDINGS_SUMMARY}}</p>
+        {{#HITL_FLAGS}}<div style="color: var(--red); font-size: 0.85rem;">⚠ HITL flags raised: {{FLAGS}}</div>{{/HITL_FLAGS}}
+      </div>
+      -->
+    </section>
+
+    {{#HAS_RISK_MAP}}
+    <section>
+      <h2>Risk Heatmap</h2>
+      <div class="risk-grid">
+        <div class="risk-cell risk-axis"></div>
+        <div class="risk-cell risk-axis">P1</div>
+        <div class="risk-cell risk-axis">P2</div>
+        <div class="risk-cell risk-axis">P3</div>
+        <div class="risk-cell risk-axis">P4</div>
+        <div class="risk-cell risk-axis">P5</div>
+        <!-- Rows I5 down to I1, each with 5 cells colored by severity and labeled with risk names -->
+        {{RISK_HEATMAP_ROWS}}
+      </div>
+      <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">
+        <strong>Overall risk level:</strong> {{OVERALL_RISK_LEVEL}} — {{OVERALL_RISK_REASONING}}
+      </div>
+    </section>
+    {{/HAS_RISK_MAP}}
+
+    {{#HAS_ROBUSTNESS_MATRIX}}
+    <section>
+      <h2>Options × Scenarios Robustness Matrix</h2>
+      <table class="robustness-table">
+        <thead>
+          <tr>
+            <th>Option</th>
+            {{SCENARIO_HEADERS}}
+            <th>Robustness</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ROBUSTNESS_ROWS}}
+        </tbody>
+      </table>
+    </section>
+    {{/HAS_ROBUSTNESS_MATRIX}}
+
+    {{#HAS_ETHICAL_ASSESSMENT}}
+    <section>
+      <h2>Ethical Assessment — 7 Dimensions</h2>
+      <svg class="ethical-radar" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-label="Ethical dimension radar chart">
+        {{ETHICAL_RADAR_SVG}}
+      </svg>
+      <div>{{ETHICAL_SUMMARY}}</div>
+      {{#RED_LINES_DETECTED}}
+      <div style="background: #fee2e2; border-left: 4px solid var(--red); padding: 1rem; margin-top: 1rem; border-radius: 0.25rem;">
+        <strong>🚨 Red lines detected:</strong>
+        <ul>{{RED_LINES_LIST}}</ul>
+      </div>
+      {{/RED_LINES_DETECTED}}
+    </section>
+    {{/HAS_ETHICAL_ASSESSMENT}}
+
+    {{#HAS_CONFLICTS}}
+    <section>
+      <h2>Conflicts & Resolutions</h2>
+      {{CONFLICT_ITEMS}}
+      <!-- Each conflict:
+      <div class="conflict-item">
+        <div class="conflict-severity">{{SEVERITY_LEVEL}}</div>
+        <div><strong>{{PARTY_A}} vs {{PARTY_B}}</strong></div>
+        <div>{{NATURE}}</div>
+        <div style="margin-top: 0.25rem; color: var(--muted); font-size: 0.85rem;">Arbiter: {{ARBITER}} — Rule: {{MATRIX_RULE}}</div>
+        <div>{{RESOLUTION}}</div>
+      </div>
+      -->
+    </section>
+    {{/HAS_CONFLICTS}}
+
+    <section>
+      <h2>Action Plan</h2>
+      {{ACTION_ITEMS}}
+      <!-- Each action:
+      <div class="action-item">
+        <div><strong>{{ACTION_TEXT}}</strong></div>
+        <div class="action-meta">Owner: {{OWNER}} · Timeline: {{TIMELINE}} · Source: {{AGENT_SOURCE}}</div>
+        {{#DEPENDENCIES}}<div class="action-meta">Depends on: {{DEPS}}</div>{{/DEPENDENCIES}}
+      </div>
+      -->
+    </section>
+
+    <section>
+      <h2>HITL Log</h2>
+      <div style="background: var(--card); border-radius: 0.5rem; padding: 1rem;">
+        <div class="hitl-entry">Mode used: <strong>{{HITL_MODE}}</strong></div>
+        <div class="hitl-entry">Checkpoints presented: {{CHECKPOINTS_COUNT}}</div>
+        <div class="hitl-entry">Mandatory gates triggered: {{GATES_COUNT}}</div>
+        <div class="hitl-entry">Human corrections: {{CORRECTIONS_COUNT}}</div>
+        <div class="hitl-entry">Redirects: {{REDIRECTS_COUNT}}</div>
+        <div class="hitl-entry">Mode switches: {{MODE_SWITCHES_COUNT}}</div>
+        {{#INTERVENTIONS}}
+        <div class="hitl-entry">{{TIMESTAMP}} — {{INTERVENTION_SUMMARY}}</div>
+        {{/INTERVENTIONS}}
+      </div>
+    </section>
+
+    <section>
+      <h2>Uncovered Dimensions</h2>
+      <ul>{{UNCOVERED_DIMENSIONS}}</ul>
+    </section>
+
+    <section>
+      <h2>Next Review</h2>
+      <p>{{NEXT_REVIEW}}</p>
+    </section>
+
+    <footer style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 2rem; color: var(--muted); font-size: 0.85rem;">
+      Generated by AITS 2.0 · {{GENERATION_TIMESTAMP}}<br>
+      Saved to: {{MEMORY_RECORD_PATH}}
+    </footer>
   </div>
 
-  <!-- CONFLICTS -->
-  <div class="card">
-    <h2><span class="icon">⚡</span> Conflicts & Resolutions</h2>
-    {{CONFLICTS_HTML}}
-    <!-- If no conflicts: -->
-    <!-- <div style="color: #94a3b8; font-size: 13px;">No inter-agent conflicts detected.</div> -->
-  </div>
-
-</div>
-
-<!-- DECISION -->
-<div class="decision-box" style="margin-bottom: 20px;">
-  <h3>DECISION</h3>
-  <div class="decision-text">{{DECISION_TEXT}}</div>
-</div>
-
-<div class="grid">
-
-  <!-- ACTION PLAN -->
-  <div class="card">
-    <h2><span class="icon">🎯</span> Action Plan</h2>
-    {{ACTION_PLAN_HTML}}
-  </div>
-
-  <!-- HITL LOG -->
-  <div class="card">
-    <h2><span class="icon">🤝</span> Human-in-the-Loop Log</h2>
-    <div style="margin-bottom: 8px; font-size: 12px; color: #94a3b8;">
-      Checkpoints: {{CHECKPOINTS}} | Gates: {{GATES}} | Corrections: {{CORRECTIONS}}
-    </div>
-    {{HITL_LOG_HTML}}
-  </div>
-
-</div>
-
-<div class="footer">
-  <p>Generated by <a href="https://github.com/fabiolalli/aits-agents">AITS</a> — Adaptive Intelligence Thinking System by Fabio Lalli</p>
-  <p>{{TIMESTAMP}}</p>
-</div>
-
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    }
+  </script>
 </body>
 </html>
 ```
 
-### How to Fill the Template
+## Placeholders to fill
 
-The Meta-Orchestrator replaces each `{{PLACEHOLDER}}` with actual data from the analysis:
+- `{{LANGUAGE}}` — `it`, `en`, etc.
+- `{{DECISION_TITLE}}`, `{{DECISION_DATE}}`, `{{DECISION_TYPE}}`, `{{DECISION_STATEMENT}}`
+- `{{CONFIDENCE_LEVEL}}` — high/medium/low
+- `{{HITL_MODE}}`, `{{PATTERN_MATCH}}`, `{{PLAYBOOK_USED}}`, `{{AGENTS_COUNT}}`
+- `{{CONDITIONS_LIST}}` — if conditional decision
+- `{{INTEGRATED_SYNTHESIS}}` — narrative from Meta-Orchestrator
+- `{{AGENT_CARDS}}` — rendered HTML for each agent card (see template inside)
+- `{{HAS_RISK_MAP}}` section — include if Critical ran; `{{RISK_HEATMAP_ROWS}}` is a 5×5 grid rendered as HTML cells
+- `{{HAS_ROBUSTNESS_MATRIX}}` section — include if Foresight ran; `{{SCENARIO_HEADERS}}` and `{{ROBUSTNESS_ROWS}}` render the matrix
+- `{{HAS_ETHICAL_ASSESSMENT}}` section — include if Ethical ran; `{{ETHICAL_RADAR_SVG}}` is an inline SVG radar chart of the 7 dimensions
+- `{{HAS_CONFLICTS}}` section — include if any conflicts were resolved; `{{CONFLICT_ITEMS}}` renders each
+- `{{ACTION_ITEMS}}` — rendered action plan
+- HITL log fields from `hitl_summary` and `decision_log.human_intervention` entries
+- `{{UNCOVERED_DIMENSIONS}}` — bulleted list
+- `{{NEXT_REVIEW}}` — date or trigger
+- `{{GENERATION_TIMESTAMP}}`, `{{MEMORY_RECORD_PATH}}`
 
-| Placeholder | Source |
-|-------------|--------|
-| `{{DECISION_TITLE}}` | User's problem statement (shortened) |
-| `{{PROBLEM_TITLE}}` | Full problem statement |
-| `{{MODE}}` | full / quick / diverge |
-| `{{HITL_MODE}}` | supervised / autonomous / review |
-| `{{DATE}}` | Analysis date |
-| `{{AGENT_COUNT}}` | Number of agents activated |
-| `{{AGENT_FLOW_NODES}}` | HTML nodes for each agent with status colors |
-| `{{FINDINGS_HTML}}` | Key findings cards from each agent |
-| `{{RISK_ITEMS_HTML}}` | Risk items from Critical-Validator placed on matrix |
-| `{{CONFIDENCE_CLASS}}` | confidence-high / confidence-medium / confidence-low |
-| `{{CONFIDENCE_PCT}}` | Numeric confidence (high=85, medium=60, low=35) |
-| `{{CONFIDENCE_LEVEL}}` | HIGH / MEDIUM / LOW |
-| `{{CONFLICTS_HTML}}` | Conflict cards with resolution details |
-| `{{DECISION_TEXT}}` | The final decision from synthesis |
-| `{{ACTION_PLAN_HTML}}` | Action items with owners and timelines |
-| `{{HITL_LOG_HTML}}` | Timeline of human interventions |
-| `{{CHECKPOINTS}}` | Count of checkpoints presented |
-| `{{GATES}}` | Count of mandatory gates triggered |
-| `{{CORRECTIONS}}` | Count of human corrections |
-| `{{TIMESTAMP}}` | Generation timestamp |
+## Generation rules
 
-### Agent Node Colors
+1. **Self-contained** — no external scripts, no external CSS, no external images. All inline.
+2. **Accessible** — every SVG has `aria-label`, every icon has alt text
+3. **Print-friendly** — `@media print` rules are already in the template; do not add page-breaks-in-section
+4. **Language** — if the user's analysis is in Italian, localize section headers (Agent Findings → "Analisi per Agente", etc.)
+5. **Data density** — the dashboard is a single-file reference; err on the side of showing more data rather than less
+6. **Fallback for missing sections** — if an agent didn't run, don't render its section at all (use the `{{#HAS_X}}...{{/HAS_X}}` gates)
 
-When generating flow nodes, use these colors:
-- Analytical (White): `var(--white-agent)` / `#94a3b8`
-- Emotional-Intuitive (Red): `var(--red)` / `#ef4444`
-- Critical-Validator (Black): `var(--black)` / `#1e293b`
-- Optimizer (Yellow): `var(--yellow)` / `#eab308`
-- Creative-Generative (Green): `var(--green)` / `#22c55e`
-- Ethical-Governance (Purple): `var(--purple)` / `#a855f7`
-- Predictive-Strategic (Indigo): `var(--indigo)` / `#6366f1`
-- Systemic: `var(--teal)` / `#14b8a6`
-- Foresight: `var(--teal)` / `#14b8a6`
-- Meta-Orchestrator (Blue): `var(--blue)` / `#3b82f6`
+## Pattern-mode dashboard variant
+
+When called via `/aits-board for pattern [pattern_id]`, generate a different dashboard that aggregates across decisions:
+
+- Header: pattern archetype name, count of matching decisions, retrospective coverage %
+- Prediction accuracy grid: agent × (predicted / actual) — was Critical's risk assessment too pessimistic? Was Optimizer's value case calibrated?
+- Recurring themes: which failure modes repeat, which success factors recur
+- Drift over time: are recent instances of this pattern diverging from older ones?
+
+This view is the LEARN function made visual.

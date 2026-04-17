@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/_envelope.schema.json",
+  "title": "AITS Agent Output Envelope",
+  "description": "Common envelope that every AITS 2.0 agent output must include. Agent-specific content goes in main_output.",
+  "type": "object",
+  "required": [
+    "agent",
+    "version",
+    "timestamp",
+    "confidence",
+    "summary",
+    "main_output"
+  ],
+  "properties": {
+    "agent": {
+      "type": "string",
+      "enum": [
+        "meta-orchestrator",
+        "analytical",
+        "emotional-intuitive",
+        "critical-validator",
+        "optimizer",
+        "creative-generative",
+        "ethical-governance",
+        "predictive-strategic",
+        "systemic",
+        "foresight",
+        "memory"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "const": "2.0"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["level", "reasoning"],
+      "properties": {
+        "level": { "enum": ["high", "medium", "low"] },
+        "reasoning": { "type": "string" },
+        "upstream_dependency": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-paragraph narrative summary of what this agent concluded."
+    },
+    "pattern_match": {
+      "type": ["object", "null"],
+      "properties": {
+        "matched": { "type": "boolean" },
+        "pattern_id": { "type": "string" },
+        "source": { "enum": ["pattern-library", "memory", "both", "none"] },
+        "match_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reference": { "type": "string" },
+        "lessons_applied": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "main_output": {
+      "type": "object",
+      "description": "Agent-specific payload. See the per-agent schema for the full shape."
+    },
+    "handoff_packets": {
+      "type": "object",
+      "description": "Keyed by target agent name; value is the subset of this agent's output the target consumes.",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "hitl_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["trigger", "severity", "description"],
+        "properties": {
+          "trigger": { "type": "string" },
+          "severity": { "enum": ["blocking", "advisory"] },
+          "description": { "type": "string" },
+          "recommended_action": { "type": "string" }
+        }
+      }
+    },
+    "gaps_or_assumptions": {
+      "type": "object",
+      "properties": {
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "impact_if_unfilled": { "enum": ["low", "medium", "high"] },
+              "how_to_fill": { "type": "string" }
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "statement": { "type": "string" },
+              "testable": { "type": "boolean" },
+              "risk_if_wrong": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "quality_self_check": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": { "type": "string" },
+              "self_score": { "enum": ["high", "medium", "low"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "known_limitations": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

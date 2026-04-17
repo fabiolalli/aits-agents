@@ -1,92 +1,119 @@
-# AITS Playbook: Risk Assessment
+# Playbook: Risk Assessment
 
-A pre-configured AITS analysis optimized for comprehensive risk identification, evaluation, and mitigation planning.
+Comprehensive risk identification and mitigation design. Deployed when the user's primary question is "what could go wrong and how do we prepare?"
 
-## When to Use
+## When this playbook fires
 
-- Pre-launch risk assessment for major initiatives
-- Annual strategic risk review
-- Regulatory compliance risk evaluation
-- Technology or vendor risk assessment
-- Crisis preparedness planning
-- Investment portfolio risk analysis
+- Problem statement contains: "risk assessment", "what are the risks", "risk map", "what could go wrong"
+- Decision already made and the question is now about risk mitigation
+- Periodic organizational risk review
+- Scenario planning with risk focus
 
-## Pre-configured Sequence
+## Sequence
+
+**⚪ Analytical → ⚫ Critical-Validator → 🌐 Systemic → 🟣 Ethical-Governance → 🔵 Predictive-Strategic → 🟡 Optimizer → 🎯 Synthesis**
+
+Why this order: facts first; deep risk map; systemic cascade analysis; ethical/reputational/legal risks; scenarios for risk evolution; optimization of mitigations; synthesis as risk register.
+
+## Focus areas per agent
+
+### ⚪ Analytical
+- Historical risk data: what's materialized before, with what frequency
+- Current risk landscape baseline
+- Regulatory/compliance current state
+- Dependencies and their health
+- Known threat actors (if security is a dimension)
+- Incident history and near-miss data
+
+### ⚫ Critical-Validator
+- Comprehensive premortem across all 6 risk categories (strategic, operational, financial, reputational, legal_regulatory, technical)
+- Each premortem with probability, impact, severity score
+- Failure-mode enumeration — not just top-3, aim for 15-25 material risks
+- Fallacy detection in current risk management assumptions ("it hasn't happened in 10 years so it won't happen")
+- Tail-risk focus: the 1-in-100 events that are existential
+- Dependency risk chains
+
+### 🌐 Systemic
+- Cascade paths between risks (which risks trigger other risks?)
+- Risk correlation mapping (which risks are actually the same underlying risk?)
+- Systemic vulnerabilities: single points of failure across the system
+- Feedback loops that amplify risk (e.g., panic cycles, trust collapses)
+- Leverage points for risk reduction
+
+### 🟣 Ethical-Governance
+- Reputational risks with ethical dimension
+- Compliance and regulatory risk with specific exposures
+- Risks to vulnerable populations
+- Risks that, if materialized, would be indefensible publicly
+- Governance gaps that would be revealed in a crisis
+
+### 🔵 Predictive-Strategic
+- How does the risk landscape evolve in 1y, 3y, 5y?
+- Which risks are growing? Which are decaying?
+- Scenarios where multiple risks materialize together
+- Correlated-risk stress test
+- Early warning signal panel for each material risk
+
+### 🟡 Optimizer
+- Mitigation optimization: which mitigations have highest ROI?
+- Mitigation sequencing: what to do first, what can wait
+- Insurance vs prevention trade-offs
+- Guardrail economics: how much do guardrails cost vs. the expected loss they prevent?
+- Quick mitigations that reduce risk posture fast
+
+### 🎯 Synthesis
+- Structured **Risk Register**
+- Top risks with mitigation owners and deadlines
+- Residual risk posture after mitigations
+- Monitoring and review schedule
+
+## Output format: Risk Register (mandatory)
 
 ```
-White (data & context) → Black (risk identification) → Systemic (risk interdependencies) → Ethical (ethical & reputational risks) → Predictive (scenario modeling) → Yellow (mitigation optimization) → Blue (synthesis)
+| ID  | Risk | Category | Driver | P | I | Severity | Mitigation | Cost | Owner | Residual | Review |
+|-----|------|----------|--------|---|---|----------|------------|------|-------|----------|--------|
 ```
 
-**HITL Mode**: Supervised — risk assessment requires human validation at each stage.
+Plus:
 
-## Agent Focus Areas
+- **Top 10 by severity** — highlighted section
+- **Correlated risk clusters** — grouped presentation
+- **Tail risk scenarios** — the 2-3 scenarios where multiple risks fire simultaneously
+- **Early warning panel** — specific indicators to monitor
+- **Review cadence** — when this register is revisited
 
-| Agent | Specific Focus for Risk Assessment |
-|-------|----------------------------------|
-| **Analytical (White)** | Historical risk data. Industry benchmarks. Current controls and their effectiveness. Data gaps in risk monitoring. |
-| **Critical-Validator (Black)** | Comprehensive risk identification across categories: strategic, operational, financial, technological, regulatory, reputational. Probability × Impact matrix. Premortem: what does failure look like? |
-| **Systemic (Extended)** | Risk interdependencies: which risks trigger other risks? Cascading failure paths. Single points of failure. Feedback loops that amplify risk. |
-| **Ethical-Governance (Purple)** | Ethical risks often invisible in standard frameworks: bias, privacy, fairness, community impact, environmental. Reputational risk from public perception. |
-| **Predictive-Strategic (Indigo)** | Scenario modeling: what does the risk landscape look like in 6/12/24 months? Black swan identification. Stress testing under extreme conditions. |
-| **Optimizer (Yellow)** | Mitigation priority: which mitigations give the best risk-reduction per effort? Quick wins. Residual risk acceptance criteria. Insurance vs. mitigation vs. avoidance. |
+## Cognitive bias checklist (passed to Critical)
 
-## Key Questions to Address
+- **Availability heuristic** — recent vivid risks are over-weighted; dormant risks are under-weighted
+- **Normalcy bias** — "it's been fine so it'll stay fine"
+- **Base rate neglect** — forgetting the probability distribution when the specific case feels unique
+- **Ostrich effect** — avoiding information about risks we don't want to manage
+- **Overconfidence in mitigations** — believing mitigations work better than evidence supports
+- **Risk compensation** — adding safety measures that are offset by risk-increasing behavior
+- **Cognitive dissonance on inherited risks** — resistance to accepting risks we didn't create
 
-1. **What keeps us up at night?** (Gut-check risk inventory)
-2. **What risks are we not seeing?** (Blind spot identification)
-3. **What happens if three things go wrong simultaneously?** (Correlation risk)
-4. **Which risks are existential vs. manageable?** (Risk tiering)
-5. **Are our current controls working?** (Control effectiveness)
-6. **What is our risk appetite?** (Tolerance thresholds)
+## Pattern library hooks
 
-## Risk Categories to Cover
+- `legacy-system-replacement` → technical risk category gets elevated attention
+- `restructuring-survivor-syndrome` → operational + reputational risk specific patterns
+- Any industry-specific archetypes → load their risk signatures
 
-- **Strategic**: Market shifts, competitive threats, business model disruption
-- **Operational**: Process failures, supply chain, key person dependencies
-- **Financial**: Liquidity, currency, credit, market volatility
-- **Technological**: Security, infrastructure, technical debt, vendor lock-in
-- **Regulatory**: Compliance, legal, licensing, data protection
-- **Reputational**: Public perception, social media, stakeholder trust
-- **Environmental**: Climate, sustainability, ESG compliance
-- **Human**: Talent retention, culture, organizational resilience
+## HITL gates specific to risk assessment
 
-## Known Cognitive Biases for This Decision Type
+Additional mandatory gates:
 
-- **Normalcy bias**: "It won't happen to us"
-- **Availability heuristic**: Overweighting recent or dramatic risks
-- **Neglect of probability**: Focusing on impact and ignoring likelihood
-- **Groupthink**: Everyone agrees the risks are low (without dissent)
-- **Black swan blindness**: Dismissing low-probability, high-impact events
+- Any risk with severity ≥ 15 and no viable mitigation → blocking gate
+- Correlated risk cluster with combined severity ≥ 20 → blocking gate
+- Ethical red line implied in a current operational practice → blocking gate
+- Discovered existential tail risk previously unknown → blocking gate
 
-## Expected Output
+## Specialization parameters
 
-```json
-{
-  "risk_landscape": "Narrative overview of the risk environment",
-  "risk_register": [
-    {
-      "risk": "Description",
-      "category": "strategic | operational | financial | technological | regulatory | reputational",
-      "probability": "low | medium | high | critical",
-      "impact": "low | medium | high | critical",
-      "risk_score": "P × I (1-25)",
-      "current_controls": "Existing mitigations",
-      "control_effectiveness": "effective | partial | ineffective",
-      "recommended_mitigation": "New or improved controls",
-      "owner": "Who is responsible",
-      "timeline": "Implementation deadline"
-    }
-  ],
-  "risk_interdependencies": ["Risk A triggers Risk B because..."],
-  "top_5_risks": ["Ranked by risk score"],
-  "existential_risks": ["Risks that threaten organizational survival"],
-  "blind_spots": ["Risks identified that were previously unmonitored"],
-  "mitigation_priorities": ["Ranked by risk-reduction per effort"],
-  "residual_risk_acceptance": "What risk we consciously accept and why",
-  "monitoring_plan": {"metrics": [], "frequency": "", "escalation_triggers": []}
-}
-```
+If the risk assessment is specifically for:
 
-## Instructions
+- **Cybersecurity** — add technical subcategories (application security, infrastructure, identity, data), emphasize Critical and Systemic
+- **Financial** — add financial subcategories (liquidity, credit, market, operational), emphasize Analytical and Predictive
+- **Operational resilience** — emphasize Systemic and Predictive, add explicit dependency chains
+- **Regulatory** — emphasize Ethical-Governance with specific regime mapping
 
-Use the sub-agent `aits-meta-orchestrator` with this playbook context. Load the agent sequence including `aits-systemic` for risk interdependency mapping. The Critical-Validator is the primary agent in this playbook — give it extended focus. The Systemic agent must map cascading failure paths. The final synthesis must include a prioritized risk register with clear ownership and timelines, plus a monitoring plan with escalation triggers.
+The base playbook is the general risk assessment; specializations add emphasis without changing the sequence.

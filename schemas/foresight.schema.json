@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/foresight.schema.json",
+  "title": "Foresight Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "foresight" },
+    "main_output": {
+      "type": "object",
+      "required": ["options_inventory", "scenarios_inventory", "options_scenarios_matrix", "robustness_ranking"],
+      "properties": {
+        "options_inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "option_id": { "type": "string" },
+              "name": { "type": "string" },
+              "source_agent": { "type": "string" }
+            }
+          }
+        },
+        "scenarios_inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scenario_id": { "type": "string" },
+              "frame": { "type": "string" },
+              "probability": { "type": "number", "minimum": 0, "maximum": 1 },
+              "source_agent": { "type": "string" }
+            }
+          }
+        },
+        "options_scenarios_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["option_id", "scenario_id", "performance_rating"],
+            "properties": {
+              "option_id": { "type": "string" },
+              "scenario_id": { "type": "string" },
+              "outcome_qualitative": { "type": "string" },
+              "outcome_quantitative": { "type": "object" },
+              "performance_rating": { "enum": ["excellent", "good", "acceptable", "poor", "failure"] },
+              "confidence": { "enum": ["high", "medium", "low"] },
+              "critical_assumptions": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "robustness_ranking": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["option_id", "robustness_level"],
+            "properties": {
+              "option_id": { "type": "string" },
+              "robustness_level": { "enum": ["fragile", "sensitive", "robust", "antifragile"] },
+              "scenarios_where_excellent": { "type": "array", "items": { "type": "string" } },
+              "scenarios_where_acceptable": { "type": "array", "items": { "type": "string" } },
+              "scenarios_where_poor_or_failure": { "type": "array", "items": { "type": "string" } },
+              "worst_case_outcome": { "type": "string" },
+              "best_case_outcome": { "type": "string" },
+              "expected_value_probability_weighted": { "type": "number" },
+              "robustness_score": { "type": "number" },
+              "antifragility_evidence": { "type": "string" }
+            }
+          }
+        },
+        "dominance_analysis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dominated_option": { "type": "string" },
+              "dominator_option": { "type": "string" },
+              "basis": { "type": "string" },
+              "recommendation": { "type": "string" }
+            }
+          }
+        },
+        "option_combinations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "combination_id": { "type": "string" },
+              "options_combined": { "type": "array", "items": { "type": "string" } },
+              "combination_type": { "enum": ["sequential", "parallel", "conditional"] },
+              "combined_outcome": { "type": "string" },
+              "combined_robustness": { "type": "string" }
+            }
+          }
+        },
+        "staged_commitment_paths": { "type": "array" },
+        "early_warning_panel": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "signal": { "type": "string" },
+              "indicates_scenario": { "type": "string" },
+              "favors_options": { "type": "array", "items": { "type": "string" } },
+              "disfavors_options": { "type": "array", "items": { "type": "string" } },
+              "data_source": { "type": "string" },
+              "frequency": { "enum": ["daily", "weekly", "monthly", "quarterly"] }
+            }
+          }
+        },
+        "strategic_recommendation": {
+          "type": "object",
+          "properties": {
+            "recommended_option": { "type": "string" },
+            "reasoning_type": { "enum": ["highest_robustness", "best_ev_if_baseline_scenario", "antifragile_choice", "staged_commitment"] },
+            "trade_offs_accepted": { "type": "string" },
+            "review_schedule": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

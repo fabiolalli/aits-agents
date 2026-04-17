@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/ethical-governance.schema.json",
+  "title": "Ethical-Governance Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "ethical-governance" },
+    "main_output": {
+      "type": "object",
+      "required": ["dimensional_assessment", "overall_ethical_posture"],
+      "properties": {
+        "dimensional_assessment": {
+          "type": "object",
+          "required": ["fairness", "autonomy", "transparency", "accountability", "non_maleficence", "beneficence", "dignity"],
+          "properties": {
+            "fairness": { "$ref": "#/$defs/dimension" },
+            "autonomy": { "$ref": "#/$defs/dimension" },
+            "transparency": { "$ref": "#/$defs/dimension" },
+            "accountability": { "$ref": "#/$defs/dimension" },
+            "non_maleficence": { "$ref": "#/$defs/dimension" },
+            "beneficence": { "$ref": "#/$defs/dimension" },
+            "dignity": { "$ref": "#/$defs/dimension" }
+          }
+        },
+        "red_lines_detected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["red_line", "dimension", "evidence"],
+            "properties": {
+              "id": { "type": "string" },
+              "red_line": { "type": "string" },
+              "dimension": { "type": "string" },
+              "severity": { "enum": ["absolute", "contextual"] },
+              "evidence": { "type": "string" },
+              "remedy_options": { "type": "array", "items": { "type": "string" } },
+              "mandatory_gate_triggered": { "type": "boolean" }
+            }
+          }
+        },
+        "distributional_analysis": {
+          "type": "object",
+          "properties": {
+            "benefits_concentrated_in": { "type": "array", "items": { "type": "string" } },
+            "costs_distributed_among": { "type": "array", "items": { "type": "string" } },
+            "consent_of_cost_bearers": { "enum": ["full", "partial", "absent", "coerced"] },
+            "voice_of_cost_bearers": { "enum": ["adequate", "limited", "absent"] },
+            "asymmetry_severity": { "enum": ["none", "mild", "strong", "structural"] }
+          }
+        },
+        "compliance_exposure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "regime": { "type": "string" },
+              "exposure": { "type": "string" },
+              "likelihood_of_enforcement": { "enum": ["high", "medium", "low"] },
+              "penalty_range": { "type": "string" },
+              "mitigation": { "type": "string" }
+            }
+          }
+        },
+        "normative_drift_risk": {
+          "type": "object",
+          "properties": {
+            "present_acceptability": { "enum": ["high", "medium", "low"] },
+            "10yr_acceptability_forecast": { "enum": ["high", "medium", "low"] },
+            "drift_vector": { "type": "string" }
+          }
+        },
+        "arbitration_output": {
+          "type": "object",
+          "properties": {
+            "is_arbitrating": { "type": "boolean" },
+            "conflict_id": { "type": "string" },
+            "parties": { "type": "array", "items": { "type": "string" } },
+            "decision": { "type": "string" },
+            "reasoning": { "type": "string" },
+            "matrix_rule_cited": { "type": "string" }
+          }
+        },
+        "recommended_conditions_for_proceeding": { "type": "array", "items": { "type": "string" } },
+        "overall_ethical_posture": { "enum": ["clear", "cautionary", "red_line"] }
+      }
+    }
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "required": ["status", "reasoning"],
+      "properties": {
+        "status": { "enum": ["clear", "concern", "red_line"] },
+        "reasoning": { "type": "string" },
+        "affected_parties": { "type": "array", "items": { "type": "string" } },
+        "evidence_basis": { "type": "string" }
+      }
+    }
+  }
+}

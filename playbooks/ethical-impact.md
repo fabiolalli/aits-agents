@@ -1,93 +1,139 @@
-# AITS Playbook: Ethical Impact Analysis
+# Playbook: Ethical Impact
 
-A pre-configured AITS analysis optimized for evaluating the ethical, social, and governance implications of a decision — especially for AI deployment, data use, automation, and decisions that impact people.
+Deep analysis of decisions with material ethical, social, or governance implications. Purple leads; other agents support.
 
-## When to Use
+## When this playbook fires
 
-- AI/automation deployment affecting workers
-- Data collection or use policy decisions
-- Decisions with significant social impact
-- DEI (Diversity, Equity, Inclusion) assessments
-- ESG (Environmental, Social, Governance) evaluations
-- Decisions involving vulnerable populations
-- Regulatory compliance with ethical dimensions (GDPR, AI Act, etc.)
+- Problem statement contains: "ethical", "impact on people", "social impact", "AI ethics", "fairness"
+- Decisions affecting vulnerable populations
+- AI/automation decisions that displace human work
+- Privacy-sensitive decisions
+- Decisions with distributional consequences
 
-## Pre-configured Sequence
+## Sequence
+
+**⚪ Analytical → 🟣 Ethical-Governance → 🔴 Emotional-Intuitive → ⚫ Critical-Validator → 🌐 Systemic → 🔵 Predictive-Strategic → 🎯 Synthesis**
+
+Why this order: facts about affected parties; ethical dimensional assessment early (frames everything downstream); emotional mapping of affected parties; stress-test with reputational and legal risk emphasis; systemic cascade to vulnerable populations; scenarios including normative drift; synthesis.
+
+**Optimizer is deliberately later or absent.** Ethical playbooks shouldn't be driven by optimization early — it can be added back in synthesis for feasibility, but value maximization should not frame the assessment.
+
+## Focus areas per agent
+
+### ⚪ Analytical
+- Who are the affected parties? Demographics, size, power, voice.
+- What is the counterfactual? What happens if we do nothing?
+- What does the evidence say about similar interventions elsewhere?
+- What are the regulatory and legal contexts?
+- What consent and information exists?
+
+### 🟣 Ethical-Governance (leads)
+- Full 7-dimension assessment with each dimension reasoned explicitly
+- Distributional analysis: benefits vs costs vs voice
+- Red line check with specific inviolability citations
+- Compliance exposure mapped to specific regulations
+- Normative drift risk: will this age well?
+- Recommended conditions if proceeding
+
+### 🔴 Emotional-Intuitive
+- Affected parties with deep drivers (identity, dignity, autonomy often central here)
+- Those without voice: who bears cost and can't object?
+- Power asymmetry mapping
+- Emotional timeline across affected populations
+- Resistance and trust drivers
+
+### ⚫ Critical-Validator
+- Reputational risk specifically
+- Legal/regulatory risk specifically
+- Failure modes specific to ethical decisions: "the decision was technically defensible but publicly indefensible"
+- What would an investigative journalist see?
+- What would opposing counsel argue?
+- Bias scan: especially **in-group favoritism**, **out-group neglect**, **utilitarian over-simplification**, **moral licensing**
+
+### 🌐 Systemic
+- Cascade to vulnerable populations
+- Feedback loops of trust erosion
+- Precedent effects: what does this decision establish as norm?
+- Interaction with existing inequities: does this decision widen or narrow them?
+
+### 🔵 Predictive-Strategic
+- Normative shift scenarios: what happens if social norms shift against this decision?
+- Regulatory shift scenarios: what regulations are likely in 3-5 years?
+- Technology shift scenarios: how does the decision age as technology changes?
+- Early warning signals of norm shifts
+
+### 🎯 Synthesis
+- Ethical posture: CLEAR / CAUTIONARY / RED-LINE-ADDRESSED / DO-NOT-PROCEED
+- If CAUTIONARY: specific conditions for proceeding
+- Stakeholder communication plan
+- Remedy mechanisms: how affected parties can seek redress
+- Monitoring framework: ongoing ethical assessment
+- Review cadence
+
+## Cognitive bias checklist (passed to Critical)
+
+- **In-group favoritism** — are we weighing in-group interests more heavily?
+- **Out-group neglect** — are out-group impacts under-weighted?
+- **Utilitarian over-simplification** — "the math says net good" ignoring dignity and autonomy dimensions
+- **Moral licensing** — "we've done other good things so this questionable thing is fine"
+- **Just-world bias** — "affected parties deserve this outcome because of their prior choices"
+- **Abstract distance** — ethical concerns feel lower-priority when the affected parties are abstract to decision-makers
+- **Motivated reasoning** — starting from the desired conclusion and building the ethical case backward
+
+## Output format specifics
 
 ```
-White (factual impact data) → Ethical (primary analysis) → Red (stakeholder emotions) → Black (risk & failure modes) → Systemic (second-order effects) → Predictive (long-term consequences) → Blue (synthesis with red lines)
+ETHICAL POSTURE: [clear | cautionary | red-line-addressed | do-not-proceed]
+
+7-DIMENSION ASSESSMENT
+  Fairness:         [status] — [reasoning]
+  Autonomy:         ...
+  Transparency:     ...
+  Accountability:   ...
+  Non-maleficence:  ...
+  Beneficence:      ...
+  Dignity:          ...
+
+DISTRIBUTIONAL ANALYSIS
+  Benefits concentrated in: [group, with power level]
+  Costs borne by:           [group, with voice level]
+  Asymmetry severity:       [none | mild | strong | structural]
+
+RED LINES: [none detected | specific violations with remedies]
+
+REQUIRED CONDITIONS FOR PROCEEDING
+  1. [specific, verifiable]
+  2. ...
+
+REMEDY MECHANISMS FOR AFFECTED PARTIES
+  [how harm can be surfaced and addressed]
+
+NORMATIVE DRIFT OUTLOOK
+  Today:  [acceptability]
+  10-yr:  [acceptability forecast]
+  Drift vector: [which norms shifting]
+
+MONITORING FRAMEWORK
+  [what to track, at what frequency, with what trigger for reassessment]
 ```
 
-**HITL Mode**: Supervised — ethical decisions always require human judgment at every step.
+## Pattern library hooks
 
-## Agent Focus Areas
+- `restructuring-survivor-syndrome` → automatic escalation to this playbook
+- `ai-adoption-competence-fear` → automatic escalation
+- `founder-exit-identity-loss` → automatic escalation if deal terms include employee equity acceleration issues
 
-| Agent | Specific Focus for Ethical Impact |
-|-------|--------------------------------|
-| **Analytical (White)** | Who is affected? How many people? What is the baseline before the change? What data do we have on similar decisions' outcomes? Legal/regulatory requirements. |
-| **Ethical-Governance (Purple)** | PRIMARY AGENT. Fairness assessment across affected groups. Red lines that cannot be crossed. Accountability chain: who is responsible if things go wrong? Compliance mapping. |
-| **Emotional-Intuitive (Red)** | How do the affected people feel? Trust dynamics. Fear and anxiety mapping. Perception vs. reality gap. Cultural sensitivity. |
-| **Critical-Validator (Black)** | What could go wrong ethically? Unintended consequences. Bias amplification risks. Worst-case scenarios for the most vulnerable affected groups. |
-| **Systemic (Extended)** | Second-order effects: if we automate X, what happens to Y? Feedback loops between ethical choices and business outcomes. Community ecosystem effects. |
-| **Predictive-Strategic (Indigo)** | Long-term ethical trajectory: is this the first step on a slippery slope? How does this precedent affect future decisions? Reputational evolution over 1/3/5 years. |
+## HITL gates specific to ethical impact
 
-## Key Questions to Address
+Every red-line detection triggers a mandatory blocking gate. That's the whole point of this playbook.
 
-1. **Who benefits and who bears the cost?** (Distribution of impact)
-2. **Would we be comfortable if this decision were public?** (Transparency test)
-3. **What would the most affected person say?** (Empathy test)
-4. **Is this legal, ethical, AND right?** (Triple filter — legality is necessary but not sufficient)
-5. **What precedent does this set?** (Precedent analysis)
-6. **What are the irreversible consequences?** (Reversibility assessment)
-7. **Are we treating people as means or ends?** (Kantian test)
+Advisory gates:
 
-## Ethical Frameworks to Apply
+- Any dimension rated "concern" in the 7-dimension assessment
+- Strong power asymmetry (power_differential >= "strong_asymmetry")
+- Normative drift forecast showing current acceptability but future unacceptability
+- Affected parties without voice in the decision
 
-- **Utilitarianism**: Greatest good for the greatest number — but check who is sacrificed
-- **Deontology**: Are there duties or rules being violated regardless of outcome?
-- **Virtue ethics**: What would a person of good character do?
-- **Justice/Fairness**: Is the burden distributed equitably?
-- **Care ethics**: Are we protecting the most vulnerable?
-- **Transparency**: Would we make this decision in full public view?
+## The ethical-impact playbook's prime directive
 
-## Known Cognitive Biases for This Decision Type
-
-- **Moral licensing**: "We did good things before, so this is fine"
-- **Diffusion of responsibility**: "Everyone does it" or "It's not my call"
-- **Outcome bias**: Judging ethics by results rather than the decision process
-- **Empathy gap**: Failing to imagine the experience of those affected
-- **Slippery slope dismissal**: "This is just a small step, it won't escalate"
-
-## Expected Output
-
-```json
-{
-  "ethical_assessment": "ACCEPTABLE | CONCERNING | UNACCEPTABLE",
-  "affected_populations": [
-    {"group": "", "impact": "positive | negative | mixed", "severity": "1-10", "reversibility": "high | low"}
-  ],
-  "red_lines": ["Inviolable ethical limits identified"],
-  "fairness_analysis": {
-    "benefits_distribution": "Who gains what",
-    "costs_distribution": "Who loses what",
-    "equity_score": "1-10"
-  },
-  "ethical_frameworks_applied": [
-    {"framework": "", "verdict": "", "reasoning": ""}
-  ],
-  "second_order_effects": ["Unintended consequences identified"],
-  "precedent_analysis": "What future decisions this enables or constrains",
-  "accountability_chain": {"decision_maker": "", "implementer": "", "oversight": "", "recourse_for_affected": ""},
-  "recommendations": {
-    "proceed_as_is": "Yes/No with conditions",
-    "modifications_required": ["Changes needed to make the decision ethical"],
-    "monitoring": ["Ongoing ethical metrics to track"],
-    "communication_plan": "How to transparently communicate the decision"
-  },
-  "long_term_trajectory": "Where this path leads in 1/3/5 years"
-}
-```
-
-## Instructions
-
-Use the sub-agent `aits-meta-orchestrator` with this playbook context. The **Ethical-Governance (Purple)** is the PRIMARY agent — allocate it the most focus and context. Set HITL mode to SUPERVISED with mandatory checkpoints after every agent. If the Ethical agent flags ANY red line, this triggers a mandatory gate even in autonomous mode. Include `aits-systemic` for second-order effects mapping. The final synthesis MUST include explicit red lines, an accountability chain, and modifications required before the decision can proceed ethically.
+A decision that is technically compliant, economically optimal, and strategically sound can still be ethically wrong. This playbook exists to surface that possibility. The playbook's bias is toward raising concerns and letting the human confirm that proceeding is justified — not toward finding reasons the decision is fine.

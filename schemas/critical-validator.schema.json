@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/critical-validator.schema.json",
+  "title": "Critical-Validator Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "critical-validator" },
+    "main_output": {
+      "type": "object",
+      "required": ["risk_map", "overall_risk_level", "recommendation"],
+      "properties": {
+        "premortems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["failure_scenario", "root_cause", "severity"],
+            "properties": {
+              "id": { "type": "string" },
+              "subject": { "type": "string" },
+              "failure_scenario": { "type": "string" },
+              "root_cause": { "type": "string" },
+              "contributing_causes": { "type": "array", "items": { "type": "string" } },
+              "probability": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 25 },
+              "category": { "enum": ["strategic", "operational", "financial", "reputational", "legal_regulatory", "technical"] },
+              "driver": { "type": "string" },
+              "warning_signs": { "type": "array", "items": { "type": "string" } },
+              "prevention": { "type": "string" },
+              "early_detection": { "type": "string" },
+              "confidence": { "enum": ["high", "medium", "low"] }
+            }
+          }
+        },
+        "risk_map": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["risk", "category", "probability", "impact", "severity", "severity_level"],
+            "properties": {
+              "id": { "type": "string" },
+              "risk": { "type": "string" },
+              "category": { "enum": ["strategic", "operational", "financial", "reputational", "legal_regulatory", "technical"] },
+              "driver": { "type": "string" },
+              "probability": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 25 },
+              "severity_level": { "enum": ["low", "medium", "high", "critical"] },
+              "mitigation": { "type": "string" },
+              "mitigation_cost": { "type": "string" },
+              "contingency_plan": { "type": "string" },
+              "residual_severity_after_mitigation": { "type": "integer" },
+              "source": { "type": "string" },
+              "confidence": { "enum": ["high", "medium", "low"] }
+            }
+          }
+        },
+        "fallacies_detected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["fallacy_name", "where_found"],
+            "properties": {
+              "id": { "type": "string" },
+              "fallacy_name": { "type": "string" },
+              "where_found": { "type": "string" },
+              "why_dangerous": { "type": "string" },
+              "correction": { "type": "string" },
+              "source_agent": { "type": "string" }
+            }
+          }
+        },
+        "guardrails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "guardrail": { "type": "string" },
+              "type": { "enum": ["procedural", "financial", "temporal", "ethical", "legal", "technical"] },
+              "trigger": { "type": "string" },
+              "action": { "type": "string" },
+              "owner": { "type": "string" }
+            }
+          }
+        },
+        "unmitigated_residual_risks": { "type": "array", "items": { "type": "string" } },
+        "overall_risk_level": { "enum": ["low", "medium", "high", "critical"] },
+        "overall_risk_reasoning": { "type": "string" },
+        "recommendation": { "enum": ["proceed", "proceed_with_guardrails", "pause_and_reconsider", "redesign", "do_not_proceed"] }
+      }
+    }
+  }
+}

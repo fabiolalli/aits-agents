@@ -1,102 +1,150 @@
-# AITS Playbook: Competitive Response
+# Playbook: Competitive Response
 
-A pre-configured AITS analysis optimized for responding to a competitive threat, market disruption, or strategic move by a competitor.
+Rapid response to a competitive move — launch, pricing change, acquisition, regulatory filing, or market entry by a competitor. Time-sensitive by nature; runs in autonomous mode with aggressive auto-escalation.
 
-## When to Use
+## When this playbook fires
 
-- Competitor launches a disruptive product
-- New entrant threatens market position
-- Price war initiated by competitor
-- Competitor acquires a key player in the ecosystem
-- Market shift that changes competitive dynamics
-- Loss of a major customer to a competitor
+- Problem statement contains: "competitor launched", "disruption", "competitive threat", "market share loss", "competitor move"
+- Time horizon is days to weeks
+- Reaction is expected and the question is what form it should take
 
-## Pre-configured Sequence
+## Sequence
+
+**⚪ Analytical → 🔴 Emotional-Intuitive → 🟢 Creative-Generative → ⚫ Critical-Validator → 🟡 Optimizer → 🔵 Predictive-Strategic → 🔭 Foresight → 🎯 Synthesis**
+
+Why this order: rapid fact-gathering; customer and internal emotional state (do we need to reassure or mobilize?); options including non-obvious responses; stress-test each response; value case; scenarios for how competitor and market react to our response; robustness; synthesis.
+
+This playbook defaults to **autonomous mode** given time pressure, with aggressive auto-escalation on high-severity flags.
+
+## Focus areas per agent
+
+### ⚪ Analytical
+- What did the competitor actually do? (Not what we heard, what they demonstrably did.)
+- Their capability and commitment — is this a real pivot or a PR move?
+- Customer response so far (if observable)
+- Our current position on relevant dimensions
+- Time pressure: what's the window for response to matter?
+
+### 🔴 Emotional-Intuitive
+- Customer emotional response: panic, indifference, curiosity, defection-risk?
+- Our sales team: shaken? energized? needing talking points urgently?
+- Investor sentiment: calls expected?
+- Internal cohorts: leadership direction vs. working-level sentiment
+- Media narrative momentum
+
+### 🟢 Creative-Generative
+- Direct response options (match them on their move)
+- Orthogonal response options (change the dimension of competition)
+- Meta-response options (treat their move as an opportunity to reframe the market)
+- No-response option (explicitly evaluated, not defaulted to)
+- Cross-domain analogies from other industries' competitive responses
+- The response options should span at least 3 novelty levels
+
+### ⚫ Critical-Validator
+- For each response option, premortem: "We responded with X and it made things worse. Why?"
+- Competitive-response-specific failure modes:
+  - Reactive copying that validated their framing
+  - Over-response that signaled panic
+  - Under-response that confirmed their narrative
+  - Response that burned bridges (with partners, customers, regulators)
+  - Response that triggered escalation cycle
+  - Response that was copy-able and gave them a second move
+- Fallacy scan: **sunk cost in existing strategy**, **deal fever on acquisition responses**, **anchoring on their framing**
+
+### 🟡 Optimizer
+- Value case for each response option
+- Opportunity cost of response vs. business-as-usual investment
+- Quick wins within the response
+- Long-term value preservation/creation per option
+
+### 🔵 Predictive-Strategic
+- Scenario: competitor succeeds
+- Scenario: competitor stumbles
+- Scenario: market follows competitor
+- Scenario: regulatory shift triggered by the move
+- Scenario: our response triggers further escalation
+- Response-option performance across scenarios
+
+### 🔭 Foresight
+- Response options × competitor counter-moves matrix
+- Which responses are robust across competitor counter-moves?
+- Antifragile response options — those that strengthen us regardless of competitor's next move
+- Staged responses — first move that preserves optionality for second move
+
+### 🎯 Synthesis
+- Recommended response with timing
+- Key messages by audience (customers, team, market, investors, press)
+- Resource commitment for the response
+- Triggers for escalation or de-escalation
+- Review cadence (likely tight — weekly or faster)
+
+## Cognitive bias checklist (passed to Critical)
+
+- **Reactance** — are we responding to the frame the competitor set rather than our own strategic logic?
+- **Recency effect** — are we weighing this single competitive move out of proportion to our multi-year strategy?
+- **Zero-sum framing** — is our response treating this as zero-sum when it might be positive-sum?
+- **Us-vs-them** — are we being driven by the social identity dynamic rather than the strategic logic?
+- **Planning fallacy** — under time pressure, are we setting response timelines that won't hold?
+- **Escalation trap** — are we matching their move in a way that invites the next move?
+- **Herding** — are we responding because the market expects a response, not because responding is right?
+
+## Output format specifics
 
 ```
-White (competitive intelligence) → Red (market perception) → Green (response options) → Black (risk of each response) → Yellow (value optimization) → Predictive (competitive dynamics) → Foresight (response options matrix) → Blue (synthesis)
+COMPETITIVE CONTEXT
+  Competitor: [name]
+  Their move: [factual summary]
+  Time since move: [X days]
+  Our response window: [weeks]
+
+RECOMMENDED RESPONSE
+  Type: [match | orthogonal | meta | no-response]
+  Core action: [specific]
+  Timing: [by X date]
+  Resource commitment: [people, capital, attention]
+
+KEY MESSAGES
+  To customers: [message]
+  To team: [message]
+  To market/press: [message]
+  To investors: [message]
+
+TRIGGERS
+  Escalate response if: [signal]
+  De-escalate if: [signal]
+  Reassess entirely if: [signal]
+
+RESPONSE CASCADE
+  Week 1: [actions]
+  Week 2-4: [actions]
+  30+ days: [actions]
+
+KEY RISKS ACCEPTED
+  1. [risk + why acceptable]
+  ...
+
+REVIEW CADENCE
+  [frequency and triggers]
 ```
 
-**HITL Mode**: Autonomous (default) — competitive response often requires speed. Mandatory gates still apply.
+## Pattern library hooks
 
-## Agent Focus Areas
+- `pricing-change` → if competitor's move is a pricing change, the pricing-change pattern applies with "them" as the actor
+- `competitive-displacement-threat` → the general pattern for this playbook; always applies
 
-| Agent | Specific Focus for Competitive Response |
-|-------|---------------------------------------|
-| **Analytical (White)** | Competitor analysis: what exactly did they do? Market data: customer sentiment, market share shifts, pricing changes. Our position: strengths, weaknesses, assets we can leverage. |
-| **Emotional-Intuitive (Red)** | How are customers feeling? Fear of switching? Curiosity about the competitor? Loyalty drivers. How is our team feeling? Panic vs. confidence. |
-| **Creative-Generative (Green)** | Generate 5-7 response options ranging from "do nothing" to "aggressive counter-move." Include asymmetric responses (don't fight where they're strong). Cross-industry counter-strategy analogies. |
-| **Critical-Validator (Black)** | For each response option: what could go wrong? Risk of escalation. Risk of distraction from core strategy. "Are we reacting or responding strategically?" |
-| **Optimizer (Yellow)** | For the top 3 responses: expected value, timeline, resource requirements. Which response maximizes our position while minimizing resource expenditure? |
-| **Predictive-Strategic (Indigo)** | Game theory: how will the competitor respond to our response? Second and third-order competitive dynamics. Market evolution over 6/12/24 months. |
-| **Foresight (Extended)** | Response options × competitive scenarios matrix. Which response is most robust across different competitor follow-up moves? |
+## HITL gates specific to competitive response
 
-## Key Questions to Address
+- Any response option with severity ≥ 15 risk → blocking gate
+- "No response" is the recommended option → advisory gate (confirm with HITL — this is a hard call)
+- Time pressure forces skipping an agent → advisory gate (confirm skip)
+- Emotional state of customer base shows panic → advisory gate (communication plan first, tactical response second)
 
-1. **Is this a real threat or noise?** (Threat assessment)
-2. **What is the competitor's true objective?** (Intent analysis)
-3. **Where are we genuinely vulnerable?** (Honest self-assessment)
-4. **What asymmetric advantage do we have?** (Leverage identification)
-5. **What does the customer actually want?** (Customer-centric response)
-6. **Is the best response to NOT respond?** (Strategic patience evaluation)
+## Autonomous mode specifics
 
-## Response Framework
+Given time pressure, this playbook defaults to autonomous with:
 
-### Response Options Spectrum
+- More aggressive auto-escalation (any agent raising `advisory` flag is treated as `blocking`)
+- Shorter checkpoints (one-line summaries not full findings)
+- Faster synthesis (7-section output, not the full 12)
 
-| Type | Description | When to Use |
-|------|-------------|-------------|
-| **Ignore** | Do nothing, stay the course | Threat is minor or competitor is bluffing |
-| **Absorb** | Acknowledge and adapt incrementally | Threat is real but manageable |
-| **Counter** | Direct competitive response | Must defend core market position |
-| **Leapfrog** | Skip the competitor's move, go beyond | Have the capability to jump ahead |
-| **Redirect** | Change the competitive dimension entirely | Can't win on their terms, change the game |
-| **Ally** | Partner with others against the threat | Threat is industry-wide, collective response needed |
-
-## Known Cognitive Biases for This Decision Type
-
-- **Reactive bias**: Feeling compelled to respond immediately to every competitor move
-- **Competitor fixation**: Focusing on the competitor instead of the customer
-- **Loss aversion**: Overweighting what we might lose vs. what we could gain
-- **Escalation trap**: Matching every move, leading to a race to the bottom
-- **Anchoring on past competitive dynamics**: "This is how we always responded"
-
-## Expected Output
-
-```json
-{
-  "threat_assessment": {
-    "severity": "low | medium | high | critical",
-    "urgency": "immediate | weeks | months",
-    "competitor_intent": "What they're really trying to achieve",
-    "our_vulnerability": "Where we're genuinely exposed"
-  },
-  "response_options": [
-    {
-      "type": "ignore | absorb | counter | leapfrog | redirect | ally",
-      "description": "What we would do",
-      "expected_outcome": "What we expect to happen",
-      "resources_required": "Cost and effort",
-      "timeline": "How fast we can execute",
-      "risk": "What could go wrong",
-      "competitor_likely_response": "How they'll react"
-    }
-  ],
-  "recommended_response": {
-    "primary": "The recommended response",
-    "rationale": "Why this response",
-    "execution_plan": {"immediate": [], "week_1_2": [], "month_1_3": []},
-    "success_metrics": ["How we know it's working"],
-    "escalation_triggers": ["When to escalate to a stronger response"]
-  },
-  "competitive_dynamics": {
-    "6_months": "Expected market state",
-    "12_months": "Expected market state",
-    "our_target_position": "Where we want to be"
-  }
-}
-```
-
-## Instructions
-
-Use the sub-agent `aits-meta-orchestrator` with this playbook context. Set HITL mode to AUTONOMOUS for speed — competitive response values timeliness. Activate `aits-foresight` to evaluate response options across competitor scenarios (mandatory if options > 4). The Predictive-Strategic agent must model the competitor's likely counter-response using game theory reasoning. The final synthesis must include a recommended response with an execution timeline and escalation triggers. Emphasize that responding is a choice — "do nothing" is always a valid option if the analysis supports it.
+The human can always switch to supervised if they want depth over speed.

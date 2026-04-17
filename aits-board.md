@@ -1,75 +1,134 @@
-# AITS Board — Decision Dashboard
+---
+name: aits-board
+description: Generate or view the AITS 2.0 decision dashboard. Shows the current state of an ongoing analysis (agents completed, findings, conflicts, open gates) or produces a self-contained HTML dashboard for a completed analysis. The dashboard includes agent flow graph, risk heatmap, confidence meter, conflict timeline, robustness matrix (if Foresight ran), action plan, and HITL log.
+---
 
-Display the current state of an ongoing or completed AITS analysis, with options to intervene.
+# /aits-board — AITS 2.0 Decision Dashboard
 
-## What It Does
+This command either displays the current state of an in-flight analysis or generates a visual HTML dashboard for a completed analysis.
 
-Presents a real-time dashboard of where the AITS analysis stands:
-- Which agents have been activated and their key outputs
-- Which agents are pending in the sequence
-- Any open conflicts or unresolved gates
-- The current partial synthesis (if available)
-- Options to intervene at any point
+## Two modes
 
-## When to Use It
+### In-flight mode
 
-- Mid-analysis: "Where are we? What have we found so far?"
-- After switching away from a long analysis and coming back
-- To get an overview before deciding to drill down
-- To check if any mandatory gates need attention
+If an analysis is currently running:
 
-## Expected Output
+```
+/aits-board
+```
+
+Displays:
+
+- Agents completed (with status indicators)
+- Agents pending
+- Key findings so far
+- Open HITL gates (if any)
+- Current confidence level
+- Current option space (if Creative has run)
+- Current top risks (if Critical has run)
+- Your available actions (continue, intervene, switch mode, abort)
+
+### HTML dashboard mode
+
+For any completed analysis (including past decisions in `.aits/memory/`):
+
+```
+/aits-board for [decision-id or title]
+```
+
+Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with:
+
+- **Header** — decision title, date, confidence level, HITL mode used
+- **Agent flow graph** — visual sequence with links showing handoffs
+- **Key findings by agent** — expandable cards per agent
+- **Risk heatmap** — risk map from Critical visualized as a 5×5 probability × impact grid
+- **Robustness matrix** — if Foresight ran, the full options-scenarios matrix as a color-coded table
+- **Confidence meter** — overall confidence with breakdown by agent
+- **Conflict timeline** — conflicts detected, severity level, arbiter, resolution with matrix citations
+- **Ethical assessment** — Purple's 7-dimension assessment as a radar chart
+- **Action plan** — timestamped actions with owners and dependencies
+- **HITL log** — every checkpoint, gate, and human intervention
+
+## Usage examples
+
+```
+/aits-board
+```
+→ Shows current state of in-flight analysis
+
+```
+/aits-board for 2026-04-17_product-x-launch
+```
+→ Generates HTML dashboard for that past decision
+
+```
+/aits-board for last
+```
+→ Generates HTML dashboard for the most recent completed analysis
+
+```
+/aits-board for pattern product-launch-cold-start
+```
+→ Generates an aggregated dashboard showing all past decisions matching this pattern with their retrospective outcomes
+
+## In-flight state display format
 
 ```
 ═══════════════════════════════════════════════════
-  AITS DECISION BOARD
+  AITS 2.0 BOARD — In-flight analysis
 ═══════════════════════════════════════════════════
+▶ PROBLEM: [problem statement truncated to 100 chars]
+▶ PATTERN MATCH: [pattern_id or "none"] (conf [0.0])
+▶ PLAYBOOK: [playbook_name or "none"]
+▶ HITL MODE: [supervised|autonomous|review]
 
-▶ PROBLEM: [Original problem statement]
-▶ MODE: [full/quick/diverge] | HITL: [supervised/autonomous/review]
-▶ STATUS: [in progress / awaiting input / complete]
+▶ SEQUENCE PROGRESS
+  ✅ ⚪ Analytical        — [summary, 1 line]
+  ✅ 🔴 Emotional         — [summary]
+  ⏳ ⚫ Critical           — RUNNING
+  ⏸️ 🟡 Optimizer          — pending
+  ⏸️ 🟣 Ethical            — pending (conditional on Critical severity)
+  ⏸️ 🔵 Predictive         — pending (conditional)
+  ⏸️ 🎯 Synthesis          — pending
 
-──────────────────────────────────────────────────
-  AGENT STATUS
-──────────────────────────────────────────────────
+▶ HITL FLAGS OPEN: [list or "none"]
+▶ CONFLICTS OPEN: [list or "none"]
+▶ CURRENT CONFIDENCE TREND: [high→medium, reasoning]
 
-  ✅ Analytical (White)        — [1-line summary]
-  ✅ Emotional-Intuitive (Red) — [1-line summary]
-  🔄 Creative-Generative (Green) — IN PROGRESS
-  ⏳ Critical-Validator (Black) — PENDING
-  ⏳ Optimizer (Yellow)         — PENDING
-  ➖ Ethical-Governance (Purple) — NOT IN SEQUENCE
-  ➖ Predictive-Strategic (Indigo) — NOT IN SEQUENCE
-
-──────────────────────────────────────────────────
-  FLAGS & GATES
-──────────────────────────────────────────────────
-
-  ⚠️ [Any open mandatory gates or conflicts]
-  📊 Confidence so far: [preliminary assessment]
-
-──────────────────────────────────────────────────
-  PARTIAL SYNTHESIS
-──────────────────────────────────────────────────
-
-  [What we can conclude so far based on completed agents]
-
-──────────────────────────────────────────────────
-  YOUR OPTIONS
-──────────────────────────────────────────────────
-
-  [1] ▶️  RESUME — continue from where we left off
-  [2] 🔍 DRILL DOWN — examine a specific agent's full output
-  [3] 🔁 RE-RUN — re-run a completed agent with new context
-  [4] ➕ ADD — add an agent to the sequence
-  [5] ⏭️  SKIP — skip the next pending agent
-  [6] 🔀 REORDER — change the remaining sequence
-  [7] 🏁 SYNTHESIZE NOW — produce synthesis with what we have
-  [8] ⛔ ABORT — stop and discard
-
+▶ YOUR OPTIONS
+  [1] ⏩ CONTINUE — let the current agent finish
+  [2] ✏️  CORRECT — add context for the current agent
+  [3] 🔀 REDIRECT — change remaining sequence
+  [4] 🛑 PAUSE — switch to supervised after current agent
+  [5] ⛔ ABORT — stop with partial synthesis
 ═══════════════════════════════════════════════════
 ```
 
-## Instructions
+## HTML dashboard template
 
-Present the current state of the AITS analysis in the dashboard format above. If no analysis is in progress, inform the user and suggest starting one with `/aits-full`, `/aits-quick`, or `/aits-diverge`. The dashboard is read-only by default — it displays status and offers intervention options. The user's response determines the next action. This command can be used at any point during an analysis to get an overview and regain control of the flow.
+The HTML template (in `aits-dashboard.md`) produces a self-contained single file with:
+
+- No external dependencies (inlined CSS, inlined SVG)
+- Light/dark mode toggle
+- Print-friendly styling
+- Accessibility-compliant (ARIA labels, keyboard navigation)
+- Exportable to PDF via browser print
+
+## When to use
+
+- **In-flight mode**: whenever you want to see where you are without disrupting the flow. The check is non-invasive — it reports state without consuming a checkpoint.
+- **HTML dashboard**: for sharing with stakeholders, for archival, for retrospective reviews, for pattern comparison across decisions
+- **Pattern mode**: to see retrospective accuracy of past predictions for the same pattern archetype
+
+## Pattern dashboard
+
+The pattern view (when called with `/aits-board for pattern [pattern_id]`) shows:
+
+- Count of decisions matching this pattern
+- % with completed retrospectives
+- Prediction accuracy per agent (which agent's predictions tend to hold up)
+- Recurring failure modes
+- Recurring success factors
+- Drift over time (are recent instances different from older ones?)
+
+This is the LEARN function of Memory made visible.

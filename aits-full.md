@@ -1,63 +1,95 @@
-# AITS Full Analysis
+---
+name: aits-full
+description: Full AITS 2.0 analysis in supervised mode. Activates the Meta-Orchestrator with checkpoint after every agent. The user can approve, correct, redirect, redo, or switch to autonomous at each step. Default for high-stakes, irreversible decisions. Consults pattern library and memory, matches playbooks, enforces all seven inviolable rules, validates schemas, resolves conflicts via the matrix.
+---
 
-Run a complete decision analysis with the AITS system (Adaptive Intelligence Thinking System).
+# /aits-full — Full AITS 2.0 Analysis (Supervised Mode)
 
-## What It Does
+This command activates the Meta-Orchestrator in **supervised mode** — the highest-depth, highest-oversight AITS flow.
 
-Activates the Meta-Orchestrator (Blue) which orchestrates a complete sequence of cognitive agents to analyze the problem from every dimension:
+## When to use
 
-1. **Analytical (White)** → Factual base: data, metrics, gaps
-2. **Emotional-Intuitive (Red)** → Perceptions, emotions, stakeholder resistance
-3. **Creative-Generative (Green)** → Alternatives and unconventional options
-4. **Critical-Validator (Black)** → Stress test: risks, fallacies, guardrails
-5. **Optimizer (Yellow)** → Business case, quick wins, value levers
-6. **Ethical-Governance (Purple)** → Fairness, compliance, red lines
-7. **Predictive-Strategic (Indigo)** → Future scenarios, sensitivity
-8. **Systemic (optional)** → If the problem has complex interdependencies
-9. **Foresight (optional)** → If options are > 4
-10. **Meta-Orchestrator (Blue)** → Integrated synthesis, decision, action plan
+- Irreversible or high-stakes decisions
+- Decisions with material human, ethical, or strategic consequences
+- When you want maximum depth and control
+- First time applying AITS to a new type of decision
 
-## Human-in-the-Loop
+## What happens
 
-Default mode: **SUPERVISED** — Blue stops after each agent and presents a checkpoint where you can:
-- ✅ Proceed to the next agent
-- ✏️ Correct or add context before continuing
-- 🔀 Redirect the sequence (skip, reorder, or add agents)
-- 🔁 Re-run the current agent with different focus
-- ⏭️ Switch to autonomous mode (stop only at mandatory gates)
+1. **Intake** — Meta-Orchestrator reads your problem, matches against `references/pattern-library.md`, searches `.aits/memory/` for similar past decisions, detects a matching playbook from `playbooks/`
+2. **Plan announcement** — Meta-Orchestrator tells you the pattern match, the playbook choice, and the planned agent sequence
+3. **Execution** — Agents run in sequence. After **each** agent, a checkpoint is presented:
 
-Mandatory gates (always pause regardless of mode): high risk from Black, data gaps from White, agent conflicts, red line violations from Ethical.
+```
+═══════════════════════════════════════════════════
+  AITS CHECKPOINT — [Agent] ([Color]) complete
+═══════════════════════════════════════════════════
+▶ KEY FINDINGS
+▶ CONFIDENCE
+▶ PATTERN MATCH
+▶ HITL FLAGS RAISED
+▶ NEXT IN SEQUENCE
 
-To override the default: say "autonomous mode" or "review mode" in your prompt.
+▶ YOUR OPTIONS
+  [1] ✅ PROCEED
+  [2] ✏️  CORRECT
+  [3] 🔀 REDIRECT
+  [4] 🔁 REDO
+  [5] ⏭️  SWITCH TO AUTONOMOUS
 
-## How to Use It
+═══════════════════════════════════════════════════
+```
 
-Describe the decision problem completely, including:
-- The business context
-- The stakeholders involved
-- The constraints (time, budget, resources)
-- The options already considered (if any)
-- The relevant KPIs
+4. **Mandatory gates** — even in supervised mode, inviolable rules trigger explicit mandatory gates with rule citation
+5. **Conflict resolution** — when agents conflict, `references/conflict-matrix.md` is consulted and the assigned arbiter is invoked
+6. **Synthesis** — Meta-Orchestrator produces the final integrated output with decision, action plan, conflicts resolved, confidence level, and uncovered dimensions
+7. **Memory** — the decision record is saved to `.aits/memory/` for future pattern learning
+8. **Dashboard (optional)** — if you include "generate dashboard" in your command, an HTML dashboard is produced
 
-The Blue will autonomously decide whether to activate all agents or only those needed, and will manage conflicts and iterations according to AITS rules.
+## Usage
 
-## When to Use It
+```
+/aits-full
 
-- Important strategic decisions
-- Problems with multiple dimensions (financial, human, ethical, technological)
-- Irreversible choices or those with long-term impact
-- Situations where maximum decision-making rigor is needed
+[your problem statement]
+```
 
-## Expected Output
+You can specify a playbook:
 
-A structured JSON with:
-- Integrated synthesis that unifies all perspectives
-- Clear and actionable decision
-- Action plan with owners, timelines, and dependencies
-- Decision log that traces each agent's contribution and any human interventions
-- Confidence level and uncovered dimensions
-- HITL summary (checkpoints, gates, corrections)
+```
+/aits-full
 
-## Instructions
+Use the M&A due diligence playbook.
+Should we acquire company Z?
+```
 
-Use the sub-agent `aits-meta-orchestrator` to orchestrate the complete analysis of the problem described by the user. Set HITL mode to SUPERVISED (unless the user requests otherwise). The Meta-Orchestrator will present a checkpoint after each agent, wait for user input, then determine the next step. Follow the AITS system rules for managing conflicts, missing data, and high risks. Mandatory gates always trigger regardless of HITL mode.
+You can include dashboard generation:
+
+```
+/aits-full generate dashboard
+
+[problem]
+```
+
+## Default sequence
+
+Unless a playbook overrides it, the default supervised sequence is:
+
+**⚪ Analytical → 🔴 Emotional-Intuitive → 🟢 Creative-Generative → ⚫ Critical-Validator → 🟡 Optimizer → 🟣 Ethical-Governance → 🔵 Predictive-Strategic → [🌐 Systemic if interdependencies] → [🔭 Foresight if ≥4 options] → 🎯 Meta-Orchestrator Synthesis**
+
+## Mode switching
+
+At any checkpoint, you can:
+
+- Switch to **autonomous** (option 5) — continue without checkpoints, mandatory gates still apply
+- Switch to **review** — complete remaining agents silently, review all at end
+
+## What makes this different from 1.x
+
+- **Pattern matching** at intake informs the whole analysis
+- **Schema validation** — every agent output is validated; failures are auto-retried once, then gated
+- **Conflict matrix** — L1-L4 severity resolution, codified not improvised
+- **Handoff protocols** — every agent declares what it passes to downstream agents
+- **Confidence propagation** — synthesis confidence bounded by weakest critical input
+
+See `AITS.md` for the full manifesto and `references/agent-contract.md` for the structural details.

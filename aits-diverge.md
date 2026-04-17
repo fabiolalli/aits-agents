@@ -1,60 +1,90 @@
-# AITS Diverge — Creative Brainstorming
+---
+name: aits-diverge
+description: Divergent AITS 2.0 brainstorming in review mode. Activates the Meta-Orchestrator with a creative-first sequence (Creative-Generative → Emotional-Intuitive → Foresight → Synthesis) and runs the full analysis without voluntary checkpoints. At the end, presents everything with a drill-down review interface. Default for idea generation, option exploration, and problems where premature filtering would kill the best ideas.
+---
 
-Run a divergent exploration with the AITS system — to generate options, break patterns, and find the space of possibilities before converging.
+# /aits-diverge — Divergent AITS 2.0 (Review Mode)
 
-## What It Does
+This command activates the Meta-Orchestrator in **review mode** — full generative sequence runs uninterrupted, then everything is presented for structured review at the end.
 
-Activates a sequence oriented toward creative generation:
+## When to use
 
-1. **Creative-Generative (Green)** → Options, cross-industry analogies, radical ideas
-2. **Emotional-Intuitive (Red)** → Which option generates enthusiasm? Which resistance?
-3. **Foresight (Foresight)** → Do the generated options hold up across different scenarios?
-4. **Meta-Orchestrator (Blue)** → Synthesis of the most promising options with next steps
+- Idea generation and option exploration
+- When the problem is "we need more alternatives"
+- Breaking out of false binaries
+- Innovation sprints and creative strategy sessions
+- When you want creative flow without premature critique
 
-If the Green generates > 4 options, the Foresight is activated automatically (AITS rule).
+## What happens
 
-## Human-in-the-Loop
+1. **Intake** — Meta-Orchestrator reads the problem; notes if this is a deadlock-reframing call (Critical or Optimizer couldn't find a path with existing options)
+2. **Execution — uninterrupted** — the creative-first sequence runs without voluntary checkpoints:
+   - **🟢 Creative-Generative** — generates options, novelty-labeled, with cross-domain analogies and micro-tests
+   - **🔴 Emotional-Intuitive** — maps stakeholder reception for the generated options (adoption profile hints)
+   - **🔭 Foresight** (if ≥ 4 viable options, triggered by inviolable rule #5) — options-scenarios matrix and robustness ranking
+   - **🎯 Synthesis** — integrated view of the option space
+3. **Review interface** — full analysis presented at once:
 
-Default mode: **REVIEW** — Blue runs the full creative sequence without interruption, then presents everything for review at the end.
+```
+═══════════════════════════════════════════════════
+  AITS ANALYSIS COMPLETE — Review Mode
+═══════════════════════════════════════════════════
+▶ DECISION LOG
+▶ OPTION SPACE (labeled by novelty: incremental/adjacent/novel/radical)
+▶ DISSOLVED BINARIES (options that reframe the original question)
+▶ ROBUSTNESS RANKING (if Foresight ran)
+▶ STRATEGIC RECOMMENDATION
 
-In review mode you can:
-- ✅ Accept the creative output as-is
-- 🔍 Drill down into a specific agent's output
-- 🔁 Re-run an agent with a different creative focus
-- ➕ Add an agent (e.g., "also run the Critical-Validator on the top 3 options")
-- 🔄 Recalculate the synthesis after modifications
+▶ REVIEW OPTIONS
+  [1] ✅ ACCEPT and generate action plan
+  [2] 🔍 DRILL DOWN on specific option
+  [3] 🔁 RE-RUN Creative with new constraint
+  [4] ➕ ADD Critical-Validator for stress-testing the options
+  [5] 🔄 RECALCULATE with modified problem framing
+═══════════════════════════════════════════════════
+```
 
-Mandatory gates still apply (e.g., if Ethical red lines are flagged).
+## Usage
 
-To override: say "supervised mode" if you want to review and redirect after each creative agent.
+```
+/aits-diverge
 
-## How to Use It
+[your problem — ideally an open question, not a yes/no decision]
+```
 
-Describe the exploratory space:
-- What are we looking for? (new product, business model, differentiation strategy...)
-- What constraints are there? (budget, technology, market...)
-- What have we already tried or discarded?
-- How radical can we be?
+Good prompts for diverge:
 
-## When to Use It
+- "How can we differentiate in market X?"
+- "What options do we have for expanding capacity without hiring?"
+- "We're stuck choosing between A and B — what else is possible?"
 
-- Brainstorming on new products or services
-- Searching for competitive differentiation
-- Decision deadlock (known options don't work)
-- Innovation sprints and design thinking
-- When you need to "think outside the box" with structure
+## Mandatory gates still apply
 
-## Expected Output
+Even in review mode, inviolable rules trigger explicit gates mid-flow:
 
-An option-rich JSON with:
-- 5-7+ alternatives (including at least 1-2 radical ones)
-- Analogies from other industries
-- Micro-tests to validate the most promising ideas
-- Emotional map: which options generate positive energy
-- Robustness matrix (if Foresight activated)
-- The 2-3 recommended options for deeper exploration
-- HITL summary
+- Rule #6 (ethical red line) — any red-line flag in the generated options triggers a gate
+- Rule #5 (≥ 4 options) — Foresight activation is automatic, no gate needed
 
-## Instructions
+## Upgrade path
 
-Use the sub-agent `aits-meta-orchestrator` in diverge mode. Set HITL mode to REVIEW (unless the user requests otherwise). First invoke `aits-creative-generative` to generate a broad space of options. Then `aits-emotional-intuitive` to map the perceptual dimension of the options. If options are > 4, activate `aits-foresight` for the comparative matrix across scenarios. Present the complete output for user review with drill-down and modification options. The objective is NOT to decide, but to expand the space of possibilities in a structured way.
+After review, common next steps:
+
+- "Take options 2 and 5 and run `/aits-full` on the go/no-go"
+- "Run Critical-Validator on the full option set"
+- "Generate action plan for option 3"
+
+## Default sequence
+
+**🟢 Creative-Generative → 🔴 Emotional-Intuitive → [🔭 Foresight if options ≥ 4] → 🎯 Synthesis**
+
+## Why no Critical in the default sequence
+
+Critical's job is to kill fragile options. Doing that inside the divergent phase defeats the point. Critical runs next, either via `/aits-full` on the chosen option(s) or via explicit invocation in the review interface.
+
+## Key difference from 1.x
+
+- Creative now produces options with explicit novelty levels and analogical chains
+- Emotional runs after Creative (not before) to supply adoption profile data per option
+- Foresight triggers on ≥ 4 options automatically
+- Review interface includes dissolved-binaries and staged-commitment paths
+- Options are passed to downstream flows with full handoff packets, not re-analyzed from scratch

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/meta-orchestrator.schema.json",
+  "title": "Meta-Orchestrator Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "meta-orchestrator" },
+    "main_output": {
+      "type": "object",
+      "required": ["integrated_synthesis", "decision", "action_plan", "decision_log", "confidence_level", "hitl_summary"],
+      "properties": {
+        "integrated_synthesis": { "type": "string" },
+        "decision": {
+          "type": "object",
+          "required": ["statement", "type"],
+          "properties": {
+            "statement": { "type": "string" },
+            "type": { "enum": ["go", "no_go", "conditional_go", "defer", "redesign"] },
+            "conditions": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "action_plan": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action", "owner"],
+            "properties": {
+              "action": { "type": "string" },
+              "owner": { "type": "string" },
+              "timeline": { "type": "string" },
+              "dependencies": { "type": "array", "items": { "type": "string" } },
+              "agent_source": { "type": "string" }
+            }
+          }
+        },
+        "decision_log": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["step", "agent", "key_output_summary"],
+            "properties": {
+              "step": { "type": "integer" },
+              "agent": { "type": "string" },
+              "key_output_summary": { "type": "string" },
+              "confidence": { "enum": ["high", "medium", "low"] },
+              "conflicts_with": { "type": "array", "items": { "type": "string" } },
+              "resolution_reference": { "type": "string" },
+              "human_intervention": { "type": "string" },
+              "hitl_flags_raised": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "conflicts_resolved": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "conflict_id": { "type": "string" },
+              "parties": { "type": "array", "items": { "type": "string" } },
+              "severity": { "enum": ["L1", "L2", "L3", "L4"] },
+              "arbiter": { "type": "string" },
+              "resolution": { "type": "string" },
+              "matrix_rule_applied": { "type": "string" }
+            }
+          }
+        },
+        "confidence_level": {
+          "type": "object",
+          "required": ["overall"],
+          "properties": {
+            "overall": { "enum": ["high", "medium", "low"] },
+            "reasoning": { "type": "string" },
+            "weakest_input": { "type": "string" }
+          }
+        },
+        "uncovered_dimensions": { "type": "array", "items": { "type": "string" } },
+        "next_review": { "type": "string" },
+        "hitl_summary": {
+          "type": "object",
+          "required": ["mode_used"],
+          "properties": {
+            "mode_used": { "enum": ["supervised", "autonomous", "review"] },
+            "checkpoints_presented": { "type": "integer", "minimum": 0 },
+            "mandatory_gates_triggered": { "type": "integer", "minimum": 0 },
+            "human_corrections": { "type": "integer", "minimum": 0 },
+            "redirects": { "type": "integer", "minimum": 0 },
+            "mode_switches": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "memory_record": {
+          "type": "object",
+          "properties": {
+            "saved_to": { "type": "string" },
+            "pattern_contributed": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

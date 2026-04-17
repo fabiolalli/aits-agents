@@ -1,53 +1,87 @@
-# AITS Quick Decision
+---
+name: aits-quick
+description: Rapid AITS 2.0 decision in autonomous mode. Activates the Meta-Orchestrator with a minimal 3-agent sequence (Analytical → Critical-Validator → Optimizer) and auto-escalates to additional agents when inviolable rules require. No voluntary checkpoints — only mandatory gates pause the flow. Default for time-sensitive decisions with moderate stakes.
+---
 
-Run a rapid decision analysis with the AITS system — fast track for decisions that require rigor but not the full flow.
+# /aits-quick — Rapid AITS 2.0 Decision (Autonomous Mode)
 
-## What It Does
+This command activates the Meta-Orchestrator in **autonomous mode** — minimal agent sequence, no voluntary checkpoints, mandatory gates still enforced.
 
-Activates a reduced sequence of 3 agents + synthesis:
+## When to use
 
-1. **Analytical (White)** → Essential factual base
-2. **Critical-Validator (Black)** → Main risks and deal-breakers
-3. **Optimizer (Yellow)** → Capturable value and quick wins
-4. **Meta-Orchestrator (Blue)** → Synthesis and rapid decision
+- Time-sensitive decisions where speed matters more than depth
+- Lower-stakes decisions where full multi-agent analysis would be overkill
+- Follow-up iterations after a full analysis on related topics
+- Routine recurring decisions of the same type
 
-If the Black flags "high" risk, the Blue will automatically activate the Ethical or the Predictive (inviolable AITS rule).
+## What happens
 
-## Human-in-the-Loop
+1. **Intake** — Meta-Orchestrator reads the problem, matches pattern library, recalls memory, picks a playbook if one clearly fits
+2. **Execution** — 3-agent sequence runs uninterrupted:
+   - **⚪ Analytical** — facts and data baseline
+   - **⚫ Critical-Validator** — risk map and premortems
+   - **🟡 Optimizer** — value case and action plan
+3. **Auto-escalation** — inviolable rules trigger automatic additions:
+   - Rule #2: data gap → return to Analytical
+   - Rule #3: risk severity ≥ 10 → activate Ethical or Predictive
+   - Rule #4: Black/Yellow L3 conflict → activate Ethical
+   - Rule #6: ethical red line → mandatory HITL gate
+4. **Mandatory gates** — when triggered, the flow pauses with a gate checkpoint requiring explicit user input
+5. **Synthesis** — Meta-Orchestrator closes the decision with the usual structured output
 
-Default mode: **AUTONOMOUS** — Blue proceeds without stopping except at mandatory gates.
+## Gate checkpoint format
 
-Mandatory gates that will pause the flow:
-- ⚠️ Black flags "high" or "critical" risk level
-- ⚠️ White reports high-impact data gaps
-- ⚠️ Agent conflict detected
+```
+═══════════════════════════════════════════════════
+  ⚠️  MANDATORY GATE — [Reason]
+═══════════════════════════════════════════════════
+▶ TRIGGER [rule citation]
+▶ AGENT OUTPUT SUMMARY
+▶ IMPLICATIONS
+▶ RULE REQUIRES
 
-To override: say "supervised mode" in your prompt if you want checkpoints after every agent.
+▶ YOUR OPTIONS
+  [1] ✅ ACKNOWLEDGE & PROCEED
+  [2] ✏️  PROVIDE CONTEXT
+  [3] 🛑 PAUSE (switch to supervised)
+  [4] ⛔ ABORT
+═══════════════════════════════════════════════════
+```
 
-## How to Use It
+## Usage
 
-Describe the problem concisely. The focus is on:
-- What do I need to decide?
-- What are the main constraints?
-- By when is the decision needed?
+```
+/aits-quick
 
-## When to Use It
+[your problem statement]
+```
 
-- Day-to-day operational decisions that still require structure
-- Rapid go/no-go decisions
-- Preliminary assessments before a full analysis
-- When time is the main constraint
+## Upgrade paths
 
-## Expected Output
+If the autonomous flow is producing low-confidence outputs or frequent mandatory gates, switch modes:
 
-A lean JSON with:
-- Key verified facts
-- Top 3 risks
-- Concise business case
-- Decision with confidence level
-- Any flags for deeper analysis
-- HITL summary (gates triggered, if any)
+- "Switch to supervised" — start getting checkpoints from next agent
+- "Switch to full analysis" — restart with `/aits-full` (rare; usually the autonomous flow + occasional gates is sufficient)
 
-## Instructions
+## When `/aits-quick` auto-upgrades
 
-Use the sub-agent `aits-meta-orchestrator` in quick mode. Set HITL mode to AUTONOMOUS (unless the user requests otherwise). Invoke in sequence: `aits-analytical`, then `aits-critical-validator`, then `aits-optimizer`. Collect the JSON outputs and produce a rapid synthesis. If the Critical-Validator flags high risk, trigger a mandatory gate for user input, then activate `aits-ethical-governance` or `aits-predictive-strategic` before the synthesis. The objective is a solid decision in the shortest time possible.
+The Meta-Orchestrator will recommend upgrading to `/aits-full` and stop for your approval when:
+
+- ≥ 2 mandatory gates have been triggered in a single analysis (signal of complexity beyond quick scope)
+- Pattern library match suggests an archetype whose `recommended_playbook` requires full analysis (e.g., `ma-due-diligence` with high stakes)
+- The problem domain involves vulnerable populations or irreversible commitments
+
+## Default sequence
+
+**⚪ Analytical → ⚫ Critical-Validator → 🟡 Optimizer → 🎯 Synthesis**
+
+With auto-escalations per inviolable rules.
+
+## What makes quick "quick"
+
+- No voluntary checkpoints
+- 3 agents instead of 7-9
+- Memory is consulted but pattern library matching is a simpler keyword match (not full archetype loading)
+- Playbook loading is optional (only if a very specific match)
+
+The cost: less depth on people/ethics/futures dimensions. The quick mode explicitly trades these for speed. Use `/aits-full` when those dimensions matter.

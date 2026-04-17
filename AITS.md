@@ -4,7 +4,43 @@
 
 **Author**: Fabio Lalli
 **Version**: 2.0
-**Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985)
+**Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025)
+
+---
+
+## Genesis
+
+AITS is not a repository that stumbled into a theory. It is a theory that, progressively, found its way into a repository.
+
+### 1985: the first intuition (Edward de Bono)
+
+Edward de Bono observed something that still holds: when the brain tries to analyse, criticise, create, and optimise at the same time, the dominant mode wins and silences the others. He proposed to separate the modes, one hat at a time, and to integrate them sequentially. A mental exercise, elegant and productive, built for a world in which the only cognitive actor at the table was a person.
+
+The *Six Thinking Hats* got the core right: separating thinking modes, and integrating them on purpose. It also left open, by construction, everything that four decades later would become unavoidable. Ethics as a perspective that deserves equal standing. Predictive scenarios. Systems thinking. Regulatory compliance. The fact that, today, alongside humans, cognitive agents made of software now sit at the same table and actively participate in the analysis.
+
+### 2025: the book
+
+The book *Adaptive Intelligence Thinking System*, written in Rome in 2025, is the first attempt to update De Bono for the era of hybrid intelligence. The starting question was narrow and direct: how do we keep thinking well when AI generates, suggests, and simulates alongside us? The answer proposed in the book is built on three moves.
+
+First, turn the hats into **agents**. The hat was a metaphor for a mental mode. The agent is a functional unit, embodiable by a human, by an AI, or more often by a human-AI pair dedicated to a specific cognitive function. Agents can work in sequence, but also in parallel, with feedback loops between them. It is a leap: no longer only metaphors guiding human thought, but operational cognitive units that have capabilities, interfaces, and interactions.
+
+Second, **expand the set**. Four agents are direct evolutions of the hats (Analytical, Emotional-Intuitive, Critical-Validator, Optimizer). Four are new, because they cover dimensions that 1985 could not foresee: Creative-Generative (enhanced by generative AI), Ethical-Governance, Predictive-Strategic, Meta-Orchestrator as intelligent coordination entity. Eight agents total in the book.
+
+Third, define the **guiding principles**. Hybrid intelligence as the foundation (not human alone, not AI alone, always a loop between the two). Dynamic adaptivity (the sequence and the weight of the agents change with the problem). Integrated ethics (not a final check, but a perspective that travels through the whole process).
+
+### 2026: from book to code
+
+The book described a framework. Version 1 of this repository turned that framework into working software, released as open source from the first commit.
+
+Claude Code provided the technical substrate the book was already describing implicitly: a sub-agent system where each cognitive agent becomes a file with its own prompt, tools, and output contract, and where a Meta-Orchestrator invokes them via the `Task` tool, collects their outputs, and composes the synthesis. What in the book was an "orchestra of cognitive agents" on Claude Code became eleven `.md` files and a set of commands. The framework started running on real problems.
+
+Using it changed what we understood about it. Some things from the book held up well: the cognitive separation, the multiple operational modes, the primacy of the human-in-the-loop. Others emerged only in practice, as missing pieces: the need for structured outputs comparable across agents, explicit handoff protocols, codified conflict resolution rules, a memory that prevents the system from re-analysing the same pattern as if for the first time, gates that cannot be bypassed even in autonomous mode. Version 2 is the answer to those missing pieces.
+
+### 2.0: the system
+
+Version 2 is the first release in which AITS behaves as a system rather than a collection of well-written prompts. Eleven agents, not eight. Three new additions where the gaps were widest: Systemic (feedback loops, leverage points, unintended consequences), Foresight (options-scenarios matrix, antifragility detection), Memory (decision archive, pattern extraction, compound learning). Published JSON schemas that validate every agent output. A conflict matrix with codified pairwise resolution rules. A pattern library of recurring decision archetypes. Shared taxonomies for risks, emotions, ethical dimensions, and scenarios. Three human-in-the-loop modes. Seven inviolable rules enforced mechanically.
+
+What stays constant, from De Bono to the book to v2.0, is the original insight: to think well you separate the modes, then integrate them on purpose, with a human always at the centre. Everything else is evolution.
 
 ---
 

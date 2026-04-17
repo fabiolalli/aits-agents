@@ -20,6 +20,42 @@ See [`AITS.md`](./AITS.md) for the full manifesto and design principles.
 
 ---
 
+## Genesis & History
+
+### The book (2025)
+
+AITS started as a book, *Adaptive Intelligence Thinking System*, written in Rome in 2025. The book asked one question: in an era where AI generates, suggests and simulates, how do we keep thinking well, together? Not thinking instead of machines, not thinking like machines, thinking with them, in a way that structures complexity rather than ignoring it.
+
+The answer proposed in the book was to take De Bono's *Six Thinking Hats* (1985), recognise what it got right (separating cognitive modes and integrating them on purpose) and evolve it for the age of hybrid intelligence. The metaphor of the "hat" became something more operational, a cognitive agent: not a role a person wears, but a functional unit that can be embodied by a human, by an AI, or more often by a human-AI pairing working on a specific dimension of the problem.
+
+The book proposed **eight cognitive agents**: four direct evolutions of De Bono's hats (Analytical, Emotional-Intuitive, Critical-Validator, Optimizer) and four new ones needed to cover dimensions that 1985 could not foresee (Creative-Generative, Ethical-Governance, Predictive-Strategic, Meta-Orchestrator). Around them, three guiding principles (hybrid intelligence, dynamic adaptivity, integrated ethics), multiple operating modes (sequential, parallel, emergent, hybrid), and a ten-point ethical manifesto closing the system.
+
+### Version 1 — from theory to code (early 2026)
+
+The book defined the framework. Version 1 of this repository translated it into working code, as open source from day one.
+
+The choice was Claude Code, because its sub-agent architecture already provided what the book was describing: specialised cognitive units invoked by an orchestrator, each with its own prompt, tools, and contract. What on paper was an "orchestra of agents" in Claude Code could become eleven `.md` files and a `Task` tool. The framework became executable. A command on the terminal, a decision, a structured multi-dimensional output.
+
+The v1 series (released in sequence as `v1`, `v2`, `v3`) carried the book's architecture into the real world, translated everything to English, added the first three commands (`/aits-full`, `/aits-quick`, `/aits-diverge`), brought in the playbooks, introduced the visual HTML dashboard, and made the system usable across projects via the `.claude/` convention.
+
+Running it on real decisions surfaced what the book could not anticipate. Agents that ignored each other's outputs. Conflicts resolved by improvisation. A system with no memory, that would re-analyse the same pattern for the tenth time as if encountering it for the first. Outputs with variable structure, hard to compare, hard to validate. Ethics raising alarms that the orchestrator treated as suggestions rather than gates. A framework that worked well, but that had not yet become a system.
+
+### Version 2.0 — from framework to operating system (April 2026)
+
+Version 2 is the answer to what v1 was missing. It keeps everything that already worked and rebuilds the connective tissue around the agents: the rules, the contracts, the memory, the gates.
+
+Three expansions in one release. **More agents**, from eight to eleven: Systemic (feedback loops, leverage points, unintended consequences), Foresight (options × scenarios matrix, antifragility detection), Memory (the archive that makes AITS a learning system, not a static framework). **Formal structure**, introduced from scratch: a common envelope, per-agent JSON Schemas, a shared 10-section agent contract, a conflict matrix that codifies every pairwise agent tension, a shared vocabulary (6 risk categories, 8 deep emotional drivers, 7 ethical dimensions, 10 scenario frames), and a pattern library of recurring decision archetypes. **Governance**, made explicit: three human-in-the-loop modes (supervised, autonomous, review), seven inviolable rules enforced mechanically regardless of mode, mandatory gates that any agent can raise, and a decision archive with retrospective outcome tracking for compound learning over time.
+
+The book was theory. v1 was prototype. v2 is the operating system, the first release where AITS stops looking like a set of clever prompts and starts behaving like a system: measurable, composable, auditable, capable of remembering, and always handing the final judgement back to a human.
+
+### Where it is going
+
+Every decision recorded in `.aits/memory/` becomes raw material for the next one. After a handful of similar decisions the system begins extracting patterns on its own, and the Pattern Library grows from seed examples into a real corpus of empirical archetypes.
+
+The next chapters are already visible in the repository: richer playbooks for specific industries, integration with external validators, multilingual agents, and adaptive orchestration that learns which agent sequences produce the best-calibrated outputs on which problem types. AITS is built to evolve, and the public CHANGELOG is the current audit trail of that evolution.
+
+---
+
 ## The 11 Agents
 
 | Agent | Color | Hat origin | Function |
@@ -281,7 +317,8 @@ MIT. See `LICENSE`.
 ## Links
 
 - **Author**: [Fabio Lalli](https://www.fabiolalli.com) · [GitHub](https://github.com/fabiolalli)
-- **Books**: *Pelle Digitale*, *Spatial Shift*
+- **Origin book**: *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025), the theoretical foundation this repository implements
+- **Other books**: *Spatial Shift*, *L'AI non è quello che pensi*, *Sport Digital Transformation*
 - **Related**: [Claude Code documentation](https://docs.claude.com/en/docs/claude-code/overview)
 
 ---

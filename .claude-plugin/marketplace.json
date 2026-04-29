@@ -1,0 +1,27 @@
+{
+  "name": "aits-marketplace",
+  "owner": {
+    "name": "Fabio Lalli",
+    "url": "https://github.com/fabiolalli"
+  },
+  "description": "AITS — Adaptive Intelligence Thinking System. A multi-agent decision-making framework for Claude Code, evolved from de Bono's Six Thinking Hats.",
+  "plugins": [
+    {
+      "name": "aits",
+      "source": "./plugins/aits",
+      "description": "AITS 2.0 — 12 cognitive agents, 4 slash commands, 7 playbooks, conflict matrix, pattern library, and JSON schemas for structured decision-making.",
+      "version": "2.0.0",
+      "homepage": "https://github.com/fabiolalli/aits-agents",
+      "license": "MIT",
+      "category": "agents",
+      "keywords": [
+        "decision-making",
+        "multi-agent",
+        "thinking-hats",
+        "framework",
+        "orchestration"
+      ],
+      "strict": false
+    }
+  ]
+}

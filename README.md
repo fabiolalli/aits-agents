@@ -76,25 +76,47 @@ The next chapters are already visible in the repository: richer playbooks for sp
 
 ## Installation
 
-AITS is designed for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview). Agents live in your `.claude/agents/` directory; playbooks, references, and schemas live in dedicated subdirectories.
+AITS is designed for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) and ships as a **plugin marketplace**. The recommended way to install it is via Claude Code's plugin system.
 
-### Clone and install
+### Option A — Install via plugin marketplace (recommended)
+
+From inside Claude Code:
+
+```
+/plugin marketplace add fabiolalli/aits-agents
+/plugin install aits@aits-marketplace
+```
+
+This single command installs all 12 agents, 4 slash commands, 7 playbooks, the conflict matrix, the pattern library, and all JSON schemas. Files land in `~/.claude/plugins/cache/aits-marketplace/aits/` and are exposed by Claude Code automatically.
+
+### Option B — Install as a local plugin (for development or air-gapped use)
 
 ```bash
-# 1. Clone the repo somewhere
+git clone https://github.com/fabiolalli/aits-agents.git ~/aits-agents
+```
+
+Then in Claude Code:
+
+```
+/plugin marketplace add ~/aits-agents
+/plugin install aits@aits-marketplace
+```
+
+### Option C — Manual copy (legacy v1 layout)
+
+Useful if you prefer files directly under `~/.claude/` without going through the plugin loader.
+
+```bash
 git clone https://github.com/fabiolalli/aits-agents.git
-cd aits-agents
+cd aits-agents/plugins/aits
 
-# 2. Copy agents to your Claude Code agents directory
-mkdir -p ~/.claude/agents
-cp aits-*.md ~/.claude/agents/
-
-# 3. Copy the manifesto, commands, playbooks, references, and schemas
-cp AITS.md ~/.claude/
-mkdir -p ~/.claude/playbooks ~/.claude/references ~/.claude/schemas
-cp playbooks/*.md ~/.claude/playbooks/
-cp references/*.md ~/.claude/references/
-cp schemas/*.json ~/.claude/schemas/
+mkdir -p ~/.claude/agents ~/.claude/commands ~/.claude/playbooks ~/.claude/references ~/.claude/schemas
+cp agents/*.md       ~/.claude/agents/
+cp commands/*.md     ~/.claude/commands/
+cp playbooks/*.md    ~/.claude/playbooks/
+cp references/*.md   ~/.claude/references/
+cp schemas/*.json    ~/.claude/schemas/
+cp ../../AITS.md     ~/.claude/
 ```
 
 ### Per-project installation
@@ -102,12 +124,13 @@ cp schemas/*.json ~/.claude/schemas/
 If you want AITS only for a specific project, install into the project's `.claude/` directory instead of your home directory:
 
 ```bash
-mkdir -p .claude/agents .claude/playbooks .claude/references .claude/schemas
-cp aits-*.md .claude/agents/
+mkdir -p .claude/agents .claude/commands .claude/playbooks .claude/references .claude/schemas
+cp plugins/aits/agents/*.md       .claude/agents/
+cp plugins/aits/commands/*.md     .claude/commands/
+cp plugins/aits/playbooks/*.md    .claude/playbooks/
+cp plugins/aits/references/*.md   .claude/references/
+cp plugins/aits/schemas/*.json    .claude/schemas/
 cp AITS.md .claude/
-cp playbooks/*.md .claude/playbooks/
-cp references/*.md .claude/references/
-cp schemas/*.json .claude/schemas/
 ```
 
 ### Memory directory

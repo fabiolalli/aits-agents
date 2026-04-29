@@ -3,6 +3,19 @@ name: aits-dashboard
 description: HTML template and generator spec for AITS 2.0 visual dashboards. The Meta-Orchestrator reads this file when producing a dashboard. Defines the full HTML structure, CSS, and placeholder syntax. Produces a self-contained file (no external dependencies) suitable for sharing, archival, and print.
 ---
 
+## Path Resolution (plugin install)
+
+When this agent reads files referenced as `references/...`, `playbooks/...`, or `schemas/...`, those paths are **relative to the plugin root**, not to the current project.
+
+Resolution rule:
+
+1. At the start of your work, run once: `Bash(echo "$CLAUDE_PLUGIN_ROOT")` and cache the value. When AITS is installed as a Claude Code plugin, this resolves to something like `~/.claude/plugins/cache/aits-marketplace/aits/`.
+2. Prepend that root to any `references/...`, `playbooks/...`, or `schemas/...` path before calling `Read`.
+3. If `$CLAUDE_PLUGIN_ROOT` is empty (legacy install with files copied into `~/.claude/`), fall back to `$HOME/.claude/` as the root.
+
+Project-local paths (e.g., `.aits/memory/...`) stay relative to the **current project** and must not be prefixed.
+
+
 # aits-dashboard — HTML Dashboard Template
 
 This file defines the template the Meta-Orchestrator uses to produce HTML dashboards for AITS 2.0 analyses. The template is a single self-contained HTML file with inlined CSS and inlined SVG.

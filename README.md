@@ -133,6 +133,34 @@ cp plugins/aits/schemas/*.json    .claude/schemas/
 cp AITS.md .claude/
 ```
 
+### Migrating from v1 (manual install) to v2 plugin
+
+If you previously installed AITS by copying files into `~/.claude/agents/`, `~/.claude/commands/`, and `~/.claude/playbooks/`, you must remove the v1 files **before** installing the plugin — otherwise Claude Code will load both copies and you will see duplicate agents.
+
+```bash
+# 1. Backup
+BAK="$HOME/.claude/backups/aits-v1-pre-plugin-$(date +%Y%m%d)"
+mkdir -p "$BAK"
+cp ~/.claude/agents/aits-*.md "$BAK/" 2>/dev/null
+cp ~/.claude/commands/aits-{full,quick,diverge,board}.md "$BAK/" 2>/dev/null
+[ -d ~/.claude/playbooks  ] && cp -r ~/.claude/playbooks  "$BAK/"
+[ -d ~/.claude/references ] && cp -r ~/.claude/references "$BAK/"
+[ -d ~/.claude/schemas    ] && cp -r ~/.claude/schemas    "$BAK/"
+[ -f ~/.claude/AITS.md    ] && cp ~/.claude/AITS.md "$BAK/"
+
+# 2. Remove the originals
+rm ~/.claude/agents/aits-*.md
+rm ~/.claude/commands/aits-{full,quick,diverge,board}.md
+rm -rf ~/.claude/playbooks ~/.claude/references ~/.claude/schemas
+rm -f ~/.claude/AITS.md
+
+# 3. Install the plugin (inside Claude Code)
+#    /plugin marketplace add fabiolalli/aits-agents
+#    /plugin install aits@aits-marketplace
+```
+
+After install, the v2 files live under `~/.claude/plugins/cache/aits-marketplace/aits/` and are exposed automatically. You can delete the backup once you have verified the plugin works.
+
 ### Memory directory
 
 AITS writes decision records to `.aits/memory/` in the working directory. This directory is created automatically on first use. It is local-only — decisions never leave your machine.

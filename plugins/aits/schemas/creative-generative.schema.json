@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/creative-generative.schema.json",
+  "title": "Creative-Generative Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "creative-generative" },
+    "main_output": {
+      "type": "object",
+      "required": ["options"],
+      "properties": {
+        "problem_reframing": {
+          "type": "object",
+          "properties": {
+            "original_framing": { "type": "string" },
+            "alternative_framings": { "type": "array", "items": { "type": "string" } },
+            "reframing_rationale": { "type": "string" }
+          }
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "description", "novelty_level"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" },
+              "novelty_level": { "enum": ["incremental", "adjacent", "novel", "radical"] },
+              "core_mechanism": { "type": "string" },
+              "key_assumptions": { "type": "array", "items": { "type": "string" } },
+              "analogical_source": {
+                "type": "object",
+                "properties": {
+                  "source_domain": { "type": "string" },
+                  "structural_equivalence": { "type": "string" }
+                }
+              },
+              "micro_test": {
+                "type": "object",
+                "properties": {
+                  "test": { "type": "string" },
+                  "cost_estimate": { "type": "string" },
+                  "duration_estimate": { "type": "string" },
+                  "validates_assumption": { "type": "string" },
+                  "success_criteria": { "type": "string" }
+                }
+              },
+              "complements_option_ids": { "type": "array", "items": { "type": "string" } },
+              "excludes_option_ids": { "type": "array", "items": { "type": "string" } },
+              "adoption_profile_hint": { "type": "string" }
+            }
+          }
+        },
+        "options_matrix_flag": { "type": "boolean" },
+        "dissolved_binaries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "original_binary": { "type": "string" },
+              "options_that_dissolve_it": { "type": "array", "items": { "type": "string" } },
+              "reasoning": { "type": "string" }
+            }
+          }
+        },
+        "options_deliberately_not_pursued": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "option_sketch": { "type": "string" },
+              "reason_excluded": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

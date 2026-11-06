@@ -1,0 +1,10 @@
+id: ethical-impact
+title: Ethical impact
+description: Ethical-Governance leads; Optimizer is deliberately absent.
+nodes:
+  - { id: analytical }
+  - { id: ethical-governance, after: [analytical] }
+  - { id: emotional-intuitive, after: [ethical-governance] }
+  - { id: critical-validator, after: [emotional-intuitive] }
+  - { id: systemic, after: [emotional-intuitive] }
+  - { id: predictive-strategic, after: [critical-validator, systemic] }

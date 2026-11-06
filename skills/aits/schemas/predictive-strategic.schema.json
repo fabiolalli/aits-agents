@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/predictive-strategic.schema.json",
+  "title": "Predictive-Strategic Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "predictive-strategic" },
+    "main_output": {
+      "type": "object",
+      "required": ["scenarios", "robustness_ranking"],
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "required": ["id", "frame", "probability", "time_horizon"],
+            "properties": {
+              "id": { "type": "string" },
+              "frame": { "enum": ["baseline", "optimistic", "pessimistic", "shock", "regulatory_shift", "competitive_move", "technological_leap", "market_contraction", "market_expansion", "black_swan"] },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "key_drivers": { "type": "array", "items": { "type": "string" } },
+              "probability": {
+                "type": "object",
+                "properties": {
+                  "point": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "interval": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+                  "confidence": { "enum": ["high", "medium", "low"] },
+                  "basis": { "type": "string" }
+                }
+              },
+              "time_horizon": { "type": "string" },
+              "decision_outcome_under_scenario": { "type": "object" },
+              "early_warning_signals": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "signal": { "type": "string" },
+                    "threshold": { "type": "string" },
+                    "data_source": { "type": "string" },
+                    "lead_time_to_scenario": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "sensitivity_analysis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variable": { "type": "string" },
+              "baseline_value": { "type": "number" },
+              "range_tested": { "type": "array", "items": { "type": "number" } },
+              "outcome_elasticity": { "type": "string" },
+              "confidence_in_elasticity": { "enum": ["high", "medium", "low"] },
+              "implication": { "type": "string" }
+            }
+          }
+        },
+        "robustness_ranking": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["option_id", "robustness_level"],
+            "properties": {
+              "option_id": { "type": "string" },
+              "robustness_level": { "enum": ["fragile", "sensitive", "robust", "antifragile"] },
+              "scenarios_performed_well": { "type": "array", "items": { "type": "string" } },
+              "scenarios_performed_poorly": { "type": "array", "items": { "type": "string" } },
+              "worst_case_outcome": { "type": "string" },
+              "expected_value_weighted_by_probability": { "type": "number" }
+            }
+          }
+        },
+        "strategic_posture_recommendation": {
+          "type": "object",
+          "properties": {
+            "posture": { "enum": ["commit", "hedge", "defer", "real_option"] },
+            "reasoning": { "type": "string" },
+            "commitment_staging": { "type": "string" }
+          }
+        },
+        "uncertainty_disclosure": {
+          "type": "object",
+          "properties": {
+            "known_unknowns": { "type": "array", "items": { "type": "string" } },
+            "out_of_frame_scenarios": { "type": "string" },
+            "forecast_half_life": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

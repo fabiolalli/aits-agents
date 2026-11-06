@@ -4,6 +4,46 @@ All notable changes to the AITS repository are documented here.
 
 ---
 
+## [3.0.0] — 2026-11-06
+
+AITS moves enforcement from the prompts to a deterministic engine and separates the method from any model or runtime. v2 envelopes remain valid.
+
+### Added
+
+- **`spec/`**, the runtime-neutral method: agents with capability tiers (`deep`, `standard`, `fast`) and abstract capabilities instead of tools and models; `aits.spec.yaml` with diversity, validation, calibration and confidence policies; `rules.yaml` declaring the inviolable rules; `graphs/` with an execution graph for `full`, `quick`, `diverge` and each of the 7 playbooks. A test and `npm run check:neutral` fail if a model or vendor name enters the spec.
+- **`aits-core` engine** (TypeScript): JSON Schema validation, rule evaluation, gates closed only by a human answer recorded with its channel (`elicitation`, `cli`, `agent_relayed`, `a2a`), unmet requirements and playbook coverage that block the synthesis, hash-chained append-only decision log with optional Ed25519 signatures, aggregation of independent runs (median of numbers, count of positions, minority report), engine-computed confidence, semantic memory with a local hashing embedder or any OpenAI-compatible embeddings endpoint, predictions with outcomes, calibration (Brier score, skill, reliability, recalibration from 20 resolved predictions), learned pattern candidates reviewed by a human, Markdown report and OpenTelemetry GenAI trace export.
+- **Rules R2a and R8** made explicit: high-impact gaps reported by Analytical itself, and blocking `hitl_flags` from any agent.
+- **`aits` CLI and `aits-mcp` server** with 14 tools; gates use MCP elicitation when the client supports it.
+- **Runtime hook** for Claude Code that submits every sub-agent output to the engine automatically; provenance added later is attached instead of being counted twice.
+- **A2A endpoint** exposing a model-free governance review of a set of envelopes.
+- **Agent Skills package** (`skills/aits/`) with the engine as `scripts/aits.mjs`, for any runtime that reads `SKILL.md`, including claude.ai.
+- **Envelope 3.0** fields: `provenance` (runtime, model family, model, tier, run index) and `predictions`.
+- **Eval harness** (`eval/`) that replays recorded envelopes of past decisions and scores gate recall, risk recall, Brier score and acceptance; a case template and one synthetic demo case.
+- **Example export** in `examples/demo-pricing-change` (synthetic data).
+- Italian keywords for every pattern-library archetype.
+- `aits.config.example.yaml`, `LICENSE` (MIT).
+
+### Changed
+
+- **Claude Code plugin** is generated from the spec (`aits build`). Agents default to `model: inherit`; a tier-to-model mapping in `aits.config.yaml` produces a plugin with your models. The plugin now includes the engine as MCP server and hook.
+- **Meta-Orchestrator**: new Engine Protocol section; plans by parallel waves; submits every envelope; runs Critical-Validator, Predictive-Strategic and Foresight several times when configured and reads their aggregation; reports the confidence computed by the engine; declares `enforcement: absent` when no engine is reachable.
+- **Critical-Validator, Predictive-Strategic, Foresight** emit explicit predictions for calibration.
+- **Agent contract**: enforcement is performed by the engine; provenance and predictions documented; contract version 3.0.
+- **Playbooks** reference their execution graph.
+
+### Removed
+
+- The Claude Code path-resolution text from the method files: each adapter now injects its own.
+
+### Breaking changes
+
+- The repository layout changed: the method lives in `spec/`, adapters are generated. Files in `plugins/aits/` should not be edited by hand.
+- A synthesis is refused while blocking gates are open, rule requirements are unmet or playbook agents are missing: flows that relied on the orchestrator skipping a step now stop and ask the human.
+- The confidence reported to the user is the engine's, which can be lower than the one the orchestrator declares.
+- v2 memory records in `.aits/memory/` are not migrated.
+
+---
+
 ## [2.0] — 2026-04-17
 
 Major architectural evolution from the 1.x series. Every agent file has been refactored, four new foundational files have been added, and the system has gained JSON schemas, a pattern library, a conflict matrix, and shared taxonomies.

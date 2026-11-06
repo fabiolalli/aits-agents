@@ -1,0 +1,18 @@
+# Copy this folder to eval/cases/<id>/ and fill it in for a real past decision.
+id: <short-id>
+synthetic: false
+problem: <the decision, as it was framed at the time>
+graph: <full | quick | diverge | playbook id>
+decided_on: <YYYY-MM-DD>
+outcome_known_on: <YYYY-MM-DD>
+truth:
+  # Risks that actually happened, in plain words. Matched by word overlap against the risk maps.
+  materialized_risks: []
+  # Id or name of the scenario that actually occurred, if Predictive-Strategic ran.
+  scenario_occurred:
+  # Gates you believe should have fired (R1..R8, R2a).
+  expected_gates: []
+  # Your judgement today: was the decision right?
+  decision_was_right:
+# Put the recorded envelopes under runs/<label>/ (for example runs/v2/ and runs/v3/, produced with
+# the same models), one JSON file per agent output, the synthesis last.

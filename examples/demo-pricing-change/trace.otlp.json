@@ -1,0 +1,677 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "aits"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "3.0.0"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "aits-core",
+            "version": "3.0.0"
+          },
+          "spans": [
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "e543924bbf853a06",
+              "name": "invoke_workflow aits.go-no-go",
+              "kind": 1,
+              "startTimeUnixNano": "1793993813438000000",
+              "endTimeUnixNano": "1793993814845000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_workflow"
+                  }
+                },
+                {
+                  "key": "aits.run_id",
+                  "value": {
+                    "stringValue": "2026-11-06_raise-the-price-of-the-smb-plan-from_30905c81"
+                  }
+                },
+                {
+                  "key": "aits.graph",
+                  "value": {
+                    "stringValue": "go-no-go"
+                  }
+                },
+                {
+                  "key": "aits.mode",
+                  "value": {
+                    "stringValue": "autonomous"
+                  }
+                },
+                {
+                  "key": "aits.state",
+                  "value": {
+                    "stringValue": "completed"
+                  }
+                },
+                {
+                  "key": "aits.log.head",
+                  "value": {
+                    "stringValue": "a31c94dba07a0a94a792e99bdc03a95beae2aa76810d48e06988cb92f36b42aa"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "aits.gate_response",
+                  "timeUnixNano": "1793993814665000000",
+                  "attributes": [
+                    {
+                      "key": "aits.log.seq",
+                      "value": {
+                        "intValue": "7"
+                      }
+                    },
+                    {
+                      "key": "aits.log.hash",
+                      "value": {
+                        "stringValue": "aafec12e2d6112519657803f65bc05ae67a93f13f5df920e0ac4e9f15d6f0814"
+                      }
+                    },
+                    {
+                      "key": "aits.gate_id",
+                      "value": {
+                        "stringValue": "R3#1"
+                      }
+                    },
+                    {
+                      "key": "aits.rule",
+                      "value": {
+                        "stringValue": "R3"
+                      }
+                    },
+                    {
+                      "key": "aits.decision",
+                      "value": {
+                        "stringValue": "proceed"
+                      }
+                    },
+                    {
+                      "key": "aits.via",
+                      "value": {
+                        "stringValue": "cli"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "aits.synthesis_accepted",
+                  "timeUnixNano": "1793993814843000000",
+                  "attributes": [
+                    {
+                      "key": "aits.log.seq",
+                      "value": {
+                        "intValue": "8"
+                      }
+                    },
+                    {
+                      "key": "aits.log.hash",
+                      "value": {
+                        "stringValue": "93ec644d5d67fddf87dd577f4e53d4b1e99c44b7d1354079943752c7e95296ac"
+                      }
+                    },
+                    {
+                      "key": "aits.engine_confidence",
+                      "value": {
+                        "stringValue": "medium"
+                      }
+                    },
+                    {
+                      "key": "aits.declared_confidence",
+                      "value": {
+                        "stringValue": "high"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "aits.run_closed",
+                  "timeUnixNano": "1793993814845000000",
+                  "attributes": [
+                    {
+                      "key": "aits.log.seq",
+                      "value": {
+                        "intValue": "9"
+                      }
+                    },
+                    {
+                      "key": "aits.log.hash",
+                      "value": {
+                        "stringValue": "a31c94dba07a0a94a792e99bdc03a95beae2aa76810d48e06988cb92f36b42aa"
+                      }
+                    },
+                    {
+                      "key": "aits.status",
+                      "value": {
+                        "stringValue": "completed"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "187e730f62575d6e",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent analytical",
+              "kind": 1,
+              "startTimeUnixNano": "1772442420000000000",
+              "endTimeUnixNano": "1793993813619000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "analytical"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-a"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "standard"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "high"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "e8f5ef5a972f6b8498b99dd198d71672994bb9603f7bdd0825886a4395dcbd3e"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993813619000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "c3d1280064e3405a",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent critical-validator",
+              "kind": 1,
+              "startTimeUnixNano": "1772442840000000000",
+              "endTimeUnixNano": "1793993813798000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "critical-validator"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-a"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "standard"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "medium"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "bafdab2a51b73cca596f3b53d931316614e40373b6981b2b91e236f297c01507"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993813798000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "d1ae621d06aaba9c",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent critical-validator",
+              "kind": 1,
+              "startTimeUnixNano": "1772443260000000000",
+              "endTimeUnixNano": "1793993813976000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "critical-validator"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-b"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "deep"
+                  }
+                },
+                {
+                  "key": "aits.run_index",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "medium"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "3"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "6e0f56c934213ff422a02fe1ee270aa28b91a8ff177c53cefe0dd7f51b3bbb26"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993813976000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "79385bbef0abfcae",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent optimizer",
+              "kind": 1,
+              "startTimeUnixNano": "1772443680000000000",
+              "endTimeUnixNano": "1793993814158000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "optimizer"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-b"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "standard"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "medium"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "4"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "2643185168629d79887f63a4ca76fc860d159cdf86f28596a24099fc7b696441"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993814158000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "07078c88faf0ce64",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent ethical-governance",
+              "kind": 1,
+              "startTimeUnixNano": "1772444100000000000",
+              "endTimeUnixNano": "1793993814351000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "ethical-governance"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-a"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "standard"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "medium"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "5"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "ae80b51606a8533ba63cb8220590b206567f0b41e6413767bb76a6dc15fc8d5c"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993814351000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "5882dfd4569ad5caed10ccc0571a373a",
+              "spanId": "8f0cf59b0b17be52",
+              "parentSpanId": "e543924bbf853a06",
+              "name": "invoke_agent predictive-strategic",
+              "kind": 1,
+              "startTimeUnixNano": "1772444280000000000",
+              "endTimeUnixNano": "1793993814533000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "predictive-strategic"
+                  }
+                },
+                {
+                  "key": "aits.model_family",
+                  "value": {
+                    "stringValue": "family-b"
+                  }
+                },
+                {
+                  "key": "aits.tier",
+                  "value": {
+                    "stringValue": "deep"
+                  }
+                },
+                {
+                  "key": "aits.envelope.status",
+                  "value": {
+                    "stringValue": "accepted"
+                  }
+                },
+                {
+                  "key": "aits.confidence",
+                  "value": {
+                    "stringValue": "medium"
+                  }
+                },
+                {
+                  "key": "aits.log.seq",
+                  "value": {
+                    "intValue": "6"
+                  }
+                },
+                {
+                  "key": "aits.log.hash",
+                  "value": {
+                    "stringValue": "476b37b7d21052fe966de35ed067e4318bb24d206fcda3b92e1f5e72c611b20b"
+                  }
+                }
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.evaluation.result",
+                  "timeUnixNano": "1793993814533000000",
+                  "attributes": [
+                    {
+                      "key": "gen_ai.evaluation.name",
+                      "value": {
+                        "stringValue": "aits.schema_and_rules"
+                      }
+                    },
+                    {
+                      "key": "gen_ai.evaluation.score.label",
+                      "value": {
+                        "stringValue": "accepted"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

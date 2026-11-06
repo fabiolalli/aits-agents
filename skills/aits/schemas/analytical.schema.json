@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/analytical.schema.json",
+  "title": "Analytical Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "analytical" },
+    "main_output": {
+      "type": "object",
+      "required": ["facts", "gaps", "assumptions"],
+      "properties": {
+        "facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "statement", "source_confidence"],
+            "properties": {
+              "id": { "type": "string" },
+              "statement": { "type": "string" },
+              "source": { "type": "string" },
+              "source_confidence": { "enum": ["high", "medium", "low"] },
+              "source_date": { "type": "string" },
+              "as_of": { "type": "string" },
+              "category": { "enum": ["market", "financial", "technical", "regulatory", "historical", "demographic"] }
+            }
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "value": { "type": "number" },
+              "unit": { "type": "string" },
+              "source": { "type": "string" },
+              "as_of": { "type": "string" },
+              "trend": { "enum": ["increasing", "decreasing", "stable", "volatile", "unknown"] },
+              "comparison_baseline": { "type": "string" }
+            }
+          }
+        },
+        "interpretations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "reading": { "type": "string" },
+              "supporting_facts": { "type": "array", "items": { "type": "string" } },
+              "alternative_readings": { "type": "array", "items": { "type": "string" } },
+              "confidence": { "enum": ["high", "medium", "low"] }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["description", "impact_if_unfilled"],
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "impact_if_unfilled": { "enum": ["high", "medium", "low"] },
+              "how_to_fill": { "type": "string" },
+              "estimated_cost_to_fill": { "type": "string" },
+              "blocks_agents": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["statement", "testable"],
+            "properties": {
+              "id": { "type": "string" },
+              "statement": { "type": "string" },
+              "testable": { "type": "boolean" },
+              "test_method": { "type": "string" },
+              "risk_if_wrong": { "type": "string" },
+              "confidence_in_assumption": { "enum": ["high", "medium", "low"] }
+            }
+          }
+        },
+        "source_inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "citation": { "type": "string" },
+              "independence": { "enum": ["primary", "secondary", "tertiary"] },
+              "recency": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

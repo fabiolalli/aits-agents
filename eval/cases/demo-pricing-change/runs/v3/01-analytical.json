@@ -1,0 +1,48 @@
+{
+  "agent": "analytical",
+  "version": "3.0",
+  "timestamp": "2026-03-02T09:07:00.000Z",
+  "confidence": {
+    "level": "high",
+    "reasoning": "synthetic demo"
+  },
+  "summary": "analytical: synthetic demo output",
+  "main_output": {
+    "facts": [
+      {
+        "id": "f1",
+        "statement": "Current plan price is 29 EUR per seat per month",
+        "source": "internal price list",
+        "source_confidence": "high",
+        "category": "financial"
+      },
+      {
+        "id": "f2",
+        "statement": "Monthly logo churn has been 2.1% over the last 12 months",
+        "source": "billing data",
+        "source_confidence": "high",
+        "category": "financial"
+      }
+    ],
+    "gaps": [
+      {
+        "id": "g1",
+        "description": "Price elasticity of the SMB segment",
+        "impact_if_unfilled": "medium",
+        "how_to_fill": "Pricing survey on 200 customers"
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "a1",
+        "statement": "Competitors keep prices stable for six months",
+        "testable": true
+      }
+    ]
+  },
+  "provenance": {
+    "runtime": "demo",
+    "model_family": "family-a",
+    "tier": "standard"
+  }
+}

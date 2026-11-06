@@ -135,7 +135,7 @@ export function markdownReport(run: Run, publicKeys: Record<string, string> = {}
   lines.push(`- Families that produced outputs: ${s.diversity.families.join(', ') || 'none declared'}`);
   lines.push(`- Families available in the configuration: ${s.diversity.families_available.join(', ') || 'none configured'}`);
   lines.push(`- Monoculture: ${s.diversity.monoculture ? 'yes' : 'no'}${s.diversity.verified ? '' : ' (provenance missing on some outputs, diversity unverified)'}`);
-  for (const [agent, m] of Object.entries(s.diversity.multi_run)) lines.push(`- ${agent}: ${m.runs} run(s) of ${m.required} required by policy`);
+  for (const [agent, m] of Object.entries(s.diversity.multi_run)) lines.push(`- ${agent}: ${m.runs} independent run(s), policy asks for ${m.required}${m.runs < m.required ? ' (below policy: minority positions may be missing)' : ''}`);
   const multi = Object.keys(s.diversity.multi_run);
   for (const agent of multi) {
     const agg = run.aggregate(agent);

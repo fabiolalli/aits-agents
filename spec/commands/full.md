@@ -2,7 +2,7 @@
 id: full
 mode: supervised
 graph: full
-description: Full AITS analysis in supervised mode. Activates the Meta-Orchestrator with checkpoint after every agent. The user can approve, correct, redirect, redo, or switch to autonomous at each step. Default for high-stakes, irreversible decisions. Consults pattern library and memory, matches playbooks, enforces all seven inviolable rules, validates schemas, resolves conflicts via the matrix.
+description: Full AITS analysis in supervised mode. Activates the Meta-Orchestrator with checkpoint after every agent. The user can approve, correct, redirect, redo, or switch to autonomous at each step. Default for high-stakes, irreversible decisions. Consults pattern library and memory, matches playbooks, runs every output through the AITS engine (schemas, inviolable rules, human gates), resolves conflicts via the matrix.
 ---
 
 # /aits-full — Full AITS Analysis (Supervised Mode)

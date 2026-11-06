@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/optimizer.schema.json",
+  "title": "Optimizer Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "optimizer" },
+    "main_output": {
+      "type": "object",
+      "required": ["business_case", "recommendation"],
+      "properties": {
+        "business_case": {
+          "type": "object",
+          "properties": {
+            "option_id": { "type": "string" },
+            "value_drivers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "driver": { "type": "string" },
+                  "gross_benefit": {
+                    "type": "object",
+                    "properties": {
+                      "value": { "type": "number" },
+                      "unit": { "type": "string" },
+                      "time_window": { "type": "string" }
+                    }
+                  },
+                  "confidence_interval": {
+                    "type": "object",
+                    "properties": {
+                      "low": { "type": "number" },
+                      "high": { "type": "number" }
+                    }
+                  },
+                  "confidence": { "enum": ["high", "medium", "low"] },
+                  "source": { "type": "string" },
+                  "beneficiary": { "type": "string" }
+                }
+              }
+            },
+            "implementation_cost": {
+              "type": "object",
+              "properties": {
+                "one_time": { "type": "object" },
+                "recurring": { "type": "object" },
+                "opportunity_cost": { "type": "string" }
+              }
+            },
+            "risk_adjustment": {
+              "type": "object",
+              "properties": {
+                "expected_value_erosion_from_critical_risks": { "type": "number" },
+                "method": { "type": "string" }
+              }
+            },
+            "net_value": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number" },
+                "unit": { "type": "string" },
+                "confidence": { "enum": ["high", "medium", "low"] }
+              }
+            },
+            "payback_period": { "type": "string" },
+            "npv": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number" },
+                "discount_rate": { "type": "number" }
+              }
+            }
+          }
+        },
+        "value_sequencing": {
+          "type": "object",
+          "properties": {
+            "quick_wins": { "type": "array" },
+            "short_term_gains": { "type": "array" },
+            "structural_value": { "type": "array" }
+          }
+        },
+        "opportunity_cost_analysis": {
+          "type": "object",
+          "properties": {
+            "alternatives_considered": { "type": "array" },
+            "do_nothing_cost": { "type": "string" }
+          }
+        },
+        "distribution_analysis": {
+          "type": "object",
+          "properties": {
+            "beneficiaries": { "type": "array" },
+            "cost_bearers": { "type": "array" },
+            "asymmetry_flag": { "type": "string" }
+          }
+        },
+        "levers": { "type": "array" },
+        "recommendation": { "enum": ["proceed_as_designed", "proceed_with_sequencing", "redesign_for_quick_wins", "defer", "do_not_proceed"] },
+        "recommendation_reasoning": { "type": "string" }
+      }
+    }
+  }
+}

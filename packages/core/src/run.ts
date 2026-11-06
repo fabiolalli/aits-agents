@@ -138,8 +138,8 @@ export class Engine {
   }
 
   open(runId?: string): Run {
-    const id = runId ?? this.activeRunId();
-    if (!id) throw new Error('no run id given and no active run');
+    const id = runId ?? this.activeRunId() ?? this.latestRunId();
+    if (!id) throw new Error('no run id given and no run found');
     const file = path.join(this.runsDir(), id, 'log.jsonl');
     if (!fs.existsSync(file)) throw new Error(`run ${id} not found in ${this.runsDir()}`);
     return new Run(this, id);
@@ -148,6 +148,13 @@ export class Engine {
   activeRunId(): string | undefined {
     const p = path.join(this.runsDir(), 'active');
     return fs.existsSync(p) ? fs.readFileSync(p, 'utf8').trim() || undefined : undefined;
+  }
+
+  /** Most recently written run, used when no run id is given and no run is active. */
+  latestRunId(): string | undefined {
+    return this.listRuns()
+      .map((id) => ({ id, t: fs.statSync(path.join(this.runsDir(), id, 'log.jsonl')).mtimeMs }))
+      .sort((a, b) => b.t - a.t)[0]?.id;
   }
 
   listRuns(): string[] {
@@ -181,12 +188,20 @@ export class Run {
   }
 
   envelopes(): RecordedEnvelope[] {
+    const attached = new Map<number, Record<string, unknown>>();
+    for (const e of this.log.all()) {
+      if (e.type === 'provenance_attached') {
+        const d = e.data as { target_seq: number; provenance: Record<string, unknown> };
+        attached.set(d.target_seq, d.provenance);
+      }
+    }
     return this.log
       .all()
       .filter((e) => e.type === 'envelope')
       .map((e) => {
-        const d = e.data as { agent: string; status: RecordedEnvelope['status']; envelope: Record<string, unknown>; envelope_hash: string };
-        return { seq: e.seq, agent: d.agent, envelope: d.envelope, hash: d.envelope_hash, status: d.status };
+        const d = e.data as { agent: string; status: RecordedEnvelope['status']; envelope: Record<string, unknown>; content_hash?: string; envelope_hash: string };
+        const envelope = attached.has(e.seq) ? { ...d.envelope, provenance: attached.get(e.seq) } : d.envelope;
+        return { seq: e.seq, agent: d.agent, envelope, hash: d.content_hash ?? d.envelope_hash, status: d.status };
       });
   }
 
@@ -228,21 +243,28 @@ export class Run {
     }
     const agent = String(envelope.agent ?? 'unknown');
     const envelope_hash = hashOf(envelope);
-    const dup = this.envelopes().find((e) => e.hash === envelope_hash && e.status !== 'invalid');
-    if (dup) return this.result('duplicate', dup.seq, agent, []);
+    // The same output can arrive twice (a runtime hook and the orchestrator). Identity ignores
+    // provenance, which the orchestrator may add later: it is attached instead of counted twice.
+    const { provenance, ...content } = envelope;
+    const content_hash = hashOf(content);
+    const dup = this.envelopes().find((e) => e.hash === content_hash && e.status !== 'invalid');
+    if (dup) {
+      if (provenance && !dup.envelope.provenance) this.log.append('provenance_attached', { target_seq: dup.seq, provenance });
+      return this.result('duplicate', dup.seq, agent, []);
+    }
 
     const v = validateEnvelope(envelope);
     if (!v.valid) {
-      const entry = this.log.append('envelope', { agent, status: 'invalid', envelope, envelope_hash, errors: v.errors });
+      const entry = this.log.append('envelope', { agent, status: 'invalid', envelope, content_hash, envelope_hash, errors: v.errors });
       return this.result('invalid', entry.seq, agent, v.errors);
     }
     const rejecting = rejectingRules(this.spec, agent, envelope);
     if (rejecting.length) {
       const errors = rejecting.map((r) => `${r.id}: ${r.title}`);
-      const entry = this.log.append('envelope', { agent, status: 'rejected', envelope, envelope_hash, errors, rejected_by: rejecting.map((r) => r.id) });
+      const entry = this.log.append('envelope', { agent, status: 'rejected', envelope, content_hash, envelope_hash, errors, rejected_by: rejecting.map((r) => r.id) });
       return { ...this.result('rejected', entry.seq, agent, errors), rejected_by: rejecting.map((r) => r.id) };
     }
-    const entry = this.log.append('envelope', { agent, status: 'accepted', envelope, envelope_hash });
+    const entry = this.log.append('envelope', { agent, status: 'accepted', envelope, content_hash, envelope_hash });
     return this.result('accepted', entry.seq, agent, []);
   }
 
@@ -428,16 +450,20 @@ export class Run {
         seen.add(pid);
         out.push({ id: pid, agent: e.agent, model_family: prov.model_family, tier, statement, probability, resolve_by, outcome: null, resolved_at: null, note: null });
       };
-      for (const p of (e.envelope.predictions as { id: string; statement: string; probability: number; resolve_by?: string }[] | undefined) ?? []) push(p.id, p.statement, p.probability, p.resolve_by);
+      const declared = (e.envelope.predictions as { id: string; statement: string; probability: number; resolve_by?: string; source_ref?: string }[] | undefined) ?? [];
+      for (const p of declared) push(p.id, p.statement, p.probability, p.resolve_by);
+      // A risk or scenario the agent already turned into an explicit prediction is not derived again.
+      const covered = new Set(declared.map((p) => p.source_ref).filter(Boolean));
       const main = (e.envelope.main_output ?? {}) as Record<string, unknown>;
       if (e.agent === 'critical-validator') {
         for (const r of (main.risk_map as { id?: string; risk: string; probability: number; severity: number }[] | undefined) ?? []) {
+          if (r.id && covered.has(r.id)) continue;
           if (r.severity >= 10 && map[String(r.probability)] !== undefined) push(`risk-${r.id ?? slugify(r.risk, 24)}`, `Risk materialises: ${r.risk}`, map[String(r.probability)]);
         }
       }
       if (e.agent === 'predictive-strategic') {
         for (const s of (main.scenarios as { id: string; name?: string; description?: string; probability?: { point?: number }; time_horizon?: string }[] | undefined) ?? []) {
-          if (typeof s.probability?.point === 'number') push(`scenario-${s.id}`, `Scenario occurs: ${s.name ?? s.description ?? s.id}`, s.probability.point, s.time_horizon);
+          if (!covered.has(s.id) && typeof s.probability?.point === 'number') push(`scenario-${s.id}`, `Scenario occurs: ${s.name ?? s.description ?? s.id}`, s.probability.point, s.time_horizon);
         }
       }
     }

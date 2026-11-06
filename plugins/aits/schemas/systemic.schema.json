@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/systemic.schema.json",
+  "title": "Systemic Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "systemic" },
+    "main_output": {
+      "type": "object",
+      "required": ["system_boundary", "feedback_loops", "leverage_points"],
+      "properties": {
+        "system_boundary": {
+          "type": "object",
+          "required": ["inside"],
+          "properties": {
+            "inside": { "type": "array", "items": { "type": "string" } },
+            "outside_but_interacting": { "type": "array", "items": { "type": "string" } },
+            "deliberately_excluded": { "type": "array", "items": { "type": "string" } },
+            "scope_choice_rationale": { "type": "string" }
+          }
+        },
+        "stocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "unit": { "type": "string" },
+              "current_level": { "type": "string" },
+              "dynamics": { "enum": ["growing", "shrinking", "stable"] }
+            }
+          }
+        },
+        "flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "rate": { "type": "string" },
+              "controls": { "type": "string" }
+            }
+          }
+        },
+        "feedback_loops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "description"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "enum": ["reinforcing", "balancing"] },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "elements_in_loop": { "type": "array", "items": { "type": "string" } },
+              "strength": { "enum": ["strong", "medium", "weak"] },
+              "delay_structure": { "type": "string" },
+              "stability_effect": { "type": "string" },
+              "archetype_match": { "enum": ["limits_to_growth", "fixes_that_fail", "tragedy_of_commons", "shifting_the_burden", "success_to_successful", "escalation", "drifting_goals", "growth_and_underinvestment", "none"] }
+            }
+          }
+        },
+        "leverage_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["intervention_site", "meadows_level", "leverage_strength"],
+            "properties": {
+              "id": { "type": "string" },
+              "intervention_site": { "type": "string" },
+              "meadows_level": { "enum": ["parameters", "buffer_sizes", "stock_flow_structures", "delays", "balancing_loops", "reinforcing_loops", "information_flows", "rules", "self_organization", "goals", "paradigms"] },
+              "leverage_strength": { "enum": ["weak", "medium", "strong", "transformative"] },
+              "intervention_description": { "type": "string" },
+              "expected_effect": { "type": "string" },
+              "second_order_effects": { "type": "array", "items": { "type": "string" } },
+              "effort_cost": { "type": "string" }
+            }
+          }
+        },
+        "cascade_paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "origin": { "type": "string" },
+              "propagation": { "type": "array", "items": { "type": "string" } },
+              "affected_stakeholders": { "type": "array", "items": { "type": "string" } },
+              "reversibility": { "enum": ["reversible", "partial", "irreversible"] },
+              "estimated_time_for_full_propagation": { "type": "string" }
+            }
+          }
+        },
+        "unintended_consequences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "consequence": { "type": "string" },
+              "mechanism": { "type": "string" },
+              "probability": { "enum": ["high", "medium", "low"] },
+              "mitigation": { "type": "string" }
+            }
+          }
+        },
+        "linear_thinking_failures": { "type": "array" },
+        "systemic_recommendation": { "type": "string" }
+      }
+    }
+  }
+}

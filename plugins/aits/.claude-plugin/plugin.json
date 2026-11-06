@@ -1,7 +1,7 @@
 {
   "name": "aits",
-  "version": "2.0.0",
-  "description": "AITS — Adaptive Intelligence Thinking System. 12 cognitive agents (Meta-Orchestrator, Analytical, Critical-Validator, Creative-Generative, Emotional-Intuitive, Ethical-Governance, Optimizer, Predictive-Strategic, Foresight, Systemic, Memory, Dashboard) plus 4 slash commands (/aits-full, /aits-quick, /aits-diverge, /aits-board), 7 decision playbooks, conflict matrix, pattern library, and JSON schemas. Evolved from de Bono's Six Thinking Hats.",
+  "version": "3.0.0",
+  "description": "AITS 3.0 — 11 cognitive agents and a dashboard template, 4 commands, 10 execution graphs, conflict matrix, pattern library and JSON schemas, enforced by a deterministic engine (MCP server and hook): rules and human gates, hash-chained decision log, model-diversity policy, semantic memory and calibration.",
   "author": {
     "name": "Fabio Lalli",
     "url": "https://github.com/fabiolalli"
@@ -16,6 +16,8 @@
     "thinking-hats",
     "de-bono",
     "orchestration",
-    "playbooks"
+    "playbooks",
+    "governance",
+    "calibration"
   ]
 }

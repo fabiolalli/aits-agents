@@ -12,6 +12,8 @@ Assessing launch readiness for a new product, feature, or service.
 
 **⚪ Analytical → 🔴 Emotional-Intuitive → 🟢 Creative-Generative → ⚫ Critical-Validator → 🟡 Optimizer → 🔵 Predictive-Strategic → 🎯 Synthesis**
 
+Execution graph: `graphs/product-launch.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: facts first; customer perception and internal-team readiness second (launch is a people decision as much as a product decision); creative options for launch mechanics; stress-test the plan; optimize the value capture; project market response.
 
 ## Focus areas per agent

@@ -1,22 +1,25 @@
 # AITS — Adaptive Intelligence Thinking System
 
-**Version 2.0** · by [Fabio Lalli](https://github.com/fabiolalli)
+**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli)
 
-A decision-making framework for Claude Code, evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system with formal rules, structured outputs, conflict resolution, memory, and human-in-the-loop governance.
+A decision-making framework evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system for decisions: separate cognitive perspectives, formal rules, human gates, memory, and a deterministic engine that enforces all of it whatever model or runtime you use.
 
 ---
 
 ## What is AITS
 
-De Bono proposed a mental exercise: wear one thinking hat at a time, think from that perspective, then integrate. AITS keeps that core insight — **separating thinking modes and then integrating them** — and evolves it into a complete system with:
+De Bono proposed a mental exercise: wear one thinking hat at a time, think from that perspective, then integrate. AITS keeps that core insight, **separating thinking modes and then integrating them**, and turns it into a system with:
 
-- **11 cognitive agents** — each with a single-focus cognitive function, structured JSON output, and a clear handoff protocol
-- **A Meta-Orchestrator** that governs the flow, validates outputs against schemas, resolves conflicts via a codified matrix, and enforces seven inviolable rules
-- **A pattern library** of recurring decision archetypes with pre-loaded emotional, risk, and outcome signatures
-- **A memory** that accumulates past decisions and their retrospective outcomes, so AITS becomes a learning system rather than a static framework
-- **Three HITL modes** — supervised, autonomous, review — with mandatory gates that cannot be bypassed
+- **11 cognitive agents**, each with one function, a structured JSON output and an explicit handoff protocol
+- **A Meta-Orchestrator** that runs the agents in parallel waves and closes the decision
+- **A deterministic engine** (`aits-core`) that validates every output, evaluates the inviolable rules, opens gates only a human can close, and keeps a hash-chained, optionally signed decision log
+- **A diversity policy**: the agents that estimate risks and probabilities run several times, on different model families when available, and their disagreements are kept in a minority report
+- **Memory and calibration**: past decisions are recalled semantically, predictions are scored against what actually happened, and the engine adjusts how much it trusts each agent
+- **Three HITL modes** (supervised, autonomous, review) with mandatory gates that no mode can bypass
 
-See [`AITS.md`](./AITS.md) for the full manifesto and design principles.
+AITS is **runtime-neutral**: the specification names no model and no vendor. Models are a choice in your own configuration file.
+
+See [`AITS.md`](./AITS.md) for the manifesto and design principles.
 
 ---
 
@@ -48,283 +51,195 @@ Three expansions in one release. **More agents**, from eight to eleven: Systemic
 
 The book was theory. v1 was prototype. v2 is the operating system, the first release where AITS stops looking like a set of clever prompts and starts behaving like a system: measurable, composable, auditable, capable of remembering, and always handing the final judgement back to a human.
 
+### Version 3.0 — from prompts to an enforced, portable system (November 2026)
+
+v2 defined the rules; v3 makes them hold. In v2 the inviolable rules, the schema validation and the gates lived inside the Meta-Orchestrator's prompt: a model could skip them and nothing would notice. v3 moves enforcement into a deterministic engine that every runtime calls, so the same rule blocks the same synthesis on any model.
+
+Four changes define the release. **Enforcement**: schemas, rules (now declared in `rules.yaml`) and gates are evaluated by code, gates are closed only by a human answer recorded with the channel it came through, and every event goes into an append-only log whose hash chain makes later edits visible. **Independence from models**: the spec is separated from the runtime; agents declare a capability tier (`deep`, `standard`, `fast`) instead of a model, and research on multi-agent debate showed that agents of the same model family share errors, so the perspectives that estimate risk and probability now run independently, on different families when configured, aggregated without debate, with minority positions preserved. **Learning**: memory moves from tag matching to semantic recall, every prediction is stored with a field for its outcome, and calibration (Brier score by agent, model family and tier) feeds back into the confidence the engine reports. **Portability**: the same spec is built into a Claude Code plugin, a portable Agent Skills package with the engine as a script, an MCP server usable by any MCP client, and an A2A endpoint for governance review.
+
 ### Where it is going
 
-Every decision recorded in `.aits/memory/` becomes raw material for the next one. After a handful of similar decisions the system begins extracting patterns on its own, and the Pattern Library grows from seed examples into a real corpus of empirical archetypes.
-
-The next chapters are already visible in the repository: richer playbooks for specific industries, integration with external validators, multilingual agents, and adaptive orchestration that learns which agent sequences produce the best-calibrated outputs on which problem types. AITS is built to evolve, and the public CHANGELOG is the current audit trail of that evolution.
+The next step is evidence. The eval harness in `eval/` replays past decisions with known outcomes; filling it with real cases will show, with numbers, whether v3 calibrates better than v2 at equal models. After twenty resolved predictions per agent the engine starts recalibrating their probabilities on its own.
 
 ---
 
-## The 11 Agents
+## The 11 agents
 
-| Agent | Color | Hat origin | Function |
-|-------|-------|-----------|----------|
-| **Meta-Orchestrator** | 🔵 Blue | Blue | Governs the flow, validates outputs, resolves conflicts, produces the synthesis |
-| **Analytical** | ⚪ White | White | Facts, metrics, verifiable sources, explicit gaps |
-| **Emotional-Intuitive** | 🔴 Red | Red | Stakeholder maps with deep drivers, emotional timeline, asymmetry detection |
-| **Critical-Validator** | ⚫ Black | Black | Premortem, risk map (6 categories × 5×5 severity), fallacy detection |
-| **Optimizer** | 🟡 Yellow | Yellow | Business case, value sequencing, quick wins, opportunity cost |
-| **Creative-Generative** | 🟢 Green | Green | Options with novelty scoring, cross-domain analogies, micro-tests |
-| **Ethical-Governance** | 🟣 Purple | New | Seven ethical dimensions, red lines, distributional analysis, arbitration |
-| **Predictive-Strategic** | 🔮 Indigo | New | Scenario simulation, sensitivity analysis, robustness ranking |
-| **Systemic** | 🌐 Cyan | New | Feedback loops, leverage points, cascade paths |
-| **Foresight** | 🔭 Magenta | New | Options × scenarios matrix, dominance analysis, antifragility detection |
-| **Memory** | 💾 Gray | New | Decision archive, pattern extraction, retrospective learning |
+| Agent | Color | Hat origin | Tier | Function |
+|-------|-------|-----------|------|----------|
+| **Meta-Orchestrator** | 🔵 Blue | Blue | deep | Plans the waves, submits every output to the engine, closes the decision |
+| **Analytical** | ⚪ White | White | standard | Facts, metrics, verifiable sources, explicit gaps |
+| **Emotional-Intuitive** | 🔴 Red | Red | standard | Stakeholder maps with deep drivers, emotional timeline, asymmetry detection |
+| **Critical-Validator** | ⚫ Black | Black | deep | Premortem, risk map (6 categories × 5×5 severity), fallacy detection |
+| **Optimizer** | 🟡 Yellow | Yellow | standard | Business case, value sequencing, quick wins, opportunity cost |
+| **Creative-Generative** | 🟢 Green | Green | standard | Options with novelty scoring, cross-domain analogies, micro-tests |
+| **Ethical-Governance** | 🟣 Purple | New | deep | Seven ethical dimensions, red lines, distributional analysis, arbitration |
+| **Predictive-Strategic** | 🔮 Indigo | New | deep | Scenario simulation, sensitivity analysis, robustness ranking |
+| **Systemic** | 🌐 Cyan | New | deep | Feedback loops, leverage points, cascade paths |
+| **Foresight** | 🔭 Magenta | New | deep | Options × scenarios matrix, dominance analysis, antifragility detection |
+| **Memory** | 💾 Gray | New | fast | Decision archive, pattern extraction, retrospective learning |
+
+---
+
+## Architecture
+
+```
+spec/                 the method: agents, rules.yaml, graphs, schemas, references, playbooks (no vendor names)
+packages/core/        aits-core: the engine (validator, rules and gates, log, memory, calibration, export)
+packages/cli/         aits CLI, aits-mcp server, runtime hook, A2A endpoint, adapter builder, eval harness
+plugins/aits/         Claude Code adapter (generated from spec/)
+skills/aits/          Agent Skills adapter with the engine as scripts/aits.mjs (generated from spec/)
+aits.config.yaml      yours: which model serves each tier, memory embedder, signing key
+```
+
+The model produces, the engine validates. Adapters change per runtime; spec and engine do not.
 
 ---
 
 ## Installation
 
-AITS is designed for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) and ships as a **plugin marketplace**. The recommended way to install it is via Claude Code's plugin system.
+The engine needs Node.js 20 or later. Nothing else is installed: the engine ships as a single file inside each adapter.
 
-### Option A — Install via plugin marketplace (recommended)
-
-From inside Claude Code:
+### Claude Code (plugin marketplace)
 
 ```
 /plugin marketplace add fabiolalli/aits-agents
 /plugin install aits@aits-marketplace
 ```
 
-This single command installs all 12 agents, 4 slash commands, 7 playbooks, the conflict matrix, the pattern library, and all JSON schemas. Files land in `~/.claude/plugins/cache/aits-marketplace/aits/` and are exposed by Claude Code automatically.
+This installs the 11 agents, the dashboard template, 4 commands, 7 playbooks, 10 execution graphs, references, schemas and the engine. The plugin registers the engine as an MCP server (`aits`) and adds a hook that submits every sub-agent output to the engine automatically.
 
-### Option B — Install as a local plugin (for development or air-gapped use)
+### Any runtime that reads Agent Skills
 
-```bash
-git clone https://github.com/fabiolalli/aits-agents.git ~/aits-agents
+Copy `skills/aits/` into the skills folder your runtime reads (for example `.agents/skills/aits/` in a project). The skill tells the orchestrating model to use the engine through MCP when available, otherwise through `node scripts/aits.mjs`, otherwise to declare `enforcement: absent`.
+
+For claude.ai, zip the content of `skills/aits/` (with `SKILL.md` at the root of the archive) and upload it as a skill.
+
+### Any MCP client
+
+Point the client to the engine bundled in the skill folder:
+
+```json
+{
+  "mcpServers": {
+    "aits": { "command": "node", "args": ["/path/to/aits-agents/skills/aits/scripts/aits.mjs", "mcp"] }
+  }
+}
 ```
 
-Then in Claude Code:
+Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly and any decision sent by the model is ignored.
+
+### Configuration
+
+Copy `aits.config.example.yaml` to `aits.config.yaml` in your project. Map each tier to the models you want, give each model a family label, and choose the memory embedder (local hashing by default, or any OpenAI-compatible embeddings endpoint, including a local one). To build the Claude Code plugin with your own tier mapping:
 
 ```
-/plugin marketplace add ~/aits-agents
-/plugin install aits@aits-marketplace
+node skills/aits/scripts/aits.mjs build --target claude-code --config aits.config.yaml --out .
 ```
 
-### Option C — Manual copy (legacy v1 layout)
+### Migrating from v2
 
-Useful if you prefer files directly under `~/.claude/` without going through the plugin loader.
-
-```bash
-git clone https://github.com/fabiolalli/aits-agents.git
-cd aits-agents/plugins/aits
-
-mkdir -p ~/.claude/agents ~/.claude/commands ~/.claude/playbooks ~/.claude/references ~/.claude/schemas
-cp agents/*.md       ~/.claude/agents/
-cp commands/*.md     ~/.claude/commands/
-cp playbooks/*.md    ~/.claude/playbooks/
-cp references/*.md   ~/.claude/references/
-cp schemas/*.json    ~/.claude/schemas/
-cp ../../AITS.md     ~/.claude/
-```
-
-### Per-project installation
-
-If you want AITS only for a specific project, install into the project's `.claude/` directory instead of your home directory:
-
-```bash
-mkdir -p .claude/agents .claude/commands .claude/playbooks .claude/references .claude/schemas
-cp plugins/aits/agents/*.md       .claude/agents/
-cp plugins/aits/commands/*.md     .claude/commands/
-cp plugins/aits/playbooks/*.md    .claude/playbooks/
-cp plugins/aits/references/*.md   .claude/references/
-cp plugins/aits/schemas/*.json    .claude/schemas/
-cp AITS.md .claude/
-```
-
-### Migrating from v1 (manual install) to v2 plugin
-
-If you previously installed AITS by copying files into `~/.claude/agents/`, `~/.claude/commands/`, and `~/.claude/playbooks/`, you must remove the v1 files **before** installing the plugin — otherwise Claude Code will load both copies and you will see duplicate agents.
-
-```bash
-# 1. Backup
-BAK="$HOME/.claude/backups/aits-v1-pre-plugin-$(date +%Y%m%d)"
-mkdir -p "$BAK"
-cp ~/.claude/agents/aits-*.md "$BAK/" 2>/dev/null
-cp ~/.claude/commands/aits-{full,quick,diverge,board}.md "$BAK/" 2>/dev/null
-[ -d ~/.claude/playbooks  ] && cp -r ~/.claude/playbooks  "$BAK/"
-[ -d ~/.claude/references ] && cp -r ~/.claude/references "$BAK/"
-[ -d ~/.claude/schemas    ] && cp -r ~/.claude/schemas    "$BAK/"
-[ -f ~/.claude/AITS.md    ] && cp ~/.claude/AITS.md "$BAK/"
-
-# 2. Remove the originals
-rm ~/.claude/agents/aits-*.md
-rm ~/.claude/commands/aits-{full,quick,diverge,board}.md
-rm -rf ~/.claude/playbooks ~/.claude/references ~/.claude/schemas
-rm -f ~/.claude/AITS.md
-
-# 3. Install the plugin (inside Claude Code)
-#    /plugin marketplace add fabiolalli/aits-agents
-#    /plugin install aits@aits-marketplace
-```
-
-After install, the v2 files live under `~/.claude/plugins/cache/aits-marketplace/aits/` and are exposed automatically. You can delete the backup once you have verified the plugin works.
-
-### Memory directory
-
-AITS writes decision records to `.aits/memory/` in the working directory. This directory is created automatically on first use. It is local-only — decisions never leave your machine.
-
-```
-.aits/
-├── memory/
-│   ├── index.json
-│   ├── patterns.json
-│   └── [YYYY-MM-DD]_[title-slug].json
-└── dashboard/
-    └── [title-slug].html
-```
+v2 envelopes are accepted by the v3 engine. If you installed v2 as a plugin, update it from the marketplace. If you copied v2 files into `~/.claude/`, remove them first (`aits-*.md` in `agents/` and `commands/`, and the `playbooks/`, `references/`, `schemas/` folders), then install the plugin. Existing `.aits/memory/` records from v2 are not migrated automatically: the v3 memory starts empty and is filled by new runs.
 
 ---
 
 ## Quick start
 
-Four commands give you the full system:
-
-### `/aits-full` — deep supervised analysis
-
-Full multi-agent sequence with checkpoints after every agent. Default for high-stakes or irreversible decisions.
+### Claude Code
 
 ```
-/aits-full
-
-Should we launch Product X in the EU market in Q2?
+/aits-full   Should we launch Product X in the EU market in Q2?
+/aits-quick  Approve this marketing budget reallocation?
+/aits-diverge We're stuck between hiring and outsourcing. What else is possible?
+/aits-board  for last
 ```
 
-### `/aits-quick` — rapid decision
-
-Minimal 3-agent flow (Analytical → Critical → Optimizer) with automatic escalation when inviolable rules trigger.
+### Command line
 
 ```
-/aits-quick
-
-Approve this marketing budget reallocation?
+aits start "Raise the SMB price from 29 to 35 EUR?" --graph go-no-go --mode autonomous
+aits submit analytical.json
+aits status
+aits gate R3#1 proceed --quote "Go ahead, with grandfathering for older customers"
+aits synthesize synthesis.json
+aits export
 ```
 
-### `/aits-diverge` — divergent brainstorming
-
-Creative-first sequence (Creative → Emotional → Foresight) that runs uninterrupted and presents a drill-down review at the end.
-
-```
-/aits-diverge
-
-We're stuck between hiring vs. outsourcing. What else is possible?
-```
-
-### `/aits-board` — dashboard
-
-View the current state of an in-flight analysis or generate an HTML dashboard for a completed one.
-
-```
-/aits-board
-/aits-board for 2026-04-17_product-x-launch
-/aits-board for pattern product-launch-cold-start
-```
+`aits` is `node skills/aits/scripts/aits.mjs` (or `node plugins/aits/server/aits.mjs`). Run `aits help` for every command. A complete exported run is in [`examples/demo-pricing-change`](./examples/demo-pricing-change) (synthetic data).
 
 ---
 
-## The seven inviolable rules
+## Inviolable rules
 
-These are enforced mechanically by the Meta-Orchestrator regardless of HITL mode:
+Declared in [`spec/rules.yaml`](./spec/rules.yaml) and evaluated by the engine after every output, in every HITL mode.
 
-1. **Only Blue closes the decision** — no other agent produces a final decision
-2. **Missing high-impact data → return to White** — triggers mandatory gate
-3. **Risk severity ≥ 10 from Black → Ethical or Predictive must activate** — triggers mandatory gate
-4. **Black/Yellow L3 contradiction → Ethical arbitrates** — triggers mandatory gate
-5. **≥ 4 viable options from Green → Foresight must evaluate** — advisory gate
-6. **Any red-line flag from Purple → mandatory HITL gate** — non-negotiable
-7. **Schema validation failure (after one retry) → mandatory HITL gate**
+| Rule | Condition | Effect |
+|------|-----------|--------|
+| R1 | An agent other than the Meta-Orchestrator carries a decision | Output rejected, blocking gate |
+| R2 | An agent reports a high-impact data gap | Analytical must run again, blocking gate |
+| R2a | Analytical reports a high-impact data gap | Blocking gate |
+| R3 | Critical-Validator finds severity ≥ 10 | Ethical-Governance or Predictive-Strategic must run, blocking gate |
+| R4 | Critical-Validator says stop and Optimizer says go | Ethical-Governance must arbitrate, blocking gate |
+| R5 | Creative-Generative proposes 4 or more options | Foresight must run, advisory gate |
+| R6 | Ethical-Governance finds a red line | Blocking gate |
+| R7 | The same agent fails schema validation twice | Blocking gate |
+| R8 | Any agent raises a blocking `hitl_flag` | Blocking gate |
 
----
-
-## Repository structure
-
-```
-aits-agents/
-├── README.md                               # This file
-├── CHANGELOG.md                            # 2.0 evolution from 1.x
-├── AITS.md                                 # Manifesto and design principles
-│
-├── aits-meta-orchestrator.md               # Blue — the flow governor
-├── aits-analytical.md                      # White
-├── aits-emotional-intuitive.md             # Red
-├── aits-critical-validator.md              # Black
-├── aits-optimizer.md                       # Yellow
-├── aits-creative-generative.md             # Green
-├── aits-ethical-governance.md              # Purple
-├── aits-predictive-strategic.md            # Indigo
-├── aits-systemic.md                        # Cyan
-├── aits-foresight.md                       # Magenta
-├── aits-memory.md                          # Gray
-│
-├── aits-full.md                            # Command: supervised full analysis
-├── aits-quick.md                           # Command: autonomous quick decision
-├── aits-diverge.md                         # Command: review-mode brainstorming
-├── aits-board.md                           # Command: dashboard view
-├── aits-dashboard.md                       # HTML dashboard template
-│
-├── playbooks/                              # Decision-type-specific sequences
-│   ├── go-no-go.md
-│   ├── product-launch.md
-│   ├── ma-due-diligence.md
-│   ├── risk-assessment.md
-│   ├── innovation-sprint.md
-│   ├── ethical-impact.md
-│   └── competitive-response.md
-│
-├── references/                             # Architectural foundations (new in 2.0)
-│   ├── agent-contract.md                   # Shared 10-section structure
-│   ├── conflict-matrix.md                  # Pairwise conflict resolution
-│   ├── taxonomies.md                       # Shared vocabulary
-│   └── pattern-library.md                  # Decision archetypes
-│
-├── schemas/                                # JSON Schema (new in 2.0)
-│   ├── _envelope.schema.json               # Common output envelope
-│   ├── meta-orchestrator.schema.json
-│   ├── analytical.schema.json
-│   ├── emotional-intuitive.schema.json
-│   ├── critical-validator.schema.json
-│   ├── optimizer.schema.json
-│   ├── creative-generative.schema.json
-│   ├── ethical-governance.schema.json
-│   ├── predictive-strategic.schema.json
-│   ├── systemic.schema.json
-│   ├── foresight.schema.json
-│   └── memory-record.schema.json
-│
-└── examples/                               # Usage examples (work in progress)
-```
+A human answers a gate with `proceed`, `provide_context`, `override` (waives the rule requirement, needs a justification and caps the engine confidence) or `abort`. The synthesis is refused while a blocking gate is open, a requirement is unmet, or an agent required by the playbook graph has neither run nor been skipped by a human.
 
 ---
 
-## What's new in 2.0
+## Engine confidence
 
-Short summary — see [`CHANGELOG.md`](./CHANGELOG.md) for the full evolution log.
+The confidence reported to the user is computed by the engine, not declared by the model: the weakest confidence among critical inputs, lowered to `low` for an agent whose past forecasts do not beat the base rate, capped at `medium` when all outputs come from one model family (or families are not declared), and capped at `medium` after a human override. The report shows the declared and the computed confidence side by side, with the reasons.
 
-- **Handoff protocols** — every agent declares what it receives from upstream agents and what it passes to downstream agents (no more implicit coupling)
-- **Conflict matrix** — pairwise resolution rules with L1-L4 severity scale (no more improvisation)
-- **Pattern library** — 10+ pre-loaded decision archetypes (restructuring-survivor-syndrome, AI-adoption-competence-fear, founder-exit-identity-loss, etc.) with typical emotional and risk signatures
-- **Shared taxonomies** — 6 risk categories, 8 deep emotional drivers, 7 ethical dimensions, 10 scenario frames, explicit novelty and robustness levels
-- **JSON schemas** — every agent output validated against a published contract; validation failures trigger retries and gates
-- **Common envelope** — every output carries confidence, pattern match, handoff packets, HITL flags, gaps/assumptions, and quality self-check
-- **Memory agent** — SAVE / RECALL / LEARN procedures that make AITS a learning system
-- **HITL escalation** — any agent can raise a mandatory gate, not only the Meta-Orchestrator
-- **Temporal dimension** — emotional timelines, risk evolution, scenario horizons, decay curves
-- **Two-level taxonomies** — surface category plus deep driver throughout
+---
+
+## Memory, calibration, patterns
+
+- `aits recall "<query>"` finds similar past decisions by meaning, not by tag.
+- Every closed decision stores its predictions: the ones agents declare, plus the risks of severity ≥ 10 and the scenario probabilities.
+- `aits outcome <decision> <prediction> 0|1` records what happened; `aits calibrate` reports Brier score, skill over the base rate and reliability by agent, model family and tier. From 20 resolved predictions per agent the engine fits a recalibration.
+- `aits patterns scan` proposes new archetypes from clusters of three or more similar decisions; a human approves or rejects them.
+
+Memory is local (`.aits/` in the project), can redact patterns before storing, and never leaves the machine unless you configure a remote embedder.
+
+---
+
+## Governance export
+
+`aits export` writes `report.md`, `envelopes.json`, `log.jsonl`, `verification.json` and `trace.otlp.json` (OpenTelemetry GenAI conventions, structure and hashes only, no content). `aits export --otel` also sends the trace to a collector. With `aits keys generate` and `signing.key` in the configuration, every log entry is signed with your Ed25519 key. The report includes an evidence table for oversight and record-keeping duties, worded as support for, not proof of, compliance.
+
+---
+
+## Development
+
+```
+npm install
+npm test               # engine, MCP server, CLI, hook, build and A2A tests
+npm run typecheck
+npm run check:neutral  # fails if a model or vendor name enters spec/
+npm run build:adapters # regenerates plugins/aits and skills/aits from spec/
+node scripts/make-example.mjs
+node dist/aits.mjs eval eval
+```
+
+Edit the method in `spec/`, never in the generated adapters.
 
 ---
 
 ## Design principles
 
-1. **Cognitive separation** — each agent has one function; the Critic never optimizes, the Optimizer never criticizes
-2. **Sequence first, content second** — the order of agents changes the outcome; the Meta-Orchestrator calibrates sequence to problem type
-3. **Productive conflict** — conflict between agents is a feature; the conflict matrix codifies resolution
-4. **Verifiable output** — every claim has a source or is explicitly labeled hypothesis; confidence is always reported
-5. **Controlled completeness** — not every decision needs 11 perspectives; playbooks and commands calibrate depth
-6. **Handoff protocols** — agents are connected by explicit data contracts, not implicit coupling
-7. **Memory and learning** — past decisions inform future ones; patterns emerge from the corpus
-8. **Human-in-the-loop by design** — three modes, mandatory gates, logged interventions
-9. **Traceability as first-class** — every synthesis claim traces to its source agent
+1. **Cognitive separation**: each agent has one function; the Critic never optimizes, the Optimizer never criticizes
+2. **Sequence first, content second**: the order of agents changes the outcome; graphs make the order explicit and run independent agents in parallel
+3. **Productive conflict**: conflict between agents is a feature; the conflict matrix codifies resolution
+4. **Verifiable output**: every claim has a source or is labeled as a hypothesis; confidence is computed, not asserted
+5. **Controlled completeness**: not every decision needs 11 perspectives; playbooks calibrate depth
+6. **Handoff protocols**: agents are connected by explicit data contracts
+7. **Memory and learning**: past decisions inform future ones; predictions are scored against outcomes
+8. **Human-in-the-loop by design**: three modes, mandatory gates, every human answer logged with its channel
+9. **Traceability as first-class**: every synthesis claim traces to its source agent and log entry
+10. **Independence from models**: the method names no model; diversity across model families is measured, not assumed
 
 ---
 
@@ -335,33 +250,25 @@ Short summary — see [`CHANGELOG.md`](./CHANGELOG.md) for the full evolution lo
 
 AITS is opinionated about what a good decision process looks like. It believes that:
 
-- **Speed and depth are different problems** — they deserve different tools
-- **Ethics is not a final layer** — it is a perspective that deserves equal standing with optimization and risk
-- **Emotion is data** — systematically mapped and named, not intuited and dismissed
-- **Systems think non-linearly** — second-order effects matter, and linear analysis fails silently
-- **The future is multiple** — decisions robust across scenarios beat decisions optimal for one
-- **Memory compounds** — a framework that learns from its own history is more than the sum of its cases
-- **The human is always the decision-maker** — AITS structures the process, not the judgment
+- **Speed and depth are different problems**: they deserve different tools
+- **Ethics is not a final layer**: it is a perspective that deserves equal standing with optimization and risk
+- **Emotion is data**: systematically mapped and named, not intuited and dismissed
+- **Systems think non-linearly**: second-order effects matter, and linear analysis fails silently
+- **The future is multiple**: decisions robust across scenarios beat decisions optimal for one
+- **Memory compounds**: a framework that learns from its own history is more than the sum of its cases
+- **The human is always the decision-maker**: AITS structures the process, not the judgment
 
 ---
 
 ## Contributing
 
-Contributions welcome. Areas of active interest:
-
-- **New playbooks** for specific industries or decision types
-- **New pattern library entries** from repeated decisions in specific domains
-- **Schema refinements** based on real-world usage feedback
-- **Examples** in the `examples/` directory showing full analyses for common decisions
-- **Translations** of agent prompts to languages other than English and Italian
-
-See `CONTRIBUTING.md` (forthcoming) for the contribution process.
+Contributions welcome: playbooks and graphs for specific industries, pattern library entries, schema refinements, eval cases with known outcomes, adapters for other runtimes, translations of agent prompts.
 
 ---
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See [`LICENSE`](./LICENSE).
 
 ---
 
@@ -370,8 +277,8 @@ MIT. See `LICENSE`.
 - **Author**: [Fabio Lalli](https://www.fabiolalli.com) · [GitHub](https://github.com/fabiolalli)
 - **Origin book**: *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025), the theoretical foundation this repository implements
 - **Other books**: *Spatial Shift*, *L'AI non è quello che pensi*, *Sport Digital Transformation*
-- **Related**: [Claude Code documentation](https://docs.claude.com/en/docs/claude-code/overview)
+- **Standards used**: [Agent Skills](https://agentskills.io), [Model Context Protocol](https://modelcontextprotocol.io), [A2A](https://a2a-protocol.org), [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
 
 ---
 
-*Built on Claude Code. Designed for decisions that matter.*
+*Designed for decisions that matter, on whatever model you trust.*

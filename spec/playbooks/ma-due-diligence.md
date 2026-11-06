@@ -12,6 +12,8 @@ Acquisition, merger, or significant investment evaluation. Highest-stakes playbo
 
 **⚪ Analytical → 🌐 Systemic → ⚫ Critical-Validator → 🟡 Optimizer → 🟣 Ethical-Governance → 🔵 Predictive-Strategic → 🔭 Foresight → 🎯 Synthesis**
 
+Execution graph: `graphs/ma-due-diligence.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: deep factual base; systemic mapping of integration effects before stress-testing; stress-test; value case; ethical/cultural/regulatory; scenarios; robustness of integration options; synthesis. Emotional is invoked in parallel with Systemic — acquisitions are deeply human decisions.
 
 **Emotional-Intuitive runs in parallel with Systemic** — for M&A, the emotional and the structural are inseparable.

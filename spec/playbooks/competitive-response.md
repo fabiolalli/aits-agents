@@ -12,6 +12,8 @@ Rapid response to a competitive move — launch, pricing change, acquisition, re
 
 **⚪ Analytical → 🔴 Emotional-Intuitive → 🟢 Creative-Generative → ⚫ Critical-Validator → 🟡 Optimizer → 🔵 Predictive-Strategic → 🔭 Foresight → 🎯 Synthesis**
 
+Execution graph: `graphs/competitive-response.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: rapid fact-gathering; customer and internal emotional state (do we need to reassure or mobilize?); options including non-obvious responses; stress-test each response; value case; scenarios for how competitor and market react to our response; robustness; synthesis.
 
 This playbook defaults to **autonomous mode** given time pressure, with aggressive auto-escalation on high-severity flags.

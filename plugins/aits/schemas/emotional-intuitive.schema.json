@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/emotional-intuitive.schema.json",
+  "title": "Emotional-Intuitive Agent Output",
+  "allOf": [{ "$ref": "./_envelope.schema.json" }],
+  "properties": {
+    "agent": { "const": "emotional-intuitive" },
+    "main_output": {
+      "type": "object",
+      "required": ["stakeholder_maps"],
+      "properties": {
+        "stakeholder_maps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["group", "emotional_signature", "intensity"],
+            "properties": {
+              "id": { "type": "string" },
+              "group": { "type": "string" },
+              "size_estimate": { "type": "string" },
+              "power": { "type": "number", "minimum": 0, "maximum": 1 },
+              "emotional_signature": {
+                "type": "object",
+                "required": ["deep_driver"],
+                "properties": {
+                  "surface_emotion": { "type": "string" },
+                  "deep_driver": { "enum": ["identity", "status", "autonomy", "competence", "belonging", "safety", "fairness", "legacy"] },
+                  "driver_custom": { "type": "string" }
+                }
+              },
+              "intensity": {
+                "type": "object",
+                "required": ["current"],
+                "properties": {
+                  "current": { "type": "integer", "minimum": 1, "maximum": 10 },
+                  "peak_expected": { "type": "integer", "minimum": 1, "maximum": 10 },
+                  "peak_eta_days": { "type": "integer" },
+                  "decay_curve": { "enum": ["fast", "medium", "slow", "permanent"] }
+                }
+              },
+              "trust_level_toward_decision_makers": { "enum": ["high", "medium", "low", "eroded"] },
+              "key_concerns": { "type": "array", "items": { "type": "string" } },
+              "trust_drivers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "driver": { "type": "string" },
+                    "usable_lever": { "type": "string" }
+                  }
+                }
+              },
+              "resistance_points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "resistance": { "type": "string" },
+                    "origin": { "type": "string" },
+                    "overcomable": { "enum": ["yes", "partially", "hardly", "no"] },
+                    "suggested_strategy": { "type": "string" },
+                    "time_to_effect": { "enum": ["immediate", "weeks", "months"] },
+                    "handoff_to_critical": { "type": "boolean" }
+                  }
+                }
+              },
+              "evidence_basis": { "enum": ["observation", "interview", "survey", "pattern-library", "inference"] },
+              "projection_confidence": { "enum": ["high", "medium", "low"] }
+            }
+          }
+        },
+        "emotional_timeline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": { "enum": ["announcement", "processing", "early_implementation", "adaptation", "normalization"] },
+              "time_window": { "type": "string" },
+              "dominant_state": { "type": "string" },
+              "intervention_window": { "enum": ["wide", "narrow", "closed"] },
+              "recommended_actions": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "asymmetries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "group_gaining": { "type": "string" },
+              "group_losing": { "type": "string" },
+              "nature_of_asymmetry": { "enum": ["identity", "material", "status", "autonomy", "voice"] },
+              "severity": { "enum": ["low", "medium", "high", "structural"] },
+              "power_differential": { "enum": ["symmetric", "mild_asymmetry", "strong_asymmetry"] },
+              "ethical_handoff": { "type": "boolean" }
+            }
+          }
+        },
+        "perceptual_risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "risk": { "type": "string" },
+              "audience": { "type": "string" },
+              "probability": { "enum": ["high", "medium", "low"] },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 10 },
+              "mitigation": { "type": "string" }
+            }
+          }
+        },
+        "overall_emotional_landscape": { "type": "string" }
+      }
+    }
+  }
+}

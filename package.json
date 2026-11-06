@@ -6,15 +6,21 @@
   "license": "MIT",
   "author": "Fabio Lalli",
   "type": "module",
-  "workspaces": ["packages/core", "packages/cli"],
-  "engines": { "node": ">=20" },
+  "workspaces": [
+    "packages/core",
+    "packages/cli"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "spec": "node scripts/bundle-spec.mjs",
     "typecheck": "npm run spec && tsc -p packages/core && tsc -p packages/cli",
     "test": "npm run spec && vitest run",
     "bundle": "npm run spec && node scripts/bundle-cli.mjs",
     "build:adapters": "npm run bundle && node dist/aits.mjs build --target all --out .",
-    "check:neutral": "node scripts/check-neutral.mjs"
+    "check:neutral": "node scripts/check-neutral.mjs",
+    "check:adapters": "npm run bundle && node scripts/check-adapters.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

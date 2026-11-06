@@ -1,0 +1,10 @@
+id: product-launch
+title: Product launch
+nodes:
+  - { id: analytical }
+  - { id: emotional-intuitive, after: [analytical] }
+  - { id: creative-generative, after: [analytical] }
+  - { id: critical-validator, after: [emotional-intuitive, creative-generative] }
+  - { id: optimizer, after: [critical-validator] }
+  - { id: predictive-strategic, after: [critical-validator, optimizer] }
+  - { id: foresight, after: [creative-generative, predictive-strategic], required_by: R5 }

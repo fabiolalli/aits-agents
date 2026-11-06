@@ -1,0 +1,13 @@
+id: full
+title: Full analysis
+description: Default supervised analysis. Dependencies follow the handoff protocols of the agents.
+nodes:
+  - { id: analytical }
+  - { id: emotional-intuitive, after: [analytical] }
+  - { id: creative-generative, after: [analytical] }
+  - { id: systemic, after: [analytical], optional: true, note: Include when the problem has strong interdependencies }
+  - { id: critical-validator, after: [creative-generative, emotional-intuitive] }
+  - { id: optimizer, after: [critical-validator] }
+  - { id: predictive-strategic, after: [critical-validator, systemic] }
+  - { id: ethical-governance, after: [optimizer, emotional-intuitive] }
+  - { id: foresight, after: [creative-generative, predictive-strategic], required_by: R5 }

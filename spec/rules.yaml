@@ -1,0 +1,84 @@
+# AITS 3.0 — inviolable rules, evaluated by the engine after every submitted envelope.
+#
+# Condition:  when.any / when.all of selectors
+#   selector: { agent | agent_not, path, op, value }
+#   path: dotted path, [*] expands arrays. op: exists | truthy | eq | in | gte | lte | count_gte
+# Effects:
+#   reject: the envelope is recorded as a violation and does not count as a valid output
+#   gate: blocking (only a human closes it, synthesis blocked meanwhile) | advisory (recorded, never blocks)
+#   require: agents that must submit a valid envelope after the trigger; unmet requirements block the synthesis
+#            mode any|all, optional where: selector the required envelope must satisfy
+
+version: 3
+rules:
+  - id: R1
+    title: Only the Meta-Orchestrator closes the decision
+    when:
+      any:
+        - { agent_not: [meta-orchestrator], path: main_output.decision, op: exists }
+    reject: true
+    gate: blocking
+
+  - id: R2
+    title: Missing high-impact data returns to Analytical
+    when:
+      any:
+        - { agent_not: [analytical], path: "main_output.gaps[*].impact_if_unfilled", op: eq, value: high }
+        - { agent_not: [analytical], path: "gaps_or_assumptions.gaps[*].impact_if_unfilled", op: eq, value: high }
+    require: { agents: [analytical], mode: any }
+    gate: blocking
+
+  - id: R2a
+    title: Analytical reports a high-impact data gap
+    when:
+      any:
+        - { agent: analytical, path: "main_output.gaps[*].impact_if_unfilled", op: eq, value: high }
+    gate: blocking
+
+  - id: R3
+    title: High risk requires Ethical-Governance or Predictive-Strategic
+    when:
+      any:
+        - { agent: critical-validator, path: "main_output.risk_map[*].severity", op: gte, value: 10 }
+        - { agent: critical-validator, path: "main_output.premortems[*].severity", op: gte, value: 10 }
+        - { agent: critical-validator, path: main_output.overall_risk_level, op: in, value: [high, critical] }
+    require: { agents: [ethical-governance, predictive-strategic], mode: any }
+    gate: blocking
+
+  - id: R4
+    title: Critical and Optimizer contradiction is arbitrated by Ethical-Governance
+    when:
+      all:
+        - { agent: critical-validator, path: main_output.recommendation, op: in, value: [pause_and_reconsider, redesign, do_not_proceed] }
+        - { agent: optimizer, path: main_output.recommendation, op: in, value: [proceed_as_designed, proceed_with_sequencing] }
+    require:
+      agents: [ethical-governance]
+      mode: any
+      where: { path: main_output.arbitration_output.is_arbitrating, op: eq, value: true }
+    gate: blocking
+
+  - id: R5
+    title: Four or more options require Foresight
+    when:
+      any:
+        - { agent: creative-generative, path: main_output.options, op: count_gte, value: 4 }
+    require: { agents: [foresight], mode: any }
+    gate: advisory
+
+  - id: R6
+    title: An ethical red line requires a human decision
+    when:
+      any:
+        - { agent: ethical-governance, path: main_output.red_lines_detected, op: count_gte, value: 1 }
+        - { agent: ethical-governance, path: main_output.overall_ethical_posture, op: eq, value: red_line }
+    gate: blocking
+
+  # R7 (schema validation failure after one retry) is built into the engine:
+  # see validation.max_failures_per_agent in aits.spec.yaml.
+
+  - id: R8
+    title: Any agent can raise a blocking gate
+    when:
+      any:
+        - { path: "hitl_flags[*].severity", op: eq, value: blocking }
+    gate: blocking

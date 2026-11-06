@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aits.fabiolalli.com/schemas/_envelope.schema.json",
+  "title": "AITS Agent Output Envelope",
+  "description": "Common envelope that every AITS agent output must include. Agent-specific content goes in main_output. Version 3.0 adds provenance and predictions; 2.0 envelopes remain valid.",
+  "type": "object",
+  "required": [
+    "agent",
+    "version",
+    "timestamp",
+    "confidence",
+    "summary",
+    "main_output"
+  ],
+  "properties": {
+    "agent": {
+      "type": "string",
+      "enum": [
+        "meta-orchestrator",
+        "analytical",
+        "emotional-intuitive",
+        "critical-validator",
+        "optimizer",
+        "creative-generative",
+        "ethical-governance",
+        "predictive-strategic",
+        "systemic",
+        "foresight",
+        "memory"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "enum": [
+        "2.0",
+        "3.0"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "level",
+        "reasoning"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "reasoning": {
+          "type": "string"
+        },
+        "upstream_dependency": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-paragraph narrative summary of what this agent concluded."
+    },
+    "pattern_match": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "matched": {
+          "type": "boolean"
+        },
+        "pattern_id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "pattern-library",
+            "memory",
+            "both",
+            "none"
+          ]
+        },
+        "match_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reference": {
+          "type": "string"
+        },
+        "lessons_applied": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "main_output": {
+      "type": "object",
+      "description": "Agent-specific payload. See the per-agent schema for the full shape."
+    },
+    "handoff_packets": {
+      "type": "object",
+      "description": "Keyed by target agent name; value is the subset of this agent's output the target consumes.",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "hitl_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "trigger",
+          "severity",
+          "description"
+        ],
+        "properties": {
+          "trigger": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "blocking",
+              "advisory"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "gaps_or_assumptions": {
+      "type": "object",
+      "properties": {
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "impact_if_unfilled": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "how_to_fill": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "statement": {
+                "type": "string"
+              },
+              "testable": {
+                "type": "boolean"
+              },
+              "risk_if_wrong": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "quality_self_check": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string"
+              },
+              "self_score": {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "known_limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Filled by the runtime adapter or orchestrator, never invented by the agent. Used by the engine for the diversity policy.",
+      "properties": {
+        "runtime": {
+          "type": "string"
+        },
+        "model_family": {
+          "type": "string",
+          "description": "Model family or provider-defined lineage, as configured by the user"
+        },
+        "model": {
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "deep",
+            "standard",
+            "fast"
+          ]
+        },
+        "run_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runs_total": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "predictions": {
+      "type": "array",
+      "description": "Explicit, resolvable predictions used for calibration.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "statement",
+          "probability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "resolve_by": {
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string",
+            "description": "Id of the risk, scenario or option this prediction comes from"
+          }
+        }
+      }
+    }
+  }
+}

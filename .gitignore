@@ -1,0 +1,5 @@
+node_modules/
+.aits/
+*.generated.ts
+aits.config.yaml
+dist/

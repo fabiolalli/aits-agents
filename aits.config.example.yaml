@@ -1,0 +1,36 @@
+# AITS 3.0 — user configuration (example).
+# Copy to aits.config.yaml in your project directory. This file is yours: the spec never names models.
+#
+# family: a label you choose for a model lineage. The engine uses it only to count how many
+#         independent families contributed to a decision (diversity policy).
+# model:  passed as-is to the runtime adapter. With the Claude Code adapter it becomes the
+#         `model` field of each agent; "inherit" uses the session model.
+# runtime: optional, restricts a choice to one adapter.
+
+storage: .aits
+
+models:
+  deep:
+    - { family: family-a, model: inherit, runtime: claude-code }
+    # - { family: family-b, model: "<model id served by another runtime>" }
+  standard:
+    - { family: family-a, model: inherit, runtime: claude-code }
+  fast:
+    - { family: family-a, model: inherit, runtime: claude-code }
+
+memory:
+  # hashing: local and deterministic, no network. http: any OpenAI-compatible /embeddings endpoint,
+  # including a local inference server.
+  embedder: hashing
+  # http: { url: "http://localhost:8080/v1/embeddings", model: "<embedding model>", api_key_env: AITS_EMBEDDINGS_KEY }
+  # Regular expressions replaced with [REDACTED] before a decision is stored.
+  redact: []
+
+# Signs every log entry with your key. Create one with: aits keys generate
+# signing:
+#   key: ~/.aits/keys/aits-ed25519.pem
+
+# Sends traces to an OpenTelemetry collector with: aits export --otel
+# otel:
+#   endpoint: http://localhost:4318
+#   headers: {}

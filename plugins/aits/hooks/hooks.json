@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/server/aits.mjs\" hook post-tool-use",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

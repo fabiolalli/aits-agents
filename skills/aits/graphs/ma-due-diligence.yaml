@@ -1,0 +1,11 @@
+id: ma-due-diligence
+title: M&A due diligence
+nodes:
+  - { id: analytical }
+  - { id: systemic, after: [analytical] }
+  - { id: emotional-intuitive, after: [analytical] }
+  - { id: critical-validator, after: [systemic, emotional-intuitive] }
+  - { id: optimizer, after: [critical-validator] }
+  - { id: ethical-governance, after: [optimizer, emotional-intuitive] }
+  - { id: predictive-strategic, after: [critical-validator, optimizer] }
+  - { id: foresight, after: [predictive-strategic] }

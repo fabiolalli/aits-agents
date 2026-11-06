@@ -1,0 +1,14 @@
+# SYNTHETIC demo case: invented data, used only to show how the harness works.
+# Real cases replace it: past decisions with a known outcome, anonymised before publication.
+id: demo-pricing-change
+synthetic: true
+problem: Raise the price of the SMB plan from 29 to 35 EUR per seat?
+graph: go-no-go
+decided_on: 2026-03-02
+outcome_known_on: 2026-06-30
+truth:
+  materialized_risks:
+    - Competitor answers with a free tier
+  scenario_occurred: sc2
+  expected_gates: [R3]
+  decision_was_right: true

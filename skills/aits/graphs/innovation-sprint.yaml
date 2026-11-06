@@ -1,0 +1,9 @@
+id: innovation-sprint
+title: Innovation sprint
+description: Creative runs twice; Critical-Validator is deliberately absent to protect the generative phase.
+nodes:
+  - { id: creative-generative-1, agent: creative-generative }
+  - { id: emotional-intuitive, after: [creative-generative-1] }
+  - { id: creative-generative-2, agent: creative-generative, after: [emotional-intuitive] }
+  - { id: foresight, after: [creative-generative-2] }
+  - { id: optimizer, after: [foresight] }

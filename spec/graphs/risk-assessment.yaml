@@ -1,0 +1,9 @@
+id: risk-assessment
+title: Risk assessment
+nodes:
+  - { id: analytical }
+  - { id: critical-validator, after: [analytical] }
+  - { id: systemic, after: [critical-validator] }
+  - { id: ethical-governance, after: [critical-validator] }
+  - { id: predictive-strategic, after: [systemic] }
+  - { id: optimizer, after: [predictive-strategic, ethical-governance] }

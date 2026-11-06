@@ -12,6 +12,8 @@ Rapid ideation plus rigorous validation. When the output needed is a new option 
 
 **🟢 Creative-Generative → 🔴 Emotional-Intuitive → 🟢 Creative-Generative (v2, refined) → 🔭 Foresight → 🟡 Optimizer → 🎯 Synthesis**
 
+Execution graph: `graphs/innovation-sprint.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: Generate first without filtering. Map emotional reception of generated options. Re-generate with the emotional lens informing (not killing) the options. Foresight evaluates robustness. Optimizer builds value cases for the surviving options. Synthesis.
 
 **Critical is deliberately absent from the default sequence** to protect the generative phase. If the synthesis reveals options that need stress-testing, the output explicitly recommends a follow-up `/aits-full` with Critical.

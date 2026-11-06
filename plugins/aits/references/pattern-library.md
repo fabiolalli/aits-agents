@@ -1,6 +1,6 @@
 # Pattern Library — Recurring Decision Archetypes
 
-AITS 2.0 recognizes that most complex decisions fall into a relatively small number of archetypes. Each archetype has a known signature: typical stakeholders, typical emotional dynamics, typical risks, typical failure modes, lessons from repeated observation.
+AITS recognizes that most complex decisions fall into a relatively small number of archetypes. Each archetype has a known signature: typical stakeholders, typical emotional dynamics, typical risks, typical failure modes, lessons from repeated observation.
 
 This library pre-loads that knowledge so agents don't have to rediscover it every time. At the start of an analysis, agents consult this file to see if the current decision matches a known archetype. If it does, analysis starts from the archetype's baseline rather than from zero.
 
@@ -38,6 +38,7 @@ Every pattern has:
 ### restructuring-survivor-syndrome
 
 - **problem_signature**: keywords = ["layoff", "restructuring", "rightsizing", "downsizing"], structural = "organizational change reducing headcount"
+- **keywords_it**: ["licenziamenti","ristrutturazione","esuberi","riduzione del personale","tagli al personale"]
 - **typical_stakeholders**: departing employees, remaining employees, managers of affected teams, customers, HR, legal
 - **emotional_signature**:
   - departing: identity, safety, fairness (high intensity, slow decay)
@@ -64,6 +65,7 @@ Every pattern has:
 ### ai-adoption-competence-fear
 
 - **problem_signature**: keywords = ["AI rollout", "AI adoption", "automation", "copilot", "augmentation"], structural = "introducing AI capabilities into existing workflows"
+- **keywords_it**: ["adozione AI","introduzione AI","automazione","copilot","intelligenza artificiale in azienda"]
 - **typical_stakeholders**: affected individual contributors, middle management, IT, leadership, end customers
 - **emotional_signature**:
   - ICs: competence (fear of irrelevance), autonomy (loss of craft), identity (professional self-image)
@@ -89,6 +91,7 @@ Every pattern has:
 ### founder-exit-identity-loss
 
 - **problem_signature**: keywords = ["founder exit", "succession", "sell the company", "acquisition of our company", "step down"], structural = "a founder considering departure from a company they built"
+- **keywords_it**: ["uscita del founder","successione","vendere l'azienda","cessione","passaggio generazionale"]
 - **typical_stakeholders**: founder, co-founders, early team, current team, investors, acquirers (if any), family
 - **emotional_signature**:
   - founder: identity (the company is self), legacy, autonomy, status
@@ -112,6 +115,7 @@ Every pattern has:
 ### middle-management-squeeze
 
 - **problem_signature**: keywords = ["reorg", "flattening", "span of control"], structural = "decision that reduces or reshapes middle management"
+- **keywords_it**: ["riorganizzazione","middle management","livelli gerarchici","quadri"]
 - **typical_stakeholders**: middle managers, their reports, senior leadership, HR
 - **emotional_signature**:
   - middle managers: status, legacy, fairness (they feel disproportionately targeted)
@@ -132,6 +136,7 @@ Every pattern has:
 ### product-launch-cold-start
 
 - **problem_signature**: keywords = ["new product launch", "go-to-market", "launch readiness"], structural = "bringing a new product to market"
+- **keywords_it**: ["lancio prodotto","lanciare il prodotto","go-to-market","messa sul mercato"]
 - **typical_stakeholders**: customers, competitors, internal teams (product, marketing, sales, support, ops)
 - **emotional_signature**:
   - customers: curiosity, skepticism, switching cost anxiety
@@ -154,6 +159,7 @@ Every pattern has:
 ### pricing-change
 
 - **problem_signature**: keywords = ["price increase", "price change", "repricing", "monetization"]
+- **keywords_it**: ["aumento prezzi","cambio prezzi","nuovo listino","pricing","monetizzazione"]
 - **typical_stakeholders**: existing customers, prospective customers, sales team, finance, competitors
 - **emotional_signature**:
   - customers: fairness (did I sign up for this?), autonomy (can I leave?), trust
@@ -179,6 +185,7 @@ Every pattern has:
 ### competitive-displacement-threat
 
 - **problem_signature**: keywords = ["a competitor launched", "disruption", "market share loss to X"]
+- **keywords_it**: ["concorrente ha lanciato","concorrenza","quota di mercato","competitor"]
 - **typical_stakeholders**: affected product/service teams, customers, sales, leadership, investors
 - **risk_signature**:
   - strategic → obsolescence, positioning erosion
@@ -192,6 +199,7 @@ Every pattern has:
 ### build-vs-buy-vs-partner
 
 - **problem_signature**: keywords = ["build or buy", "make or acquire", "partner vs build"]
+- **keywords_it**: ["costruire o comprare","make or buy","sviluppare internamente","partnership o sviluppo"]
 - **typical_stakeholders**: engineering, product, finance, legal, the target acquisition (if any)
 - **risk_signature**:
   - strategic → capability lock-in, option value loss
@@ -203,6 +211,7 @@ Every pattern has:
 ### geographic-expansion
 
 - **problem_signature**: keywords = ["enter market X", "expand to country Y", "international launch"]
+- **keywords_it**: ["espansione internazionale","entrare nel mercato","aprire in","internazionalizzazione"]
 - **typical_stakeholders**: local customers, local competitors, local regulators, parent org, local team (if any)
 - **risk_signature**:
   - legal_regulatory → unfamiliar regulatory environment
@@ -217,6 +226,7 @@ Every pattern has:
 ### legacy-system-replacement
 
 - **problem_signature**: keywords = ["replace legacy", "migrate off", "modernization", "rewrite"]
+- **keywords_it**: ["sostituire il sistema","migrazione","sistema legacy","riscrittura","modernizzazione"]
 - **typical_stakeholders**: engineering, users of the system, operations, finance, dependency owners
 - **risk_signature**:
   - technical → migration failure, data loss, dependency revelation
@@ -232,6 +242,7 @@ Every pattern has:
 ### ai-infrastructure-vendor-choice
 
 - **problem_signature**: keywords = ["AI platform choice", "LLM provider", "model vendor", "foundation model selection"]
+- **keywords_it**: ["scelta del modello","fornitore LLM","piattaforma AI","quale modello usare"]
 - **typical_stakeholders**: engineering, security, legal, finance, end users of the resulting capability
 - **risk_signature**:
   - technical → vendor lock-in, model deprecation, rate limit exposure

@@ -1,9 +1,10 @@
 ---
-name: aits-full
-description: Full AITS 2.0 analysis in supervised mode. Activates the Meta-Orchestrator with checkpoint after every agent. The user can approve, correct, redirect, redo, or switch to autonomous at each step. Default for high-stakes, irreversible decisions. Consults pattern library and memory, matches playbooks, enforces all seven inviolable rules, validates schemas, resolves conflicts via the matrix.
+description: "Full AITS analysis in supervised mode. Activates the Meta-Orchestrator with checkpoint after every agent. The user can approve, correct, redirect, redo, or switch to autonomous at each step. Default for high-stakes, irreversible decisions. Consults pattern library and memory, matches playbooks, runs every output through the AITS engine (schemas, inviolable rules, human gates), resolves conflicts via the matrix."
 ---
 
-# /aits-full — Full AITS 2.0 Analysis (Supervised Mode)
+> Engine: this command starts an AITS run with `aits_start_run` (graph `full`, mode `supervised`) and closes it only through `aits_synthesize`.
+
+# /aits-full — Full AITS Analysis (Supervised Mode)
 
 This command activates the Meta-Orchestrator in **supervised mode** — the highest-depth, highest-oversight AITS flow.
 

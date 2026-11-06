@@ -14,6 +14,8 @@ Deep analysis of decisions with material ethical, social, or governance implicat
 
 **⚪ Analytical → 🟣 Ethical-Governance → 🔴 Emotional-Intuitive → ⚫ Critical-Validator → 🌐 Systemic → 🔵 Predictive-Strategic → 🎯 Synthesis**
 
+Execution graph: `graphs/ethical-impact.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: facts about affected parties; ethical dimensional assessment early (frames everything downstream); emotional mapping of affected parties; stress-test with reputational and legal risk emphasis; systemic cascade to vulnerable populations; scenarios including normative drift; synthesis.
 
 **Optimizer is deliberately later or absent.** Ethical playbooks shouldn't be driven by optimization early — it can be added back in synthesis for feasibility, but value maximization should not frame the assessment.

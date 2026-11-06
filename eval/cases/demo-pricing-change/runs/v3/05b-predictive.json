@@ -1,0 +1,52 @@
+{
+  "agent": "predictive-strategic",
+  "version": "3.0",
+  "timestamp": "2026-03-02T09:38:00.000Z",
+  "confidence": {
+    "level": "medium",
+    "reasoning": "synthetic demo"
+  },
+  "summary": "predictive-strategic: synthetic demo output",
+  "main_output": {
+    "scenarios": [
+      {
+        "id": "sc1",
+        "frame": "baseline",
+        "name": "Customers absorb the increase",
+        "probability": {
+          "point": 0.5
+        },
+        "time_horizon": "6 months"
+      },
+      {
+        "id": "sc2",
+        "frame": "competitive_move",
+        "name": "Competitor launches a free tier",
+        "probability": {
+          "point": 0.3
+        },
+        "time_horizon": "6 months"
+      },
+      {
+        "id": "sc3",
+        "frame": "market_contraction",
+        "name": "SMB budgets shrink",
+        "probability": {
+          "point": 0.2
+        },
+        "time_horizon": "6 months"
+      }
+    ],
+    "robustness_ranking": [
+      {
+        "option_id": "o1",
+        "robustness_level": "sensitive"
+      }
+    ]
+  },
+  "provenance": {
+    "runtime": "demo",
+    "model_family": "family-b",
+    "tier": "deep"
+  }
+}

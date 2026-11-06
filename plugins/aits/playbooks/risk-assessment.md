@@ -13,6 +13,8 @@ Comprehensive risk identification and mitigation design. Deployed when the user'
 
 **⚪ Analytical → ⚫ Critical-Validator → 🌐 Systemic → 🟣 Ethical-Governance → 🔵 Predictive-Strategic → 🟡 Optimizer → 🎯 Synthesis**
 
+Execution graph: `graphs/risk-assessment.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: facts first; deep risk map; systemic cascade analysis; ethical/reputational/legal risks; scenarios for risk evolution; optimization of mitigations; synthesis as risk register.
 
 ## Focus areas per agent

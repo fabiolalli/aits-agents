@@ -1,9 +1,10 @@
 ---
-name: aits-diverge
-description: Divergent AITS 2.0 brainstorming in review mode. Activates the Meta-Orchestrator with a creative-first sequence (Creative-Generative → Emotional-Intuitive → Foresight → Synthesis) and runs the full analysis without voluntary checkpoints. At the end, presents everything with a drill-down review interface. Default for idea generation, option exploration, and problems where premature filtering would kill the best ideas.
+description: "Divergent AITS brainstorming in review mode. Activates the Meta-Orchestrator with a creative-first sequence (Creative-Generative → Emotional-Intuitive → Foresight → Synthesis) and runs the full analysis without voluntary checkpoints. At the end, presents everything with a drill-down review interface. Default for idea generation, option exploration, and problems where premature filtering would kill the best ideas."
 ---
 
-# /aits-diverge — Divergent AITS 2.0 (Review Mode)
+> Engine: this command starts an AITS run with `aits_start_run` (graph `diverge`, mode `review`) and closes it only through `aits_synthesize`.
+
+# /aits-diverge — Divergent AITS (Review Mode)
 
 This command activates the Meta-Orchestrator in **review mode** — full generative sequence runs uninterrupted, then everything is presented for structured review at the end.
 

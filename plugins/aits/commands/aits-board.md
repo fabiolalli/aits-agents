@@ -1,9 +1,8 @@
 ---
-name: aits-board
-description: Generate or view the AITS 2.0 decision dashboard. Shows the current state of an ongoing analysis (agents completed, findings, conflicts, open gates) or produces a self-contained HTML dashboard for a completed analysis. The dashboard includes agent flow graph, risk heatmap, confidence meter, conflict timeline, robustness matrix (if Foresight ran), action plan, and HITL log.
+description: "Generate or view the AITS decision dashboard. Shows the current state of an ongoing analysis (agents completed, findings, conflicts, open gates) or produces a self-contained HTML dashboard for a completed analysis. The dashboard includes agent flow graph, risk heatmap, confidence meter, conflict timeline, robustness matrix (if Foresight ran), action plan, and HITL log."
 ---
 
-# /aits-board — AITS 2.0 Decision Dashboard
+# /aits-board — AITS Decision Dashboard
 
 This command either displays the current state of an in-flight analysis or generates a visual HTML dashboard for a completed analysis.
 
@@ -75,7 +74,7 @@ Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with
 
 ```
 ═══════════════════════════════════════════════════
-  AITS 2.0 BOARD — In-flight analysis
+  AITS BOARD — In-flight analysis
 ═══════════════════════════════════════════════════
 ▶ PROBLEM: [problem statement truncated to 100 chars]
 ▶ PATTERN MATCH: [pattern_id or "none"] (conf [0.0])
@@ -106,7 +105,7 @@ Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with
 
 ## HTML dashboard template
 
-The HTML template (in `aits-dashboard.md`) produces a self-contained single file with:
+The HTML template (in `agents/aits-dashboard.md`) produces a self-contained single file with:
 
 - No external dependencies (inlined CSS, inlined SVG)
 - Light/dark mode toggle

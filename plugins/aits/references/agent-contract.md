@@ -1,6 +1,6 @@
 # Agent Contract — Common Structural Template
 
-This document defines the **shared structure** every AITS 2.0 agent follows. It is the contract that guarantees interoperability, reproducibility, and predictability across the system.
+This document defines the **shared structure** every AITS agent follows. It is the contract that guarantees interoperability, reproducibility, and predictability across the system.
 
 Every agent file in the repository (meta-orchestrator, analytical, emotional-intuitive, critical-validator, optimizer, creative-generative, ethical-governance, predictive-strategic, systemic, foresight, memory) conforms to this template.
 
@@ -24,7 +24,7 @@ In 2.0, every agent follows the same 10-section structure. This means:
 Every agent file follows this outline, in this order:
 
 ### 1. Frontmatter
-Standard Claude Code sub-agent frontmatter: `name`, `description` (with `<example>` blocks), `color`, `tools`.
+Runtime-neutral frontmatter: `id`, `description`, `tier` (`deep`, `standard`, `fast`), `color`, `capabilities` (abstract: `file_read`, `file_write`, `shell`, `subagent_invoke`, `web_search`, `web_fetch`). Each adapter translates these into its own runtime format (agent name, tool list, model setting). No model or vendor name appears in the spec.
 
 ### 2. Identity
 Who the agent is, its origin (which hat, if any), its function in one sentence.
@@ -50,7 +50,7 @@ Explicit declaration of inputs and outputs. Every agent declares:
 - [Agent Name] → [field names it produces for that target]
 ```
 
-This is the circulatory system of AITS 2.0. Without it, agents are islands.
+This is the circulatory system of AITS. Without it, agents are islands.
 
 ### 6. Operating Rules
 Numbered rules that constrain the agent's behavior. Typically 5-8 rules. Rules are **constraints**, not suggestions. They are enforceable during review.
@@ -62,7 +62,7 @@ The JSON schema the agent must produce. This section references the formal schem
 Every output includes these **common envelope fields** (defined in `schemas/_envelope.schema.json`):
 
 - `agent` — agent identifier
-- `version` — AITS version (currently `"2.0"`)
+- `version` — AITS envelope version (`"3.0"`; `"2.0"` still accepted)
 - `timestamp` — ISO 8601
 - `confidence` — `"high" | "medium" | "low"` with `reasoning`
 - `summary` — one-paragraph narrative summary
@@ -72,6 +72,8 @@ Every output includes these **common envelope fields** (defined in `schemas/_env
 - `hitl_flags` — list of any mandatory gates this agent raises
 - `gaps_or_assumptions` — explicit list of what's missing or assumed
 - `quality_self_check` — agent's self-evaluation against its quality metrics
+- `provenance` (3.0) — runtime, model family, model, tier and run index. Filled by the adapter or the orchestrator from the user configuration, never invented by the agent
+- `predictions` (3.0) — explicit, resolvable probabilities (`id`, `statement`, `probability`, `resolve_by`) used for calibration. Critical-Validator, Predictive-Strategic and Foresight must emit them; the engine also derives them from risk maps and scenarios
 
 ### 8. HITL Escalation Triggers (new in 2.0)
 
@@ -178,13 +180,14 @@ A map from target agent name to the payload destined for that agent. The payload
 
 ## Enforcement
 
-The Meta-Orchestrator validates every incoming agent output against the schema before integrating it. If an output fails validation:
+From 3.0, enforcement is performed by the AITS engine (`aits-core`), not by the model. Every envelope is submitted to the engine, which:
 
-1. The Meta-Orchestrator attempts one automatic retry with explicit correction instructions
-2. If the retry also fails, a mandatory gate is raised for human resolution
-3. The decision log records the validation failure and its resolution
+1. Validates it against its schema with a deterministic validator
+2. Evaluates the inviolable rules declared in `rules.yaml`
+3. Opens gates that only a human can close, and records unmet requirements that block the synthesis
+4. Appends every event to a hash-chained decision log, optionally signed with the user's key
 
-This ensures the system cannot degrade silently.
+A failed validation is retried once with the engine's error list as correction instructions; a second failure for the same agent opens a mandatory gate (rule R7). When no engine is reachable, the orchestrator declares `enforcement: absent` in the synthesis: the rules then hold only as instructions.
 
 ---
 
@@ -192,4 +195,4 @@ This ensures the system cannot degrade silently.
 
 This contract is versioned. Agents declare the contract version they comply with in their `version` field. The Meta-Orchestrator enforces compatibility: all agents in a single analysis must declare the same major version.
 
-Current version: **2.0**.
+Current version: **3.0**. Envelopes declaring 2.0 are accepted by the 3.0 engine.

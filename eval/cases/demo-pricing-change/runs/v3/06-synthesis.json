@@ -1,0 +1,51 @@
+{
+  "agent": "meta-orchestrator",
+  "version": "3.0",
+  "timestamp": "2026-03-02T09:42:00.000Z",
+  "confidence": {
+    "level": "high",
+    "reasoning": "synthetic demo"
+  },
+  "summary": "meta-orchestrator: synthetic demo output",
+  "main_output": {
+    "integrated_synthesis": "The increase creates value, but churn risk in SMB is high and two independent risk runs disagree on whether the main threat is churn or a competitive free tier.",
+    "decision": {
+      "statement": "Raise prices for new customers now; existing SMB customers move after 6 months with 90 days notice",
+      "type": "conditional_go",
+      "conditions": [
+        "SMB churn below 3% at day 90"
+      ]
+    },
+    "action_plan": [
+      {
+        "action": "Publish the new price list for new customers",
+        "owner": "Marketing",
+        "timeline": "2 weeks"
+      },
+      {
+        "action": "Monitor SMB churn weekly",
+        "owner": "Finance",
+        "timeline": "90 days"
+      }
+    ],
+    "decision_log": [
+      {
+        "step": 1,
+        "agent": "analytical",
+        "key_output_summary": "Baseline price and churn"
+      }
+    ],
+    "confidence_level": {
+      "overall": "high",
+      "reasoning": "Strong data"
+    },
+    "hitl_summary": {
+      "mode_used": "autonomous"
+    }
+  },
+  "provenance": {
+    "runtime": "demo",
+    "model_family": "family-a",
+    "tier": "standard"
+  }
+}

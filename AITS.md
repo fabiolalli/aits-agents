@@ -3,7 +3,7 @@
 ## Adaptive Intelligence Thinking System
 
 **Author**: Fabio Lalli
-**Version**: 2.0
+**Version**: 3.0
 **Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025)
 
 ---
@@ -40,7 +40,11 @@ Using it changed what we understood about it. Some things from the book held up 
 
 Version 2 is the first release in which AITS behaves as a system rather than a collection of well-written prompts. Eleven agents, not eight. Three new additions where the gaps were widest: Systemic (feedback loops, leverage points, unintended consequences), Foresight (options-scenarios matrix, antifragility detection), Memory (decision archive, pattern extraction, compound learning). Published JSON schemas that validate every agent output. A conflict matrix with codified pairwise resolution rules. A pattern library of recurring decision archetypes. Shared taxonomies for risks, emotions, ethical dimensions, and scenarios. Three human-in-the-loop modes. Seven inviolable rules enforced mechanically.
 
-What stays constant, from De Bono to the book to v2.0, is the original insight: to think well you separate the modes, then integrate them on purpose, with a human always at the centre. Everything else is evolution.
+### 3.0: the enforced, portable system
+
+Version 2 wrote the rules; version 3 makes them hold. In v2 the rules lived in the orchestrator's prompt, so their strength depended on the model following them. In v3 a deterministic engine validates every output, evaluates the rules, opens gates that only a human can close and records everything in a hash-chained log. The method is separated from the runtime and names no model: agents declare a capability tier, the user decides which model serves it. Perspectives that estimate risks and probabilities run independently, on different model families when available, because agents of the same family share their errors. Every prediction is scored against what actually happened, and that score changes how much the engine trusts each agent.
+
+What stays constant, from De Bono to the book to v3.0, is the original insight: to think well you separate the modes, then integrate them on purpose, with a human always at the centre. Everything else is evolution.
 
 ---
 
@@ -126,21 +130,34 @@ AITS is a collaborative system, not an autonomous one. The human decision-maker 
 
 Every output carries its provenance. Every human intervention is logged. Every decision record becomes part of the corpus. Decision quality can be measured because decision processes are measurable.
 
-## Implementation in Claude Code
+### 10. Independence from models
 
-This repository implements AITS as a sub-agent system for Claude Code. Each AITS agent becomes a `.md` file with a system prompt, tool access, structured output contract, and handoff protocol. The Meta-Orchestrator uses the `Task` tool to invoke other agents as sub-tasks, collect their JSON outputs, present checkpoints to the user, manage conflicts via the conflict matrix, and produce the final synthesis.
+The method names no model and no vendor. Each agent declares the reasoning it needs (a capability tier); which model serves each tier is the user's choice. The diversity between the models that contributed to a decision is measured and reported, never assumed, and a decision produced by a single model family cannot claim the highest confidence.
 
-AITS 2.0 adds:
+## Implementation
 
-- **Schemas** (`/schemas`) — JSON Schema files that validate every agent output
-- **Pattern library** (`references/pattern-library.md`) — recurring decision archetypes with known emotional, risk, and outcome profiles
-- **Conflict matrix** (`references/conflict-matrix.md`) — explicit rules for resolving every pairwise agent disagreement
-- **Taxonomies** (`references/taxonomies.md`) — shared vocabulary for risks, emotions, ethical categories, scenarios
-- **Common contract** (`references/agent-contract.md`) — the shared structural template every agent follows
+AITS is implemented in four layers.
 
-The result is a decision-making framework invocable with a single command that produces a multi-dimensional analysis — traceable, repeatable, actionable — with the human always in control.
+- **Spec** (`spec/`): the method. Agents, inviolable rules in `rules.yaml`, execution graphs, JSON schemas, conflict matrix, taxonomies, pattern library, playbooks. No vendor names.
+- **Engine** (`aits-core`): validator, rules and gates, hash-chained and optionally signed decision log, aggregation of independent runs with minority report, semantic memory, calibration, OpenTelemetry export. It never calls a model.
+- **Adapters**: a Claude Code plugin (sub-agents, commands, MCP server, hook), a portable Agent Skills package with the engine as a script, an MCP server for any client, an A2A endpoint for governance review.
+- **Configuration** (`aits.config.yaml`): the user's mapping from tiers to models, the memory embedder and the signing key.
+
+The Meta-Orchestrator plans the agents in waves from the playbook graph, submits every output to the engine, presents the gates to the human, and closes the decision only when the engine accepts the synthesis. The result is a decision-making framework that produces a multi-dimensional analysis, traceable and repeatable, with the human always in control, on whatever model they trust.
 
 ---
+
+## What's new in 3.0
+
+- **Deterministic enforcement**: schemas, rules and gates evaluated by code; the synthesis is refused while a rule is unmet
+- **Human gates with provenance**: every answer records whether it came from the human directly or was relayed
+- **Hash-chained, signable decision log** and an export bundle for oversight and record-keeping
+- **Capability tiers** instead of model names; **diversity policy** with independent runs and minority report
+- **Engine confidence**: computed from the weakest input, model diversity, human overrides and past calibration
+- **Semantic memory**, **predictions with outcomes**, **calibration** by agent, model family and tier, **learned patterns** approved by a human
+- **Execution graphs**: independent agents run in parallel waves
+- **Portability**: Claude Code plugin, Agent Skills package, MCP server, A2A endpoint, OpenTelemetry traces
+- **Eval harness** to measure each release against decisions with known outcomes
 
 ## What's new in 2.0
 

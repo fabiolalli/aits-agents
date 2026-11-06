@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aits.fabiolalli.com/schemas/_envelope.schema.json",
   "title": "AITS Agent Output Envelope",
-  "description": "Common envelope that every AITS 2.0 agent output must include. Agent-specific content goes in main_output.",
+  "description": "Common envelope that every AITS agent output must include. Agent-specific content goes in main_output. Version 3.0 adds provenance and predictions; 2.0 envelopes remain valid.",
   "type": "object",
   "required": [
     "agent",
@@ -31,7 +31,10 @@
     },
     "version": {
       "type": "string",
-      "const": "2.0"
+      "enum": [
+        "2.0",
+        "3.0"
+      ]
     },
     "timestamp": {
       "type": "string",
@@ -39,13 +42,26 @@
     },
     "confidence": {
       "type": "object",
-      "required": ["level", "reasoning"],
+      "required": [
+        "level",
+        "reasoning"
+      ],
       "properties": {
-        "level": { "enum": ["high", "medium", "low"] },
-        "reasoning": { "type": "string" },
+        "level": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "reasoning": {
+          "type": "string"
+        },
         "upstream_dependency": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -54,16 +70,38 @@
       "description": "One-paragraph narrative summary of what this agent concluded."
     },
     "pattern_match": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "properties": {
-        "matched": { "type": "boolean" },
-        "pattern_id": { "type": "string" },
-        "source": { "enum": ["pattern-library", "memory", "both", "none"] },
-        "match_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-        "reference": { "type": "string" },
+        "matched": {
+          "type": "boolean"
+        },
+        "pattern_id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "pattern-library",
+            "memory",
+            "both",
+            "none"
+          ]
+        },
+        "match_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reference": {
+          "type": "string"
+        },
         "lessons_applied": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -82,12 +120,27 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["trigger", "severity", "description"],
+        "required": [
+          "trigger",
+          "severity",
+          "description"
+        ],
         "properties": {
-          "trigger": { "type": "string" },
-          "severity": { "enum": ["blocking", "advisory"] },
-          "description": { "type": "string" },
-          "recommended_action": { "type": "string" }
+          "trigger": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "blocking",
+              "advisory"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          }
         }
       }
     },
@@ -99,9 +152,19 @@
           "items": {
             "type": "object",
             "properties": {
-              "description": { "type": "string" },
-              "impact_if_unfilled": { "enum": ["low", "medium", "high"] },
-              "how_to_fill": { "type": "string" }
+              "description": {
+                "type": "string"
+              },
+              "impact_if_unfilled": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "how_to_fill": {
+                "type": "string"
+              }
             }
           }
         },
@@ -110,9 +173,15 @@
           "items": {
             "type": "object",
             "properties": {
-              "statement": { "type": "string" },
-              "testable": { "type": "boolean" },
-              "risk_if_wrong": { "type": "string" }
+              "statement": {
+                "type": "string"
+              },
+              "testable": {
+                "type": "boolean"
+              },
+              "risk_if_wrong": {
+                "type": "string"
+              }
             }
           }
         }
@@ -126,15 +195,90 @@
           "items": {
             "type": "object",
             "properties": {
-              "metric": { "type": "string" },
-              "self_score": { "enum": ["high", "medium", "low"] },
-              "evidence": { "type": "string" }
+              "metric": {
+                "type": "string"
+              },
+              "self_score": {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              }
             }
           }
         },
         "known_limitations": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Filled by the runtime adapter or orchestrator, never invented by the agent. Used by the engine for the diversity policy.",
+      "properties": {
+        "runtime": {
+          "type": "string"
+        },
+        "model_family": {
+          "type": "string",
+          "description": "Model family or provider-defined lineage, as configured by the user"
+        },
+        "model": {
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "deep",
+            "standard",
+            "fast"
+          ]
+        },
+        "run_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runs_total": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "predictions": {
+      "type": "array",
+      "description": "Explicit, resolvable predictions used for calibration.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "statement",
+          "probability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "resolve_by": {
+            "type": "string"
+          },
+          "source_ref": {
+            "type": "string",
+            "description": "Id of the risk, scenario or option this prediction comes from"
+          }
         }
       }
     }

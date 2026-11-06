@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "aits": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/aits.mjs",
+        "mcp"
+      ],
+      "env": {
+        "AITS_PROJECT_DIR": "${CLAUDE_PROJECT_DIR}"
+      }
+    }
+  }
+}

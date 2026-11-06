@@ -1,0 +1,57 @@
+# AITS 3.0 — runtime-neutral specification.
+# No model or vendor name may appear in this file or anywhere under spec/.
+# Model choices live only in the user's aits.config.yaml.
+
+version: "3.0"
+
+tiers:
+  deep:
+    description: Long, multi-step reasoning over conflicting inputs. Used where the agent judges, arbitrates or simulates.
+    min_context_tokens: 100000
+  standard:
+    description: Structured analysis on a defined taxonomy. Speed and coverage matter more than depth.
+    min_context_tokens: 32000
+  fast:
+    description: Classification, retrieval and schema-conformant writing.
+    min_context_tokens: 8000
+
+# Agents whose confidence feeds the engine confidence of the synthesis.
+critical_inputs:
+  - analytical
+  - emotional-intuitive
+  - critical-validator
+  - optimizer
+  - creative-generative
+  - ethical-governance
+  - predictive-strategic
+  - systemic
+  - foresight
+
+diversity:
+  # Agents run several times independently; the engine aggregates the runs.
+  multi_run_agents: [critical-validator, predictive-strategic, foresight]
+  runs: 3
+  # Pairs that should run on different model families when the user configures more than one.
+  distinct_family_pairs:
+    - [critical-validator, optimizer]
+    - [critical-validator, creative-generative]
+    - [ethical-governance, optimizer]
+  # A position held by fewer than this share of runs goes to the minority report.
+  minority_threshold: 0.5
+  # With a single model family the engine marks the run as monoculture and caps confidence.
+  monoculture_confidence_cap: medium
+
+validation:
+  # Rule R7: failures of the same agent before a mandatory gate opens.
+  max_failures_per_agent: 2
+
+calibration:
+  # Resolved predictions needed before the engine adjusts confidence.
+  min_resolved_for_adjustment: 20
+  # Mapping of the 1-5 probability score of the risk map to a probability.
+  probability_score_map: { 1: 0.1, 2: 0.3, 3: 0.5, 4: 0.7, 5: 0.9 }
+
+confidence:
+  # Caps applied by the engine, regardless of what the synthesis declares.
+  cap_on_human_override: medium
+  cap_on_unresolved_advisory: high

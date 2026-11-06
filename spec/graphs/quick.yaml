@@ -1,0 +1,9 @@
+id: quick
+title: Quick decision
+description: Minimal autonomous flow. Conditional agents run only when a rule requires them.
+nodes:
+  - { id: analytical }
+  - { id: critical-validator, after: [analytical] }
+  - { id: optimizer, after: [critical-validator] }
+  - { id: ethical-governance, after: [optimizer], required_by: [R3, R4] }
+  - { id: predictive-strategic, after: [critical-validator], required_by: R3 }

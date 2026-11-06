@@ -1,0 +1,50 @@
+{
+  "agent": "critical-validator",
+  "version": "3.0",
+  "timestamp": "2026-03-02T09:21:00.000Z",
+  "confidence": {
+    "level": "medium",
+    "reasoning": "synthetic demo"
+  },
+  "summary": "critical-validator: synthetic demo output",
+  "main_output": {
+    "risk_map": [
+      {
+        "id": "rk1",
+        "risk": "SMB churn spikes after the price increase",
+        "category": "financial",
+        "driver": "price_elasticity",
+        "probability": 3,
+        "impact": 3,
+        "severity": 9,
+        "severity_level": "medium"
+      },
+      {
+        "id": "rk3",
+        "risk": "Competitor answers with a free tier",
+        "category": "strategic",
+        "driver": "competitive_move",
+        "probability": 3,
+        "impact": 4,
+        "severity": 12,
+        "severity_level": "high"
+      }
+    ],
+    "overall_risk_level": "high",
+    "recommendation": "proceed_with_guardrails"
+  },
+  "provenance": {
+    "runtime": "demo",
+    "model_family": "family-b",
+    "tier": "deep",
+    "run_index": 1
+  },
+  "predictions": [
+    {
+      "id": "churn-spike",
+      "statement": "SMB monthly churn exceeds 3% within 90 days",
+      "probability": 0.4,
+      "source_ref": "rk1"
+    }
+  ]
+}

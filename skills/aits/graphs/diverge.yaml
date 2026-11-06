@@ -1,0 +1,7 @@
+id: diverge
+title: Divergent exploration
+description: Creative-first flow in review mode. Critical-Validator is deliberately absent.
+nodes:
+  - { id: creative-generative }
+  - { id: emotional-intuitive, after: [creative-generative] }
+  - { id: foresight, after: [creative-generative, emotional-intuitive], required_by: R5 }

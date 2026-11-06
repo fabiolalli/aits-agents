@@ -1,0 +1,52 @@
+{
+  "agent": "ethical-governance",
+  "version": "3.0",
+  "timestamp": "2026-03-02T09:35:00.000Z",
+  "confidence": {
+    "level": "medium",
+    "reasoning": "synthetic demo"
+  },
+  "summary": "ethical-governance: synthetic demo output",
+  "main_output": {
+    "dimensional_assessment": {
+      "fairness": {
+        "status": "concern",
+        "reasoning": "Long-standing SMB customers bear most of the increase"
+      },
+      "autonomy": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      },
+      "transparency": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      },
+      "accountability": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      },
+      "non_maleficence": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      },
+      "beneficence": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      },
+      "dignity": {
+        "status": "clear",
+        "reasoning": "No issue found"
+      }
+    },
+    "overall_ethical_posture": "cautionary",
+    "recommended_conditions_for_proceeding": [
+      "90 days notice",
+      "Grandfathering for customers older than two years"
+    ]
+  },
+  "provenance": {
+    "runtime": "demo",
+    "model_family": "family-a",
+    "tier": "standard"
+  }
+}

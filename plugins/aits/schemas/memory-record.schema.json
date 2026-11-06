@@ -4,36 +4,100 @@
   "title": "AITS Decision Memory Record",
   "description": "Shape of a single decision record archived in .aits/memory/",
   "type": "object",
-  "required": ["id", "version", "decision_timestamp", "problem_statement", "final_decision"],
+  "required": [
+    "id",
+    "version",
+    "decision_timestamp",
+    "problem_statement",
+    "final_decision"
+  ],
   "properties": {
-    "id": { "type": "string", "description": "Format: YYYY-MM-DD_slugified-title" },
-    "version": { "const": "2.0" },
-    "decision_timestamp": { "type": "string", "format": "date-time" },
-    "problem_statement": { "type": "string" },
-    "problem_type": { "type": "string" },
-    "tags": { "type": "array", "items": { "type": "string" } },
+    "id": {
+      "type": "string",
+      "description": "Format: YYYY-MM-DD_slugified-title"
+    },
+    "version": {
+      "type": "string",
+      "enum": [
+        "2.0",
+        "3.0"
+      ]
+    },
+    "decision_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "problem_statement": {
+      "type": "string"
+    },
+    "problem_type": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "pattern_matched": {
       "type": "object",
       "properties": {
-        "pattern_id": { "type": "string" },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        "pattern_id": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
       }
     },
-    "playbook_used": { "type": "string" },
-    "hitl_mode": { "enum": ["supervised", "autonomous", "review"] },
-    "agents_activated": { "type": "array", "items": { "type": "string" } },
+    "playbook_used": {
+      "type": "string"
+    },
+    "hitl_mode": {
+      "enum": [
+        "supervised",
+        "autonomous",
+        "review"
+      ]
+    },
+    "agents_activated": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "agent_outputs_digest": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "agent": { "type": "string" },
-          "key_findings_summary": { "type": "string" },
-          "confidence": { "enum": ["high", "medium", "low"] },
-          "gaps_flagged": { "type": "integer" },
-          "stakeholders_mapped": { "type": "integer" },
-          "risks_identified": { "type": "integer" },
-          "options_generated": { "type": "integer" }
+          "agent": {
+            "type": "string"
+          },
+          "key_findings_summary": {
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "gaps_flagged": {
+            "type": "integer"
+          },
+          "stakeholders_mapped": {
+            "type": "integer"
+          },
+          "risks_identified": {
+            "type": "integer"
+          },
+          "options_generated": {
+            "type": "integer"
+          }
         }
       }
     },
@@ -42,10 +106,26 @@
       "items": {
         "type": "object",
         "properties": {
-          "parties": { "type": "array", "items": { "type": "string" } },
-          "severity": { "enum": ["L1", "L2", "L3", "L4"] },
-          "arbiter": { "type": "string" },
-          "resolution_summary": { "type": "string" }
+          "parties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "severity": {
+            "enum": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ]
+          },
+          "arbiter": {
+            "type": "string"
+          },
+          "resolution_summary": {
+            "type": "string"
+          }
         }
       }
     },
@@ -54,9 +134,15 @@
       "items": {
         "type": "object",
         "properties": {
-          "rule": { "type": "string" },
-          "trigger": { "type": "string" },
-          "resolution": { "type": "string" }
+          "rule": {
+            "type": "string"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string"
+          }
         }
       }
     },
@@ -65,35 +151,220 @@
       "items": {
         "type": "object",
         "properties": {
-          "at_step": { "type": "string" },
-          "intervention_type": { "enum": ["correction", "redirect", "redo", "mode_switch", "abort", "context_add"] },
-          "summary": { "type": "string" }
+          "at_step": {
+            "type": "string"
+          },
+          "intervention_type": {
+            "enum": [
+              "correction",
+              "redirect",
+              "redo",
+              "mode_switch",
+              "abort",
+              "context_add"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          }
         }
       }
     },
     "final_decision": {
       "type": "object",
-      "required": ["statement", "type"],
+      "required": [
+        "statement",
+        "type"
+      ],
       "properties": {
-        "statement": { "type": "string" },
-        "type": { "enum": ["go", "no_go", "conditional", "defer", "redesign"] },
-        "conditions": { "type": "array", "items": { "type": "string" } },
-        "confidence": { "enum": ["high", "medium", "low"] }
+        "statement": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "go",
+            "no_go",
+            "conditional",
+            "defer",
+            "redesign"
+          ]
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        }
       }
     },
-    "action_plan_summary": { "type": "array", "items": { "type": "string" } },
-    "uncovered_dimensions": { "type": "array", "items": { "type": "string" } },
-    "next_review_date": { "type": "string", "format": "date" },
+    "action_plan_summary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "uncovered_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_review_date": {
+      "type": "string",
+      "format": "date"
+    },
     "retrospective": {
       "type": "object",
       "properties": {
-        "status": { "enum": ["untested", "outcome_pending", "partially_validated", "validated_success", "validated_failure", "mixed"] },
-        "last_updated": { "type": ["string", "null"], "format": "date-time" },
-        "outcome_vs_prediction": { "type": ["string", "null"] },
-        "what_materialized": { "type": ["array", "null"], "items": { "type": "string" } },
-        "what_did_not_materialize": { "type": ["array", "null"], "items": { "type": "string" } },
-        "unexpected_emergents": { "type": ["array", "null"], "items": { "type": "string" } },
-        "lessons_for_library": { "type": ["string", "null"] }
+        "status": {
+          "enum": [
+            "untested",
+            "outcome_pending",
+            "partially_validated",
+            "validated_success",
+            "validated_failure",
+            "mixed"
+          ]
+        },
+        "last_updated": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "outcome_vs_prediction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "what_materialized": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "what_did_not_materialize": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "unexpected_emergents": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "lessons_for_library": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "log_head": {
+      "type": "string",
+      "description": "Hash of the last decision-log entry of the run"
+    },
+    "engine_confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "diversity": {
+      "type": "object",
+      "properties": {
+        "families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "monoculture": {
+          "type": "boolean"
+        }
+      }
+    },
+    "predictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "agent",
+          "statement",
+          "probability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "model_family": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number"
+          },
+          "resolve_by": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              0,
+              1,
+              null
+            ]
+          },
+          "resolved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
       }
     }
   }

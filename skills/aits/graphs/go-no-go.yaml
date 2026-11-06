@@ -1,0 +1,8 @@
+id: go-no-go
+title: Go / No-Go
+nodes:
+  - { id: analytical }
+  - { id: critical-validator, after: [analytical] }
+  - { id: optimizer, after: [critical-validator] }
+  - { id: ethical-governance, after: [optimizer] }
+  - { id: predictive-strategic, after: [critical-validator, optimizer] }

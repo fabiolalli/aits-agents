@@ -12,6 +12,8 @@ Binary strategic decisions where the output must be unambiguous — GO, NO-GO, o
 
 **⚪ Analytical → ⚫ Critical-Validator → 🟡 Optimizer → 🟣 Ethical-Governance → 🔵 Predictive-Strategic → 🎯 Synthesis**
 
+Execution graph: `graphs/go-no-go.yaml`. The engine plans it in waves; agents in the same wave have no dependency on each other and can run in parallel.
+
 Why this order: fact base first; stress-test before optimism; optimism before ethics (so ethics evaluates a real plan); predictions after ethics (so we project an ethically-acceptable version).
 
 ## Focus areas per agent

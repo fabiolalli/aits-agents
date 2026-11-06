@@ -1,9 +1,10 @@
 ---
-name: aits-quick
-description: Rapid AITS 2.0 decision in autonomous mode. Activates the Meta-Orchestrator with a minimal 3-agent sequence (Analytical → Critical-Validator → Optimizer) and auto-escalates to additional agents when inviolable rules require. No voluntary checkpoints — only mandatory gates pause the flow. Default for time-sensitive decisions with moderate stakes.
+description: "Rapid AITS decision in autonomous mode. Activates the Meta-Orchestrator with a minimal 3-agent sequence (Analytical → Critical-Validator → Optimizer) and auto-escalates to additional agents when inviolable rules require. No voluntary checkpoints — only mandatory gates pause the flow. Default for time-sensitive decisions with moderate stakes."
 ---
 
-# /aits-quick — Rapid AITS 2.0 Decision (Autonomous Mode)
+> Engine: this command starts an AITS run with `aits_start_run` (graph `quick`, mode `autonomous`) and closes it only through `aits_synthesize`.
+
+# /aits-quick — Rapid AITS Decision (Autonomous Mode)
 
 This command activates the Meta-Orchestrator in **autonomous mode** — minimal agent sequence, no voluntary checkpoints, mandatory gates still enforced.
 

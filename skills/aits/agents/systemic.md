@@ -88,7 +88,10 @@ Return **only** this JSON object as your final message, with no text before or a
     "leverage_points": "<see the shape below>"
   },
   "hitl_flags": [],
-  "gaps_or_assumptions": []
+  "gaps_or_assumptions": {
+    "gaps": [],
+    "assumptions": []
+  }
 }
 ```
 

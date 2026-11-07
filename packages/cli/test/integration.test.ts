@@ -125,6 +125,25 @@ describe('CLI, hook and build', () => {
     expect(status.submitted[0].status).toBe('accepted');
   });
 
+  it('the envelope shown in each agent file is valid once its placeholders are filled', async () => {
+    const { envelopeSkeleton } = await import('../src/build.ts');
+    const { getSpec, validateEnvelope } = await import('@fabiolalli/aits-core');
+    const fill = (v: unknown): unknown => {
+      if (typeof v === 'string' && /^[a-z_]+(\|[a-z_]+)+$/.test(v)) return v.split('|')[0];
+      if (Array.isArray(v)) return v.map(fill);
+      if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, fill(x)]));
+      return v;
+    };
+    for (const id of Object.keys(getSpec().agents)) {
+      if (id === 'memory') continue;
+      const env = fill(envelopeSkeleton(id, true)) as Record<string, unknown>;
+      env.main_output = {};
+      env.timestamp = '2026-11-07T08:00:00Z';
+      const errors = validateEnvelope(env).errors.filter((e) => !e.startsWith('/main_output'));
+      expect(errors, id).toEqual([]);
+    }
+  });
+
   it('the session-start hook exposes the plugin root to sub-agents', () => {
     const dir = tmp();
     const plugin = path.join(dir, 'plugin');

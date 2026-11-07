@@ -49,6 +49,10 @@ Files referenced as \`references/...\`, \`playbooks/...\`, \`graphs/...\` or \`s
  * The exact envelope an agent must return, generated from the schemas so that an agent that cannot
  * open its schema file still produces a valid output. Inserted at the top of each Output Contract.
  */
+export function envelopeSkeleton(agentId: string, withPredictions: boolean) {
+  return JSON.parse(envelopeBlock(agentId, withPredictions).split('```json\n')[1].split('\n```')[0]) as Record<string, unknown>;
+}
+
 function envelopeBlock(agentId: string, withPredictions: boolean): string {
   const spec = getSpec();
   const env = JSON.parse(spec.files['schemas/_envelope.schema.json']) as { required: string[] };
@@ -62,7 +66,7 @@ function envelopeBlock(agentId: string, withPredictions: boolean): string {
     summary: '<one paragraph>',
     main_output: Object.fromEntries(mainRequired.map((k) => [k, '<see the shape below>'])),
     hitl_flags: [],
-    gaps_or_assumptions: [],
+    gaps_or_assumptions: { gaps: [], assumptions: [] },
     ...(withPredictions ? { predictions: [{ id: 'p1', statement: '<event that can be checked later>', probability: 0.3, resolve_by: '<ISO date>', source_ref: '<risk, premortem or scenario id>' }] } : {}),
   };
   const lead =

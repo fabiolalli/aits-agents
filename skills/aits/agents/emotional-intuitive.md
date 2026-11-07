@@ -85,7 +85,10 @@ Return **only** this JSON object as your final message, with no text before or a
     "stakeholder_maps": "<see the shape below>"
   },
   "hitl_flags": [],
-  "gaps_or_assumptions": []
+  "gaps_or_assumptions": {
+    "gaps": [],
+    "assumptions": []
+  }
 }
 ```
 

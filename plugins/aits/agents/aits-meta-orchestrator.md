@@ -285,7 +285,10 @@ The synthesis you submit to the engine is this JSON object, passed unchanged; th
     "hitl_summary": "<see the shape below>"
   },
   "hitl_flags": [],
-  "gaps_or_assumptions": []
+  "gaps_or_assumptions": {
+    "gaps": [],
+    "assumptions": []
+  }
 }
 ```
 

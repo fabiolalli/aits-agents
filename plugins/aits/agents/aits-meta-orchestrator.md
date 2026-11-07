@@ -264,7 +264,7 @@ If no playbook matches, fall back to a problem-type-driven sequence:
 ## Output Contract
 
 
-The synthesis you submit to the engine is this JSON object, passed unchanged; the engine refuses anything else. `agent` must be exactly `"meta-orchestrator"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `integrated_synthesis`, `decision`, `action_plan`, `decision_log`, `confidence_level`, `hitl_summary`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+The synthesis you submit to the engine is this JSON object, passed unchanged; the engine refuses anything else. `agent` must be exactly `"meta-orchestrator"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `integrated_synthesis`, `decision`, `action_plan`, `decision_log`, `confidence_level`, `hitl_summary`. Enumerated values take exactly one of the listed options: when none fits, use the neutral option the list offers (such as `unknown` or `none`) or leave out an optional field, never `N/A` or free text. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
 
 ```json
 {

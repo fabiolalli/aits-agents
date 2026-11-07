@@ -70,7 +70,7 @@ At start:
 ## Output Contract
 
 
-Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"systemic"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `system_boundary`, `feedback_loops`, `leverage_points`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"systemic"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `system_boundary`, `feedback_loops`, `leverage_points`. Enumerated values take exactly one of the listed options: when none fits, use the neutral option the list offers (such as `unknown` or `none`) or leave out an optional field, never `N/A` or free text. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
 
 ```json
 {

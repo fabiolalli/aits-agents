@@ -25,6 +25,7 @@ Fixes found by running the plugin in real Claude Code sessions on an Italian go/
 - `aits hook session-start` and `aits hook subagent-stop`.
 - `gates.elicitation` configuration option.
 - Several gates raised by the same output can be answered with one decision: `aits_gate_respond` and `aits gate` accept ids separated by commas.
+- CI on `actions/checkout@v6` and `actions/setup-node@v6` (Node 24 runtime) and pinned to `ubuntu-24.04`, removing the Node 20 deprecation warning and the runner migration notice.
 - When the orchestrator sends a copy of an output the runtime already recorded, the answer says so instead of reporting `duplicate`.
 
 ---

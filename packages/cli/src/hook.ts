@@ -43,7 +43,7 @@ function submitFound(input: HookInput, strings: string[]): string[] | undefined 
   if (!runId) return undefined;
   const envelope = findEnvelope(strings);
   if (!envelope) return undefined;
-  const result = engine.open(runId).submit(envelope);
+  const result = engine.open(runId).submit(envelope, { source: 'runtime' });
   const lines = [`AITS engine: ${result.agent} envelope ${result.status} in run ${runId} (log entry ${result.seq}).`];
   if (result.errors.length) lines.push(`Errors: ${result.errors.join('; ')}`);
   lines.push(...result.next);

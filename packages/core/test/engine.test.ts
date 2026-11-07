@@ -13,6 +13,28 @@ describe('agent names', () => {
   });
 });
 
+describe('runtime and orchestrator copies of one output', () => {
+  it('counts one attempt once, even when the orchestrator rewrites it', async () => {
+    const engine = new Engine(tmpDir());
+    const { run_id } = await engine.start({ problem: 'Copies', graph: 'quick' });
+    const run = engine.open(run_id);
+    const bad = { ...analytical(), gaps_or_assumptions: [] };
+    expect(run.submit(bad, { source: 'runtime' }).status).toBe('invalid');
+    expect(run.submit(bad, { source: 'runtime' }).seq).toBe(1);
+    const rewritten = run.submit({ ...bad, summary: 'shortened by the orchestrator' });
+    expect(rewritten.status).toBe('invalid');
+    expect(rewritten.seq).toBe(1);
+    expect(rewritten.next[0]).toMatch(/one of record/);
+    expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(0);
+    run.submit({ ...bad, summary: 'second attempt, still wrong' }, { source: 'runtime' });
+    expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(1);
+    const good = analytical();
+    run.submit(good, { source: 'runtime' });
+    expect(run.submit({ ...good, provenance: { runtime: 'x', model_family: 'fam-a' } }).status).toBe('duplicate');
+    expect(run.status().submitted.filter((x) => x.status === 'accepted')).toHaveLength(1);
+  });
+});
+
 describe('schema validation', () => {
   it('accepts a valid envelope and a 2.0 envelope', () => {
     expect(validateEnvelope(analytical()).valid).toBe(true);

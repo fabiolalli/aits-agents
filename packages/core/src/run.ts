@@ -216,9 +216,9 @@ export class Run {
       .all()
       .filter((e) => e.type === 'envelope')
       .map((e) => {
-        const d = e.data as { agent: string; status: RecordedEnvelope['status']; envelope: Record<string, unknown>; content_hash?: string; envelope_hash: string };
+        const d = e.data as { agent: string; status: RecordedEnvelope['status']; envelope: Record<string, unknown>; content_hash?: string; envelope_hash: string; source?: RecordedEnvelope['source'] };
         const envelope = attached.has(e.seq) ? { ...d.envelope, provenance: attached.get(e.seq) } : d.envelope;
-        return { seq: e.seq, agent: d.agent, envelope, hash: d.content_hash ?? d.envelope_hash, status: d.status };
+        return { seq: e.seq, agent: d.agent, envelope, hash: d.content_hash ?? d.envelope_hash, status: d.status, source: d.source };
       });
   }
 
@@ -251,8 +251,9 @@ export class Run {
     if (s !== 'open') throw new Error(`run ${this.id} is ${s}`);
   }
 
-  submit(raw: unknown): SubmitResult {
+  submit(raw: unknown, opts: { source?: 'runtime' | 'orchestrator' } = {}): SubmitResult {
     this.assertOpen();
+    const source = opts.source ?? 'orchestrator';
     const envelope = extractEnvelope(raw);
     if (!envelope) {
       const entry = this.log.append('envelope', { agent: 'unknown', status: 'invalid', envelope: { raw: String(raw).slice(0, 4000) }, envelope_hash: hashOf(String(raw)), errors: ['no JSON object found in the agent output'] });
@@ -266,24 +267,45 @@ export class Run {
     // provenance, which the orchestrator may add later: it is attached instead of counted twice.
     const { provenance, ...content } = envelope;
     const content_hash = hashOf(content);
-    const dup = this.envelopes().find((e) => e.hash === content_hash && e.status !== 'invalid');
+    // Two runtime hooks (tool result and sub-agent stop) can both see the same output, valid or not.
+    const dup = this.envelopes().find((e) => e.hash === content_hash && (e.status !== 'invalid' || (source === 'runtime' && e.source === 'runtime')));
     if (dup) {
       if (provenance && !dup.envelope.provenance) this.log.append('provenance_attached', { target_seq: dup.seq, provenance });
+      const claimed = this.log.all().some((e) => e.type === 'resubmission' && (e.data as { target_seq: number }).target_seq === dup.seq);
+      if (source === 'orchestrator' && dup.source === 'runtime' && !claimed) this.log.append('resubmission', { agent, target_seq: dup.seq, content_hash, identical: true });
+      if (dup.status === 'invalid') return this.result('invalid', dup.seq, agent, ((this.log.all().find((e) => e.seq === dup.seq)?.data as { errors?: string[] }).errors ?? []));
       return this.result('duplicate', dup.seq, agent, []);
+    }
+
+    // The runtime hook already recorded this agent's raw output and the orchestrator is now sending
+    // its own copy of the same attempt, possibly reformatted: the hook's copy stays the one of record,
+    // so one attempt is never counted twice (R7, multi-run) and a rewritten output never replaces it.
+    if (source === 'orchestrator') {
+      const claimed = new Set(this.log.all().filter((e) => e.type === 'resubmission').map((e) => (e.data as { target_seq: number }).target_seq));
+      const pending = this.envelopes().filter((e) => e.agent === agent && e.source === 'runtime' && !claimed.has(e.seq));
+      if (pending.length) {
+        const target = pending[0];
+        const targetErrors = ((this.log.all().find((e) => e.seq === target.seq)?.data as { errors?: string[] } | undefined)?.errors ?? []);
+        this.log.append('resubmission', { agent, target_seq: target.seq, content_hash, identical: content_hash === target.hash });
+        if (provenance && !target.envelope.provenance) this.log.append('provenance_attached', { target_seq: target.seq, provenance });
+        const res = this.result(target.status === 'accepted' ? 'duplicate' : target.status, target.seq, agent, targetErrors);
+        if (content_hash !== target.hash) res.next.unshift(`The runtime had already recorded the output of ${agent} as log entry ${target.seq}; that copy is the one of record. Pass agent outputs unchanged.`);
+        return res;
+      }
     }
 
     const v = validateEnvelope(envelope);
     if (!v.valid) {
-      const entry = this.log.append('envelope', { agent, status: 'invalid', envelope, content_hash, envelope_hash, errors: v.errors });
+      const entry = this.log.append('envelope', { agent, status: 'invalid', envelope, content_hash, envelope_hash, errors: v.errors, source });
       return this.result('invalid', entry.seq, agent, v.errors);
     }
     const rejecting = rejectingRules(this.spec, agent, envelope);
     if (rejecting.length) {
       const errors = rejecting.map((r) => `${r.id}: ${r.title}`);
-      const entry = this.log.append('envelope', { agent, status: 'rejected', envelope, content_hash, envelope_hash, errors, rejected_by: rejecting.map((r) => r.id) });
+      const entry = this.log.append('envelope', { agent, status: 'rejected', envelope, content_hash, envelope_hash, errors, rejected_by: rejecting.map((r) => r.id), source });
       return { ...this.result('rejected', entry.seq, agent, errors), rejected_by: rejecting.map((r) => r.id) };
     }
-    const entry = this.log.append('envelope', { agent, status: 'accepted', envelope, content_hash, envelope_hash });
+    const entry = this.log.append('envelope', { agent, status: 'accepted', envelope, content_hash, envelope_hash, source });
     return this.result('accepted', entry.seq, agent, []);
   }
 

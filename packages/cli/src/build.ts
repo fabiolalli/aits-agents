@@ -76,7 +76,7 @@ function envelopeBlock(agentId: string, withPredictions: boolean): string {
     agentId === 'meta-orchestrator'
       ? 'The synthesis you submit to the engine is this JSON object, passed unchanged; the engine refuses anything else.'
       : 'Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else.';
-  return `${lead} \`agent\` must be exactly \`"${agentId}"\` and \`version\` exactly \`"3.0"\`; the required fields are ${env.required.map((f) => `\`${f}\``).join(', ')}${mainRequired.length ? `, and \`main_output\` requires ${mainRequired.map((f) => `\`${f}\``).join(', ')}` : ''}. Enumerated values take exactly one of the listed options. Add \`hitl_flags\` entries (\`trigger\`, \`severity\`: \`blocking\` or \`advisory\`, \`description\`) when one of your escalation triggers fires.
+  return `${lead} \`agent\` must be exactly \`"${agentId}"\` and \`version\` exactly \`"3.0"\`; the required fields are ${env.required.map((f) => `\`${f}\``).join(', ')}${mainRequired.length ? `, and \`main_output\` requires ${mainRequired.map((f) => `\`${f}\``).join(', ')}` : ''}. Enumerated values take exactly one of the listed options: when none fits, use the neutral option the list offers (such as `unknown` or `none`) or leave out an optional field, never `N/A` or free text. Add \`hitl_flags\` entries (\`trigger\`, \`severity\`: \`blocking\` or \`advisory\`, \`description\`) when one of your escalation triggers fires.
 
 \`\`\`json
 ${JSON.stringify(skeleton, null, 2)}

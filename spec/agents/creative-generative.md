@@ -2,6 +2,7 @@
 id: creative-generative
 description: "Creative-Generative Agent (Green) of the AITS system. Activate to generate alternatives, break out of false binaries, and introduce lateral thinking. Produces options with explicit novelty scoring, cross-domain analogies, and micro-tests for rapid validation. Works in divergent phases or when a deadlock emerges. Does not evaluate — that's Black's and Yellow's job. When Green generates ≥ 4 viable options, inviolable rule #5 triggers Foresight."
 tier: standard
+function: "Alternatives beyond the obvious options, without judging them"
 color: green
 capabilities: [file_read, shell, web_search]
 ---

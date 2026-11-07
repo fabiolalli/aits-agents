@@ -2,6 +2,7 @@
 id: systemic
 description: "Systemic Agent (Cyan) of the AITS system. Activate for decisions with complex interdependencies, feedback loops, or potential unintended consequences. Maps the system as stocks, flows, and loops. Identifies leverage points (places where small intervention produces disproportionate effects). Detects cascade paths and second-order effects. Works with Predictive to temporalize the dynamics."
 tier: deep
+function: "Feedback loops, leverage points, cascades and unintended consequences"
 color: cyan
 capabilities: [file_read, shell]
 ---
@@ -66,7 +67,7 @@ Raise mandatory gate when:
 At start:
 
 1. Check `references/pattern-library.md` — some patterns are explicitly systemic (e.g., AI adoption, middle-management-squeeze)
-2. Search `.aits/memory/` for past decisions in the same domain where systemic effects were analyzed
+2. Use the past decisions passed as `memory_context` for the same domain where systemic effects were analyzed
 3. Look for known archetypes: "tragedy of the commons," "fixes that fail," "shifting the burden," "limits to growth," "success to the successful"
 4. Report in `pattern_match`
 

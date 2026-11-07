@@ -73,6 +73,38 @@ At start:
 
 ## Output Contract
 
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"critical-validator"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `risk_map`, `overall_risk_level`, `recommendation`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "critical-validator",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "risk_map": "<see the shape below>",
+    "overall_risk_level": "<see the shape below>",
+    "recommendation": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": [],
+  "predictions": [
+    {
+      "id": "p1",
+      "statement": "<event that can be checked later>",
+      "probability": 0.3,
+      "resolve_by": "<ISO date>",
+      "source_ref": "<risk, premortem or scenario id>"
+    }
+  ]
+}
+```
+
 Conforms to `/schemas/critical-validator.schema.json`. Main_output:
 
 ```json

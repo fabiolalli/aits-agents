@@ -89,13 +89,12 @@ Raises mandatory gate when:
 
 ### 9. Memory Query (new in 2.0)
 
-At the start of each run, the agent queries `.aits/memory/` and `references/pattern-library.md` for similar past decisions. The protocol is:
+Similar past decisions are retrieved by the engine (semantic memory) when the run starts and passed to each agent by the Meta-Orchestrator as `memory_context`. The protocol is:
 
-1. Build a query signature from the current decision context
-2. Search `memory/index.json` for matches above a confidence threshold
-3. Search `pattern-library.md` for named archetypes that fit
-4. Load lessons and include them as additional context
-5. Report the match in the `pattern_match` field of the output
+1. Read the `memory_context` received with the task; agents do not search `.aits/memory/` themselves
+2. Search `references/pattern-library.md` for named archetypes that fit
+3. Use the lessons as additional context, never as evidence for the current case
+4. Report the match in the `pattern_match` field of the output
 
 ### 10. Failure Modes, Quality Metrics, Operational Parameters
 
@@ -125,7 +124,7 @@ At the start of each run, the agent queries `.aits/memory/` and `references/patt
   "pattern_id": "restructuring-survivor-guilt",
   "source": "pattern-library|memory|both",
   "match_confidence": 0.82,
-  "reference": "references/pattern-library.md#restructuring-survivor-guilt or .aits/memory/2025-09-foo.json",
+  "reference": "references/pattern-library.md#restructuring-survivor-guilt or memory:2025-09-12_foo",
   "lessons_applied": ["..."]
 }
 ```

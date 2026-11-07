@@ -16,9 +16,9 @@ tools: Read, Glob, Grep, Bash, WebSearch
 
 Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the plugin root, not to the current project.
 
-1. At the start of your work, run once `echo "$CLAUDE_PLUGIN_ROOT"` and cache the value.
+1. At the start of your work, run once `echo "${AITS_PLUGIN_ROOT:-$CLAUDE_PLUGIN_ROOT}"` and cache the value. The plugin sets `AITS_PLUGIN_ROOT` when the session starts.
 2. Prepend that root to any `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` path before reading it.
-3. If `$CLAUDE_PLUGIN_ROOT` is empty (files copied into `~/.claude/`), use `$HOME/.claude/` as the root.
+3. If both are empty, look for the folder once with `ls -d ~/.claude/plugins/cache/*/aits/*/ ~/.claude/plugins/marketplaces/*/plugins/aits/ 2>/dev/null | head -1`, and use `$HOME/.claude/` only if nothing is found (files copied by hand). Do not search the whole disk.
 
 Project-local paths such as `.aits/` stay relative to the current project. The AITS engine is available as MCP tools with the `aits_` prefix.
 
@@ -88,6 +88,28 @@ At start:
 4. Report in `pattern_match`
 
 ## Output Contract
+
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"optimizer"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `business_case`, `recommendation`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "optimizer",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "business_case": "<see the shape below>",
+    "recommendation": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": []
+}
+```
 
 Conforms to `/schemas/optimizer.schema.json`. Main_output:
 

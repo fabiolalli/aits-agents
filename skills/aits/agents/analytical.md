@@ -60,12 +60,35 @@ Raise mandatory gate when:
 
 At start:
 
-1. Search `.aits/memory/` for past decisions with overlapping `problem_type` or `tags`
+1. Use the past decisions passed by the Meta-Orchestrator as `memory_context` (retrieved by the engine); do not search `.aits/memory/` yourself
 2. Load prior factual bases — do not re-collect what was collected recently
 3. Check `references/pattern-library.md` — matched patterns often have `typical_data_needs` hints
 4. Report the match (or absence) in `pattern_match`
 
 ## Output Contract
+
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"analytical"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `facts`, `gaps`, `assumptions`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "analytical",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "facts": "<see the shape below>",
+    "gaps": "<see the shape below>",
+    "assumptions": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": []
+}
+```
 
 Conforms to `/schemas/analytical.schema.json`. Main_output shape:
 

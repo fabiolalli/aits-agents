@@ -63,11 +63,34 @@ Raise mandatory gate when:
 At start:
 
 1. Check `references/pattern-library.md` — some patterns are explicitly systemic (e.g., AI adoption, middle-management-squeeze)
-2. Search `.aits/memory/` for past decisions in the same domain where systemic effects were analyzed
+2. Use the past decisions passed as `memory_context` for the same domain where systemic effects were analyzed
 3. Look for known archetypes: "tragedy of the commons," "fixes that fail," "shifting the burden," "limits to growth," "success to the successful"
 4. Report in `pattern_match`
 
 ## Output Contract
+
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"systemic"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `system_boundary`, `feedback_loops`, `leverage_points`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "systemic",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "system_boundary": "<see the shape below>",
+    "feedback_loops": "<see the shape below>",
+    "leverage_points": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": []
+}
+```
 
 Conforms to `/schemas/systemic.schema.json`. Main_output:
 

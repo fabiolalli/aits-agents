@@ -60,6 +60,30 @@ describe('MCP server', () => {
   });
 });
 
+describe('MCP server in a headless session', () => {
+  it('falls back to the relayed words when nobody answers the elicitation form', async () => {
+    const dir = tmp();
+    const client = new Client({ name: 'headless', version: '1.0.0' }, { capabilities: { elicitation: {} } });
+    client.setRequestHandler(ElicitRequestSchema, async () => ({ action: 'cancel' }));
+    await client.connect(new StdioClientTransport({ command: 'node', args: [BUNDLE, 'mcp'], cwd: dir, env: { ...process.env, AITS_PROJECT_DIR: dir } as Record<string, string> }));
+    try {
+      const start = parse(await client.callTool({ name: 'aits_start_run', arguments: { problem: 'Headless gate', graph: 'quick' } }));
+      await client.callTool({ name: 'aits_submit', arguments: { envelope: analytical() } });
+      await client.callTool({ name: 'aits_submit', arguments: { envelope: critical({ severity: 15 }) } });
+      const noQuote = parse(await client.callTool({ name: 'aits_gate_respond', arguments: { gate_id: 'R3#1', decision: 'proceed' } }));
+      expect(noQuote.status).toBe('still open');
+      expect(noQuote.note).toMatch(/Ask the human/);
+      const relayed = parse(await client.callTool({ name: 'aits_gate_respond', arguments: { gate_id: 'R3#1', decision: 'proceed', user_quote: 'Procedi pure' } }));
+      expect(relayed.decision).toBe('proceed');
+      const log = fs.readFileSync(path.join(dir, '.aits', 'runs', start.run_id, 'log.jsonl'), 'utf8');
+      expect(log).toContain('"via":"agent_relayed"');
+      expect(log).toContain('nobody answered the elicitation form');
+    } finally {
+      await client.close();
+    }
+  });
+});
+
 describe('CLI, hook and build', () => {
   it('runs a decision from the command line', () => {
     const dir = tmp();
@@ -88,6 +112,28 @@ describe('CLI, hook and build', () => {
     expect(status.submitted[0].family).toBe('fam-a');
   });
 
+  it('the subagent-stop hook captures the output of a background sub-agent under its runtime name', () => {
+    const dir = tmp();
+    const run = (args: string[], input?: string) => execFileSync('node', [BUNDLE, ...args], { cwd: dir, input, encoding: 'utf8' });
+    JSON.parse(run(['start', 'Test', '--graph', 'quick']));
+    const env = { ...analytical(), agent: 'aits:aits-analytical' };
+    const out = run(['hook', 'subagent-stop'], JSON.stringify({ hook_event_name: 'SubagentStop', cwd: dir, agent_type: 'aits:aits-analytical', last_assistant_message: JSON.stringify(env) }));
+    expect(out).toBe('');
+    const status = JSON.parse(run(['status']));
+    expect(status.submitted).toHaveLength(1);
+    expect(status.submitted[0].agent).toBe('analytical');
+    expect(status.submitted[0].status).toBe('accepted');
+  });
+
+  it('the session-start hook exposes the plugin root to sub-agents', () => {
+    const dir = tmp();
+    const plugin = path.join(dir, 'plugin');
+    fs.mkdirSync(path.join(plugin, 'references'), { recursive: true });
+    const envFile = path.join(dir, 'env.sh');
+    execFileSync('node', [BUNDLE, 'hook', 'session-start'], { cwd: dir, input: '{}', encoding: 'utf8', env: { ...process.env, CLAUDE_ENV_FILE: envFile, CLAUDE_PLUGIN_ROOT: plugin } });
+    expect(fs.readFileSync(envFile, 'utf8')).toBe(`export AITS_PLUGIN_ROOT=${JSON.stringify(plugin)}\n`);
+  });
+
   it('builds the Claude Code plugin and the Agent Skills package from the spec', () => {
     const out = tmp();
     execFileSync('node', [BUNDLE, 'build', '--target', 'all', '--out', out], { encoding: 'utf8' });
@@ -95,13 +141,22 @@ describe('CLI, hook and build', () => {
     expect(fs.readdirSync(path.join(plugin, 'agents'))).toHaveLength(12);
     const orch = fs.readFileSync(path.join(plugin, 'agents', 'aits-meta-orchestrator.md'), 'utf8');
     expect(orch).toMatch(/^---\nname: aits-meta-orchestrator/);
-    expect(orch).toContain('CLAUDE_PLUGIN_ROOT');
+    expect(orch).toContain('AITS_PLUGIN_ROOT');
     expect(orch).not.toMatch(/^tools:/m);
+    expect(orch).toContain('/aits:full');
+    expect(orch).not.toContain('/aits-full');
+    const analyticalAgent = fs.readFileSync(path.join(plugin, 'agents', 'aits-analytical.md'), 'utf8');
+    expect(analyticalAgent).toContain('"agent": "analytical"');
+    expect(analyticalAgent).toContain('`version` exactly `"3.0"`');
+    expect(fs.readdirSync(path.join(plugin, 'commands')).sort()).toEqual(['board.md', 'diverge.md', 'full.md', 'quick.md']);
+    const hooks = JSON.parse(fs.readFileSync(path.join(plugin, 'hooks', 'hooks.json'), 'utf8')).hooks;
+    expect(Object.keys(hooks).sort()).toEqual(['PostToolUse', 'SessionStart', 'SubagentStop']);
     expect(JSON.parse(fs.readFileSync(path.join(plugin, '.mcp.json'), 'utf8')).mcpServers.aits.args[1]).toBe('mcp');
     expect(fs.existsSync(path.join(plugin, 'server', 'aits.mjs'))).toBe(true);
     const skill = fs.readFileSync(path.join(out, 'skills', 'aits', 'SKILL.md'), 'utf8');
     expect(skill).toMatch(/^---\nname: aits\n/);
     expect(skill.split('\n').length).toBeLessThan(500);
+    expect(skill).not.toMatch(/of the AITS system \|/);
     expect(fs.existsSync(path.join(out, 'skills', 'aits', 'scripts', 'aits.mjs'))).toBe(true);
   });
 });

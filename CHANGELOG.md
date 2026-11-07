@@ -4,6 +4,28 @@ All notable changes to the AITS repository are documented here.
 
 ---
 
+## [3.0.1] — 2026-11-07
+
+Fixes found by running the plugin in real Claude Code sessions on an Italian go/no-go decision.
+
+### Fixed
+
+- **Plugin commands** are now `/aits:full`, `/aits:quick`, `/aits:diverge` and `/aits:board`. Claude Code namespaces plugin commands, so in 3.0.0 they resolved only as `/aits:aits-full` and the documented `/aits-full` did nothing.
+- **Reference files reachable from sub-agents.** `CLAUDE_PLUGIN_ROOT` is not visible in a sub-agent's shell, so agents could not open schemas, conflict matrix and pattern library, and some searched the whole disk. A `SessionStart` hook now exports `AITS_PLUGIN_ROOT`, and the path instructions use it with a bounded fallback.
+- **Envelope format inside each agent.** The Output Contract showed only `main_output`, so an agent without its schema returned free-form JSON. Each agent file now starts its Output Contract with the exact envelope, generated from the schemas: agent id, version, required fields.
+- **Agent names.** Runtime names such as `aits:aits-analytical` or `analytical-agent` are mapped to the spec id before validation, so schema failures and rule R7 are counted on the right agent.
+- **Background sub-agents.** When a sub-agent runs in the background the tool result carries only a handle, and the hook submitted nothing. A `SubagentStop` hook now reads the agent's last message and submits it; the orchestrator's own submission is recognised as the same output.
+- **Gates in headless sessions.** A client that advertises elicitation but has no one to answer the form (`claude -p`, scheduled runs) returned `cancel`, and gates could never close. When nobody answers the form, the engine now accepts the human's words relayed in `user_quote`, records them as `agent_relayed` with the reason, and still refuses a relayed answer without the human's words. An explicit `decline` keeps the gate open. `gates.elicitation: never` in `aits.config.yaml` (or `AITS_ELICITATION=never`) skips the form.
+- **Memory instructions.** Meta-Orchestrator, Memory, Analytical, Systemic and the agent contract still described the 2.0 file memory (`index.json` written by hand). They now use the engine (`aits_recall`, automatic save on synthesis, `aits_record_outcome`, `aits_patterns`) and forbid writing into `.aits/memory/` by hand. The orchestrator no longer calls itself 2.0.
+- **Agent table in `SKILL.md`.** The Function column repeated "Agent of the AITS system"; each agent now has a one-line `function` in the spec.
+
+### Added
+
+- `aits hook session-start` and `aits hook subagent-stop`.
+- `gates.elicitation` configuration option.
+
+---
+
 ## [3.0.0] — 2026-11-06
 
 AITS moves enforcement from the prompts to a deterministic engine and separates the method from any model or runtime. v2 envelopes remain valid.

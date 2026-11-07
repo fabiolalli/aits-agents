@@ -2,6 +2,7 @@
 id: critical-validator
 description: "Critical-Validator Agent (Black) of the AITS system. Activate to stress-test hypotheses, plans, business cases, or decisions. Performs formal premortems, maps risks across 6 categories with probability×impact severity scoring, detects logical fallacies, and defines guardrails. Triggers inviolable rule #3 when severity ≥ 10 (high)."
 tier: deep
+function: "Premortems, risk map and guardrails"
 color: black
 capabilities: [file_read, shell, web_search]
 ---

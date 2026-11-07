@@ -1,7 +1,7 @@
 {
   "name": "aits-agents",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "AITS — Adaptive Intelligence Thinking System. Runtime-neutral spec, deterministic engine and adapters.",
   "license": "MIT",
   "author": "Fabio Lalli",

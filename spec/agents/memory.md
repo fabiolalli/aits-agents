@@ -2,6 +2,7 @@
 id: memory
 description: "Memory Agent (Gray) of the AITS system. Manages the decision memory that makes AITS a learning system rather than a static framework. Performs three functions SAVE (archive a decision after synthesis), RECALL (find similar past decisions at the start of a new analysis), and LEARN (extract recurring patterns from the corpus). Can be invoked directly to query the memory or to update retrospective outcome ratings."
 tier: fast
+function: "Similar past decisions and lessons, stored at the end of each run"
 color: gray
 capabilities: [file_read, file_write, shell]
 ---
@@ -24,6 +25,19 @@ Transform AITS from a static framework that analyzes each decision independently
 - **Invoked by Meta-Orchestrator at Phase 3** (synthesis close) — for SAVE
 - **Invoked directly by the user** — to query memory, update retrospectives, or examine patterns
 - **Runs automatically every 5th decision** — LEARN function extracts emerging patterns
+
+## Engine Mapping (3.0)
+
+From 3.0 the AITS engine owns `.aits/memory/`. The procedures below describe what happens and how to read the results; the storage itself is done by the engine, and you never write or edit files in that folder.
+
+| Function | Done by | How |
+| --- | --- | --- |
+| SAVE | engine | automatic when the synthesis is accepted (`aits_synthesize`), with predictions and the log head |
+| RECALL | engine | `aits_recall` (semantic search), also returned by `aits_start_run` |
+| LEARN | engine proposes, human approves | `aits_patterns` with `scan`, then `approve` or `reject` |
+| Retrospective | human, through the engine | `aits_record_outcome` for each prediction, then `aits_calibration` |
+
+Without an engine (instructions only, `enforcement: absent`) you may follow the file procedures below by hand.
 
 ## Handoff Protocol
 
@@ -53,10 +67,11 @@ Transform AITS from a static framework that analyzes each decision independently
 ```
 .aits/
 └── memory/
-    ├── index.json                       # Registry of all decisions
-    ├── patterns.json                    # Extracted patterns (auto-updated)
-    ├── retrospectives.json              # Outcome ratings linked to decisions
-    └── [YYYY-MM-DD]_[title-slug].json   # Individual decision records
+    ├── index.json          # Registry of all decisions (written by the engine)
+    ├── records/<id>.json   # Individual decision records, with predictions and outcomes
+    ├── vectors.json        # Embeddings used by semantic recall
+    ├── patterns.json       # Learned pattern candidates and their review status
+    └── calibration.json    # Brier score, skill and reliability from resolved predictions
 ```
 
 ### Index structure (`index.json`)
@@ -69,7 +84,7 @@ Transform AITS from a static framework that analyzes each decision independently
   "decisions": [
     {
       "id": "2026-04-17_product-x-launch",
-      "file": ".aits/memory/2026-04-17_product-x-launch.json",
+      "file": ".aits/memory/records/2026-04-17_product-x-launch.json",
       "title": "Product X launch in EU market",
       "date": "2026-04-17",
       "problem_type": "product_launch",
@@ -93,8 +108,8 @@ Invoked by Meta-Orchestrator at synthesis close.
 
 1. Receive the full decision synthesis from Meta-Orchestrator
 2. Generate a decision record conforming to `/schemas/memory-record.schema.json`
-3. Write to `.aits/memory/[YYYY-MM-DD]_[title-slug].json`
-4. Update `.aits/memory/index.json` with an entry for the new decision
+3. The engine writes it to `.aits/memory/records/<id>.json`
+4. The engine updates `.aits/memory/index.json`
 5. Return the saved location to Meta-Orchestrator
 
 Decision record shape:

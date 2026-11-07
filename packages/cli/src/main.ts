@@ -31,7 +31,7 @@ Tools
   aits eval [dir]
   aits mcp                                    MCP server on stdio
   aits a2a [--port 8765]                      A2A governance-review endpoint
-  aits hook post-tool-use                     runtime hook, reads JSON on stdin
+  aits hook post-tool-use|subagent-stop|session-start   runtime hooks, read JSON on stdin
 
 Data lives in .aits/ of the project directory (AITS_HOME to override).`;
 
@@ -86,8 +86,13 @@ export async function main(argv: string[]) {
       return serveStdio();
     }
     case 'hook': {
-      const { postToolUseHook } = await import('./hook.ts');
-      const result = await postToolUseHook(await readInput('-'));
+      const hooks = await import('./hook.ts');
+      const event = pos[0] ?? 'post-tool-use';
+      let result = '';
+      if (event === 'session-start') result = await hooks.sessionStartHook();
+      else if (event === 'subagent-stop') result = await hooks.subagentStopHook(await readInput('-'));
+      else if (event === 'post-tool-use') result = await hooks.postToolUseHook(await readInput('-'));
+      else throw new Error(`unknown hook "${event}": use post-tool-use, subagent-stop or session-start`);
       if (result) process.stdout.write(result);
       return;
     }

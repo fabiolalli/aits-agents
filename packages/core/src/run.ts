@@ -12,7 +12,7 @@ import { MemoryStore, embedderFor, type MemoryPrediction, type MemoryRecord } fr
 import { agentReliability, readCalibration } from './calibration.ts';
 import { CONFIDENCE_ORDER, hashOf, minConfidence, slugify, type ConfidenceLevel } from './util.ts';
 
-export const ENGINE_VERSION = '3.0.0';
+export const ENGINE_VERSION = '3.0.1';
 
 export type Mode = 'supervised' | 'autonomous' | 'review';
 export type GateDecision = GateAck['decision'];
@@ -84,6 +84,23 @@ interface StartData extends Required<Pick<StartOptions, 'problem' | 'mode' | 'ta
 }
 
 /** Extracts a JSON object from raw agent output: a bare object, or the last fenced JSON block. */
+/**
+ * Maps the names a runtime gives an agent ("aits:aits-analytical", "aits-analytical",
+ * "analytical-agent", "Analytical") to the spec id, so that schema failures and rules are
+ * counted on the right agent. Unknown names are returned unchanged and fail validation.
+ */
+export function normalizeAgentId(name: string, known: string[]): string {
+  if (known.includes(name)) return name;
+  const n = name
+    .trim()
+    .toLowerCase()
+    .replace(/^[a-z0-9_-]+:/, '')
+    .replace(/^aits[-_ ]/, '')
+    .replace(/[-_ ]agent$/, '')
+    .replace(/[_ ]/g, '-');
+  return known.includes(n) ? n : name;
+}
+
 export function extractEnvelope(raw: unknown): Record<string, unknown> | undefined {
   if (raw && typeof raw === 'object' && !Array.isArray(raw)) return raw as Record<string, unknown>;
   if (typeof raw !== 'string') return undefined;
@@ -241,7 +258,9 @@ export class Run {
       const entry = this.log.append('envelope', { agent: 'unknown', status: 'invalid', envelope: { raw: String(raw).slice(0, 4000) }, envelope_hash: hashOf(String(raw)), errors: ['no JSON object found in the agent output'] });
       return this.result('invalid', entry.seq, 'unknown', ['no JSON object found in the agent output']);
     }
-    const agent = String(envelope.agent ?? 'unknown');
+    const declared = String(envelope.agent ?? 'unknown');
+    const agent = normalizeAgentId(declared, Object.keys(this.spec.agents));
+    if (agent !== declared) envelope.agent = agent;
     const envelope_hash = hashOf(envelope);
     // The same output can arrive twice (a runtime hook and the orchestrator). Identity ignores
     // provenance, which the orchestrator may add later: it is attached instead of counted twice.
@@ -408,6 +427,7 @@ export class Run {
     const reasons: string[] = [];
     if (!envelope) reasons.push('no JSON object found in the synthesis');
     else {
+      if (typeof envelope.agent === 'string') envelope.agent = normalizeAgentId(envelope.agent, Object.keys(this.spec.agents));
       if (envelope.agent !== 'meta-orchestrator') reasons.push('only the meta-orchestrator can close the decision (R1)');
       const v = validateEnvelope(envelope);
       if (!v.valid) reasons.push(...v.errors.map((e) => `schema: ${e}`));

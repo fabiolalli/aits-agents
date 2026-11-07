@@ -68,6 +68,27 @@ At start:
 
 ## Output Contract
 
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"creative-generative"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `options`. Enumerated values take exactly one of the listed options. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "creative-generative",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "options": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": []
+}
+```
+
 Conforms to `/schemas/creative-generative.schema.json`. Main_output:
 
 ```json

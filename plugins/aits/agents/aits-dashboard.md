@@ -7,9 +7,9 @@ description: "HTML template and generator spec for AITS visual dashboards. The M
 
 Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the plugin root, not to the current project.
 
-1. At the start of your work, run once `echo "$CLAUDE_PLUGIN_ROOT"` and cache the value.
+1. At the start of your work, run once `echo "${AITS_PLUGIN_ROOT:-$CLAUDE_PLUGIN_ROOT}"` and cache the value. The plugin sets `AITS_PLUGIN_ROOT` when the session starts.
 2. Prepend that root to any `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` path before reading it.
-3. If `$CLAUDE_PLUGIN_ROOT` is empty (files copied into `~/.claude/`), use `$HOME/.claude/` as the root.
+3. If both are empty, look for the folder once with `ls -d ~/.claude/plugins/cache/*/aits/*/ ~/.claude/plugins/marketplaces/*/plugins/aits/ 2>/dev/null | head -1`, and use `$HOME/.claude/` only if nothing is found (files copied by hand). Do not search the whole disk.
 
 Project-local paths such as `.aits/` stay relative to the current project. The AITS engine is available as MCP tools with the `aits_` prefix.
 
@@ -21,7 +21,7 @@ This file defines the template the Meta-Orchestrator uses to produce HTML dashbo
 
 ## When this is used
 
-- When the user invokes `/aits-full generate dashboard` or `/aits-board for [decision]`
+- When the user invokes `/aits:full generate dashboard` or `/aits:board for [decision]`
 - When any Meta-Orchestrator synthesis explicitly requests dashboard generation
 
 ## Output location
@@ -352,7 +352,7 @@ The template uses `{{PLACEHOLDER}}` syntax for substitution. The Meta-Orchestrat
 
 ## Pattern-mode dashboard variant
 
-When called via `/aits-board for pattern [pattern_id]`, generate a different dashboard that aggregates across decisions:
+When called via `/aits:board for pattern [pattern_id]`, generate a different dashboard that aggregates across decisions:
 
 - Header: pattern archetype name, count of matching decisions, retrospective coverage %
 - Prediction accuracy grid: agent × (predicted / actual) — was Critical's risk assessment too pessimistic? Was Optimizer's value case calibrated?

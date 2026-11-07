@@ -33,9 +33,9 @@ const RUNTIME_PATHS: Record<string, string> = {
 
 Files referenced as \`references/...\`, \`playbooks/...\`, \`graphs/...\` or \`schemas/...\` are relative to the plugin root, not to the current project.
 
-1. At the start of your work, run once \`echo "$CLAUDE_PLUGIN_ROOT"\` and cache the value.
+1. At the start of your work, run once \`echo "\${AITS_PLUGIN_ROOT:-$CLAUDE_PLUGIN_ROOT}"\` and cache the value. The plugin sets \`AITS_PLUGIN_ROOT\` when the session starts.
 2. Prepend that root to any \`references/...\`, \`playbooks/...\`, \`graphs/...\` or \`schemas/...\` path before reading it.
-3. If \`$CLAUDE_PLUGIN_ROOT\` is empty (files copied into \`~/.claude/\`), use \`$HOME/.claude/\` as the root.
+3. If both are empty, look for the folder once with \`ls -d ~/.claude/plugins/cache/*/aits/*/ ~/.claude/plugins/marketplaces/*/plugins/aits/ 2>/dev/null | head -1\`, and use \`$HOME/.claude/\` only if nothing is found (files copied by hand). Do not search the whole disk.
 
 Project-local paths such as \`.aits/\` stay relative to the current project. The AITS engine is available as MCP tools with the \`aits_\` prefix.
 `,
@@ -44,6 +44,46 @@ Project-local paths such as \`.aits/\` stay relative to the current project. The
 Files referenced as \`references/...\`, \`playbooks/...\`, \`graphs/...\` or \`schemas/...\` are relative to the folder of this skill. Project-local paths such as \`.aits/\` stay relative to the current project.
 `,
 };
+
+/**
+ * The exact envelope an agent must return, generated from the schemas so that an agent that cannot
+ * open its schema file still produces a valid output. Inserted at the top of each Output Contract.
+ */
+function envelopeBlock(agentId: string, withPredictions: boolean): string {
+  const spec = getSpec();
+  const env = JSON.parse(spec.files['schemas/_envelope.schema.json']) as { required: string[] };
+  const own = JSON.parse(spec.files[`schemas/${agentId}.schema.json`] ?? '{}') as { properties?: { main_output?: { required?: string[] } } };
+  const mainRequired = own.properties?.main_output?.required ?? [];
+  const skeleton = {
+    agent: agentId,
+    version: '3.0',
+    timestamp: '<ISO 8601 date and time>',
+    confidence: { level: 'high|medium|low', reasoning: '<one sentence>' },
+    summary: '<one paragraph>',
+    main_output: Object.fromEntries(mainRequired.map((k) => [k, '<see the shape below>'])),
+    hitl_flags: [],
+    gaps_or_assumptions: [],
+    ...(withPredictions ? { predictions: [{ id: 'p1', statement: '<event that can be checked later>', probability: 0.3, resolve_by: '<ISO date>', source_ref: '<risk, premortem or scenario id>' }] } : {}),
+  };
+  const lead =
+    agentId === 'meta-orchestrator'
+      ? 'The synthesis you submit to the engine is this JSON object, passed unchanged; the engine refuses anything else.'
+      : 'Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else.';
+  return `${lead} \`agent\` must be exactly \`"${agentId}"\` and \`version\` exactly \`"3.0"\`; the required fields are ${env.required.map((f) => `\`${f}\``).join(', ')}${mainRequired.length ? `, and \`main_output\` requires ${mainRequired.map((f) => `\`${f}\``).join(', ')}` : ''}. Enumerated values take exactly one of the listed options. Add \`hitl_flags\` entries (\`trigger\`, \`severity\`: \`blocking\` or \`advisory\`, \`description\`) when one of your escalation triggers fires.
+
+\`\`\`json
+${JSON.stringify(skeleton, null, 2)}
+\`\`\`
+`;
+}
+
+function withEnvelope(agentId: string, body: string): string {
+  if (agentId === 'memory') return body;
+  return body.replace(/^## Output Contract\s*\n/m, (h) => `${h}\n${envelopeBlock(agentId, /^## Predictions for Calibration/m.test(body))}\n`);
+}
+
+/** Plugin commands are namespaced by Claude Code as /aits:<id>. */
+const pluginCommandNames = (text: string) => text.replace(/\/aits-(full|quick|diverge|board)\b/g, '/aits:$1');
 
 const CLAUDE_TOOLS: Record<string, string[]> = {
   file_read: ['Read', 'Glob', 'Grep'],
@@ -64,18 +104,18 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
     const fm: Record<string, unknown> = { name: `aits-${agent.id}`, description: agent.description, color: agent.color, model: modelFor(config, agent.tier, 'claude-code') };
     // The orchestrator inherits every tool, including the engine's MCP tools.
     if (agent.id !== 'meta-orchestrator') fm.tools = [...new Set(agent.capabilities.flatMap((c) => CLAUDE_TOOLS[c] ?? []))].join(', ');
-    const body = agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code']);
+    const body = pluginCommandNames(withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code'])));
     write(path.join(dir, 'agents', `aits-${agent.id}.md`), `---\n${YAML.stringify(fm).trim()}\n---\n\n${body.trimStart()}`);
   }
   const dash = parseFrontmatter(spec.files['templates/dashboard.md']);
-  write(path.join(dir, 'agents', 'aits-dashboard.md'), `---\nname: aits-dashboard\ndescription: ${JSON.stringify(String(dash.data.description))}\n---\n\n${dash.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code']).trimStart()}`);
+  write(path.join(dir, 'agents', 'aits-dashboard.md'), `---\nname: aits-dashboard\ndescription: ${JSON.stringify(String(dash.data.description))}\n---\n\n${pluginCommandNames(dash.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code'])).trimStart()}`);
 
   for (const [name, content] of Object.entries(spec.files)) {
     if (!name.startsWith('commands/')) continue;
     const { data, body } = parseFrontmatter(content);
     const id = String(data.id);
     const engineNote = id === 'board' ? '' : `\n> Engine: this command starts an AITS run with \`aits_start_run\` (graph \`${data.graph}\`, mode \`${data.mode}\`) and closes it only through \`aits_synthesize\`.\n`;
-    write(path.join(dir, 'commands', `aits-${id}.md`), `---\ndescription: ${JSON.stringify(String(data.description))}\n---\n${engineNote}\n${body.replace(/aits-dashboard\.md/g, 'agents/aits-dashboard.md').trimStart()}`);
+    write(path.join(dir, 'commands', `${id}.md`), `---\ndescription: ${JSON.stringify(String(data.description))}\n---\n${engineNote}\n${pluginCommandNames(body.replace(/aits-dashboard\.md/g, 'agents/aits-dashboard.md')).trimStart()}`);
   }
   copySpecFolder('playbooks', path.join(dir, 'playbooks'));
   copySpecFolder('references', path.join(dir, 'references'));
@@ -90,10 +130,17 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
     path.join(dir, '.mcp.json'),
     JSON.stringify({ mcpServers: { aits: { command: 'node', args: ['${CLAUDE_PLUGIN_ROOT}/server/aits.mjs', 'mcp'], env: { AITS_PROJECT_DIR: '${CLAUDE_PROJECT_DIR}' } } } }, null, 2) + '\n',
   );
+  const hookCmd = 'node "${CLAUDE_PLUGIN_ROOT}/server/aits.mjs" hook';
   write(
     path.join(dir, 'hooks', 'hooks.json'),
     JSON.stringify(
-      { hooks: { PostToolUse: [{ matcher: 'Task|Agent', hooks: [{ type: 'command', command: 'node "${CLAUDE_PLUGIN_ROOT}/server/aits.mjs" hook post-tool-use', timeout: 30 }] }] } },
+      {
+        hooks: {
+          SessionStart: [{ hooks: [{ type: 'command', command: `${hookCmd} session-start`, timeout: 10 }] }],
+          PostToolUse: [{ matcher: 'Task|Agent', hooks: [{ type: 'command', command: `${hookCmd} post-tool-use`, timeout: 30 }] }],
+          SubagentStop: [{ hooks: [{ type: 'command', command: `${hookCmd} subagent-stop`, timeout: 30 }] }],
+        },
+      },
       null,
       2,
     ) + '\n',
@@ -122,7 +169,7 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
 function skillMd(): string {
   const spec = getSpec();
   const agents = Object.values(spec.agents)
-    .map((a) => `| \`${a.id}\` | ${a.tier} | ${a.description.split('. ')[0].replace(/\|/g, '/')} |`)
+    .map((a) => `| \`${a.id}\` | ${a.tier} | ${a.function.replace(/\|/g, '/')} |`)
     .join('\n');
   const graphs = Object.values(spec.graphs)
     .map((g) => `- \`${g.id}\`: ${g.title}`)
@@ -201,7 +248,7 @@ export function buildAgentSkills(outRoot: string) {
   fs.rmSync(dir, { recursive: true, force: true });
   write(path.join(dir, 'SKILL.md'), skillMd());
   for (const agent of Object.values(spec.agents)) {
-    write(path.join(dir, 'agents', `${agent.id}.md`), `# ${agent.id} (tier: ${agent.tier})\n\n${agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills']).trimStart()}`);
+    write(path.join(dir, 'agents', `${agent.id}.md`), `# ${agent.id} (tier: ${agent.tier})\n\n${withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills'])).trimStart()}`);
   }
   copySpecFolder('playbooks', path.join(dir, 'playbooks'));
   copySpecFolder('references', path.join(dir, 'references'));

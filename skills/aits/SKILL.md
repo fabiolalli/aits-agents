@@ -28,17 +28,17 @@ Use the first option available, and say which one you are using.
 
 | Id | Tier | Function |
 | --- | --- | --- |
-| `analytical` | standard | Analytical Agent (White) of the AITS system |
-| `creative-generative` | standard | Creative-Generative Agent (Green) of the AITS system |
-| `critical-validator` | deep | Critical-Validator Agent (Black) of the AITS system |
-| `emotional-intuitive` | standard | Emotional-Intuitive Agent (Red) of the AITS system |
-| `ethical-governance` | deep | Ethical-Governance Agent (Purple) of the AITS system |
-| `foresight` | deep | Foresight Agent (Magenta) of the AITS system |
-| `memory` | fast | Memory Agent (Gray) of the AITS system |
-| `meta-orchestrator` | deep | PRIMARY AGENT of the AITS system |
-| `optimizer` | standard | Optimizer Agent (Yellow) of the AITS system |
-| `predictive-strategic` | deep | Predictive-Strategic Agent (Indigo) of the AITS system |
-| `systemic` | deep | Systemic Agent (Cyan) of the AITS system |
+| `analytical` | standard | Facts, metrics, sources and the data gaps that matter |
+| `creative-generative` | standard | Alternatives beyond the obvious options, without judging them |
+| `critical-validator` | deep | Premortems, risk map and guardrails |
+| `emotional-intuitive` | standard | Stakeholders, emotional drivers and resistance |
+| `ethical-governance` | deep | Ethical dimensions, red lines, distribution of costs, compliance exposure |
+| `foresight` | deep | Options against scenarios, robustness, early warnings |
+| `memory` | fast | Similar past decisions and lessons, stored at the end of each run |
+| `meta-orchestrator` | deep | Governs the flow and writes the only synthesis that closes the decision |
+| `optimizer` | standard | Value case, sequencing and action plan |
+| `predictive-strategic` | deep | Scenarios with probabilities, sensitivity, strategic posture |
+| `systemic` | deep | Feedback loops, leverage points, cascades and unintended consequences |
 
 Tiers express the reasoning each agent needs (`deep`, `standard`, `fast`); which model serves each tier is the user's choice, in `aits.config.yaml`.
 

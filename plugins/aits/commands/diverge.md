@@ -4,7 +4,7 @@ description: "Divergent AITS brainstorming in review mode. Activates the Meta-Or
 
 > Engine: this command starts an AITS run with `aits_start_run` (graph `diverge`, mode `review`) and closes it only through `aits_synthesize`.
 
-# /aits-diverge — Divergent AITS (Review Mode)
+# /aits:diverge — Divergent AITS (Review Mode)
 
 This command activates the Meta-Orchestrator in **review mode** — full generative sequence runs uninterrupted, then everything is presented for structured review at the end.
 
@@ -48,7 +48,7 @@ This command activates the Meta-Orchestrator in **review mode** — full generat
 ## Usage
 
 ```
-/aits-diverge
+/aits:diverge
 
 [your problem — ideally an open question, not a yes/no decision]
 ```
@@ -70,7 +70,7 @@ Even in review mode, inviolable rules trigger explicit gates mid-flow:
 
 After review, common next steps:
 
-- "Take options 2 and 5 and run `/aits-full` on the go/no-go"
+- "Take options 2 and 5 and run `/aits:full` on the go/no-go"
 - "Run Critical-Validator on the full option set"
 - "Generate action plan for option 3"
 
@@ -80,7 +80,7 @@ After review, common next steps:
 
 ## Why no Critical in the default sequence
 
-Critical's job is to kill fragile options. Doing that inside the divergent phase defeats the point. Critical runs next, either via `/aits-full` on the chosen option(s) or via explicit invocation in the review interface.
+Critical's job is to kill fragile options. Doing that inside the divergent phase defeats the point. Critical runs next, either via `/aits:full` on the chosen option(s) or via explicit invocation in the review interface.
 
 ## Key difference from 1.x
 

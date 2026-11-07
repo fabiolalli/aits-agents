@@ -4,7 +4,7 @@ description: "Rapid AITS decision in autonomous mode. Activates the Meta-Orchest
 
 > Engine: this command starts an AITS run with `aits_start_run` (graph `quick`, mode `autonomous`) and closes it only through `aits_synthesize`.
 
-# /aits-quick — Rapid AITS Decision (Autonomous Mode)
+# /aits:quick — Rapid AITS Decision (Autonomous Mode)
 
 This command activates the Meta-Orchestrator in **autonomous mode** — minimal agent sequence, no voluntary checkpoints, mandatory gates still enforced.
 
@@ -52,7 +52,7 @@ This command activates the Meta-Orchestrator in **autonomous mode** — minimal 
 ## Usage
 
 ```
-/aits-quick
+/aits:quick
 
 [your problem statement]
 ```
@@ -62,11 +62,11 @@ This command activates the Meta-Orchestrator in **autonomous mode** — minimal 
 If the autonomous flow is producing low-confidence outputs or frequent mandatory gates, switch modes:
 
 - "Switch to supervised" — start getting checkpoints from next agent
-- "Switch to full analysis" — restart with `/aits-full` (rare; usually the autonomous flow + occasional gates is sufficient)
+- "Switch to full analysis" — restart with `/aits:full` (rare; usually the autonomous flow + occasional gates is sufficient)
 
-## When `/aits-quick` auto-upgrades
+## When `/aits:quick` auto-upgrades
 
-The Meta-Orchestrator will recommend upgrading to `/aits-full` and stop for your approval when:
+The Meta-Orchestrator will recommend upgrading to `/aits:full` and stop for your approval when:
 
 - ≥ 2 mandatory gates have been triggered in a single analysis (signal of complexity beyond quick scope)
 - Pattern library match suggests an archetype whose `recommended_playbook` requires full analysis (e.g., `ma-due-diligence` with high stakes)
@@ -85,4 +85,4 @@ With auto-escalations per inviolable rules.
 - Memory is consulted but pattern library matching is a simpler keyword match (not full archetype loading)
 - Playbook loading is optional (only if a very specific match)
 
-The cost: less depth on people/ethics/futures dimensions. The quick mode explicitly trades these for speed. Use `/aits-full` when those dimensions matter.
+The cost: less depth on people/ethics/futures dimensions. The quick mode explicitly trades these for speed. Use `/aits:full` when those dimensions matter.

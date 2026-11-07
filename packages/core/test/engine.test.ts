@@ -1,8 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { Engine, exportRun, generateSigningKey, getSpec, loadSigner, planGraph, readLog, validateEnvelope, verifyLog, aggregateRuns, calibrationReport, matchPatterns, toOtlp } from '../src/index.ts';
+import { Engine, normalizeAgentId, exportRun, generateSigningKey, getSpec, loadSigner, planGraph, readLog, validateEnvelope, verifyLog, aggregateRuns, calibrationReport, matchPatterns, toOtlp } from '../src/index.ts';
 import { analytical, critical, creative, ethical, optimizer, predictive, synthesis, tmpDir, envelope } from './fixtures.ts';
+
+describe('agent names', () => {
+  it('maps runtime names to spec ids and leaves unknown names alone', () => {
+    const known = Object.keys(getSpec().agents);
+    for (const n of ['aits:aits-analytical', 'aits-analytical', 'analytical-agent', 'Analytical', 'analytical']) expect(normalizeAgentId(n, known)).toBe('analytical');
+    expect(normalizeAgentId('aits:aits-meta-orchestrator', known)).toBe('meta-orchestrator');
+    expect(normalizeAgentId('finance-bot', known)).toBe('finance-bot');
+  });
+});
 
 describe('schema validation', () => {
   it('accepts a valid envelope and a 2.0 envelope', () => {

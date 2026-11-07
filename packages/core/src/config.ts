@@ -21,6 +21,12 @@ export interface AitsConfig {
     redact?: string[];
   };
   signing?: { key?: string };
+  /**
+   * How the MCP server asks a human to close a gate. `auto`: through the client's elicitation form
+   * when available, falling back to the human's words relayed by the model when nobody answers the
+   * form (headless sessions). `never`: always the relayed words.
+   */
+  gates: { elicitation: 'auto' | 'never' };
   otel?: { endpoint?: string; headers?: Record<string, string> };
 }
 
@@ -28,6 +34,7 @@ const DEFAULTS: AitsConfig = {
   storage: '.aits',
   models: {},
   memory: { embedder: 'hashing' },
+  gates: { elicitation: 'auto' },
 };
 
 function expandHome(p: string): string {
@@ -48,8 +55,11 @@ export function loadConfig(cwd = process.cwd()): AitsConfig & { root: string; st
     ...DEFAULTS,
     ...user,
     memory: { ...DEFAULTS.memory, ...(user.memory ?? {}) },
+    gates: { ...DEFAULTS.gates, ...(user.gates ?? {}) },
     models: user.models ?? {},
   };
+  const envElicitation = process.env.AITS_ELICITATION;
+  if (envElicitation === 'auto' || envElicitation === 'never') merged.gates.elicitation = envElicitation;
   if (merged.signing?.key) merged.signing.key = expandHome(merged.signing.key);
   const storageDir = path.resolve(cwd, process.env.AITS_HOME ?? merged.storage);
   return { ...merged, root: cwd, storageDir };

@@ -16,7 +16,7 @@ Execution graph: `graphs/innovation-sprint.yaml`. The engine plans it in waves; 
 
 Why this order: Generate first without filtering. Map emotional reception of generated options. Re-generate with the emotional lens informing (not killing) the options. Foresight evaluates robustness. Optimizer builds value cases for the surviving options. Synthesis.
 
-**Critical is deliberately absent from the default sequence** to protect the generative phase. If the synthesis reveals options that need stress-testing, the output explicitly recommends a follow-up `/aits-full` with Critical.
+**Critical is deliberately absent from the default sequence** to protect the generative phase. If the synthesis reveals options that need stress-testing, the output explicitly recommends a follow-up `/aits:full` with Critical.
 
 ## Focus areas per agent
 
@@ -56,7 +56,7 @@ Why this order: Generate first without filtering. Map emotional reception of gen
 - **Option space summary** — the survived options with novelty, robustness, value profile
 - Top 2-3 recommended options with reasoning
 - Suggested micro-tests to run NOW (before deeper analysis)
-- Recommendation for follow-up `/aits-full` on chosen option(s)
+- Recommendation for follow-up `/aits:full` on chosen option(s)
 - Review schedule
 
 ## Cognitive bias checklist (passed to Foresight and Optimizer)
@@ -88,7 +88,7 @@ DOMINATED OPTIONS (to drop)
 RESERVED OPTIONS (not pursued now but worth revisiting)
   [list with conditions for revisiting]
 
-SUGGESTED NEXT: /aits-full on option [X] for go/no-go decision
+SUGGESTED NEXT: /aits:full on option [X] for go/no-go decision
 ```
 
 ## Pattern library hooks
@@ -105,4 +105,4 @@ Rare — this playbook is deliberately low-gate to preserve creative flow. Gates
 
 ## Time-boxing
 
-This playbook is designed for a single sitting. If the sprint extends beyond ~2 hours of work, the user is probably in analysis-paralysis territory. The synthesis should then explicitly recommend choosing an option for deeper `/aits-full` analysis rather than generating more.
+This playbook is designed for a single sitting. If the sprint extends beyond ~2 hours of work, the user is probably in analysis-paralysis territory. The synthesis should then explicitly recommend choosing an option for deeper `/aits:full` analysis rather than generating more.

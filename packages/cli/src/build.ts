@@ -9,9 +9,9 @@ const write = (file: string, content: string) => {
   fs.writeFileSync(file, content);
 };
 
-function copySpecFolder(prefix: string, dest: string, rename: (name: string) => string = (n) => n) {
+function copySpecFolder(prefix: string, dest: string, rename: (name: string) => string = (n) => n, transform: (text: string) => string = (t) => t) {
   for (const [name, content] of Object.entries(getSpec().files)) {
-    if (name.startsWith(prefix + '/')) write(path.join(dest, rename(name.slice(prefix.length + 1))), content);
+    if (name.startsWith(prefix + '/')) write(path.join(dest, rename(name.slice(prefix.length + 1))), name.endsWith('.md') ? transform(content) : content);
   }
 }
 
@@ -124,8 +124,8 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
     const engineNote = id === 'board' ? '' : `\n> Engine: this command starts an AITS run with \`aits_start_run\` (graph \`${data.graph}\`, mode \`${data.mode}\`) and closes it only through \`aits_synthesize\`.\n`;
     write(path.join(dir, 'commands', `${id}.md`), `---\ndescription: ${JSON.stringify(String(data.description))}\n---\n${engineNote}\n${pluginCommandNames(body.replace(/aits-dashboard\.md/g, 'agents/aits-dashboard.md')).trimStart()}`);
   }
-  copySpecFolder('playbooks', path.join(dir, 'playbooks'));
-  copySpecFolder('references', path.join(dir, 'references'));
+  copySpecFolder('playbooks', path.join(dir, 'playbooks'), undefined, pluginCommandNames);
+  copySpecFolder('references', path.join(dir, 'references'), undefined, pluginCommandNames);
   copySpecFolder('schemas', path.join(dir, 'schemas'));
   copySpecFolder('graphs', path.join(dir, 'graphs'));
   write(path.join(dir, 'rules.yaml'), spec.files['rules.yaml']);

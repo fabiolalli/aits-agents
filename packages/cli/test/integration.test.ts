@@ -173,6 +173,9 @@ describe('CLI, hook and build', () => {
     expect(orch).not.toMatch(/^tools:/m);
     expect(orch).toContain('/aits:full');
     expect(orch).not.toContain('/aits-full');
+    for (const sub of ['agents', 'commands', 'playbooks', 'references']) {
+      for (const f of fs.readdirSync(path.join(plugin, sub))) expect(fs.readFileSync(path.join(plugin, sub, f), 'utf8'), `${sub}/${f}`).not.toMatch(/\/aits-(full|quick|diverge|board)\b/);
+    }
     const analyticalAgent = fs.readFileSync(path.join(plugin, 'agents', 'aits-analytical.md'), 'utf8');
     expect(analyticalAgent).toContain('"agent": "analytical"');
     expect(analyticalAgent).toContain('`version` exactly `"3.0"`');

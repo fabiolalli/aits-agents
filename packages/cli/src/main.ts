@@ -10,7 +10,7 @@ Runs
   aits plan <graph> [--include a,b]
   aits submit <file|-> [--run <id>]          submit an agent envelope (JSON or text containing it)
   aits status [--run <id>]
-  aits gate <gate_id> <proceed|provide_context|override|abort> [--run <id>] [--why "..."] [--quote "..."]
+  aits gate <gate_id[,gate_id]> <proceed|provide_context|override|abort> [--run <id>] [--why "..."] [--quote "..."]
   aits skip <agent> --reason "..." [--run <id>] [--quote "..."]
   aits aggregate <agent> [--run <id>]
   aits synthesize <file|-> [--run <id>]
@@ -111,7 +111,11 @@ export async function main(argv: string[]) {
       return out(engine().open(runId).status());
     case 'gate':
       if (!pos[0] || !pos[1]) throw new Error('usage: aits gate <gate_id> <decision>');
-      return out(engine().open(runId).respondToGate(pos[0], pos[1] as GateDecision, 'cli', { justification: str(flags.why), user_quote: str(flags.quote) }));
+      {
+        const run = engine().open(runId);
+        const results = pos[0].split(',').map((id) => id.trim()).filter(Boolean).map((id) => run.respondToGate(id, pos[1] as GateDecision, 'cli', { justification: str(flags.why), user_quote: str(flags.quote) }));
+        return out(results.length === 1 ? results[0] : { gates: results });
+      }
     case 'skip':
       if (!pos[0] || !str(flags.reason)) throw new Error('usage: aits skip <agent> --reason "..."');
       return out(engine().open(runId).skip(pos[0], str(flags.reason)!, 'cli', str(flags.quote)));

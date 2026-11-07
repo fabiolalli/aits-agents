@@ -78,6 +78,14 @@ describe('MCP server in a headless session', () => {
       const log = fs.readFileSync(path.join(dir, '.aits', 'runs', start.run_id, 'log.jsonl'), 'utf8');
       expect(log).toContain('"via":"agent_relayed"');
       expect(log).toContain('nobody answered the elicitation form');
+      // Two gates raised by the same output, answered with one decision.
+      const second = parse(await client.callTool({ name: 'aits_submit', arguments: { envelope: { ...critical({ severity: 15 }), summary: 'second', hitl_flags: [{ trigger: 'x', severity: 'blocking', description: 'stop' }] } } }));
+      expect(second.status, JSON.stringify(second.errors)).toBe('accepted');
+      const open = parse(await client.callTool({ name: 'aits_status', arguments: {} })).open_gates.map((g: { id: string }) => g.id);
+      expect(open.length).toBe(2);
+      const both = parse(await client.callTool({ name: 'aits_gate_respond', arguments: { gate_id: open.join(','), decision: 'proceed', user_quote: 'Vai avanti con entrambi' } }));
+      expect(both.gates).toHaveLength(2);
+      expect(parse(await client.callTool({ name: 'aits_status', arguments: {} })).open_gates).toHaveLength(0);
     } finally {
       await client.close();
     }
@@ -106,7 +114,8 @@ describe('CLI, hook and build', () => {
     const res = JSON.parse(run(['hook', 'post-tool-use'], JSON.stringify(hookInput)));
     expect(res.hookSpecificOutput.additionalContext).toMatch(/analytical envelope accepted/);
     const again = JSON.parse(run(['submit', '-'], JSON.stringify({ ...env, provenance: { runtime: 'x', model_family: 'fam-a' } })));
-    expect(again.status).toBe('duplicate');
+    expect(again.status).toBe('accepted');
+    expect(again.next[0]).toMatch(/only adds provenance/);
     const status = JSON.parse(run(['status']));
     expect(status.submitted).toHaveLength(1);
     expect(status.submitted[0].family).toBe('fam-a');

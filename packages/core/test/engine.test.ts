@@ -24,12 +24,15 @@ describe('runtime and orchestrator copies of one output', () => {
     const rewritten = run.submit({ ...bad, summary: 'shortened by the orchestrator' });
     expect(rewritten.status).toBe('invalid');
     expect(rewritten.seq).toBe(1);
-    expect(rewritten.next[0]).toMatch(/one of record/);
+    expect(rewritten.next.join(' ')).toMatch(/one of record/);
     expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(0);
     run.submit({ ...bad, summary: 'second attempt, still wrong' }, { source: 'runtime' });
     expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(1);
     const good = analytical();
     run.submit(good, { source: 'runtime' });
+    const copy = run.submit({ ...good, provenance: { runtime: 'x', model_family: 'fam-a' } });
+    expect(copy.status).toBe('accepted');
+    expect(copy.next[0]).toMatch(/only adds provenance/);
     expect(run.submit({ ...good, provenance: { runtime: 'x', model_family: 'fam-a' } }).status).toBe('duplicate');
     expect(run.status().submitted.filter((x) => x.status === 'accepted')).toHaveLength(1);
   });

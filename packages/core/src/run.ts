@@ -272,7 +272,14 @@ export class Run {
     if (dup) {
       if (provenance && !dup.envelope.provenance) this.log.append('provenance_attached', { target_seq: dup.seq, provenance });
       const claimed = this.log.all().some((e) => e.type === 'resubmission' && (e.data as { target_seq: number }).target_seq === dup.seq);
-      if (source === 'orchestrator' && dup.source === 'runtime' && !claimed) this.log.append('resubmission', { agent, target_seq: dup.seq, content_hash, identical: true });
+      if (source === 'orchestrator' && dup.source === 'runtime' && !claimed) {
+        this.log.append('resubmission', { agent, target_seq: dup.seq, content_hash, identical: true });
+        if (dup.status === 'accepted') {
+          const res = this.result('accepted', dup.seq, agent, []);
+          res.next.unshift(`Already recorded by the runtime as log entry ${dup.seq}; this submission only adds provenance.`);
+          return res;
+        }
+      }
       if (dup.status === 'invalid') return this.result('invalid', dup.seq, agent, ((this.log.all().find((e) => e.seq === dup.seq)?.data as { errors?: string[] }).errors ?? []));
       return this.result('duplicate', dup.seq, agent, []);
     }
@@ -288,8 +295,9 @@ export class Run {
         const targetErrors = ((this.log.all().find((e) => e.seq === target.seq)?.data as { errors?: string[] } | undefined)?.errors ?? []);
         this.log.append('resubmission', { agent, target_seq: target.seq, content_hash, identical: content_hash === target.hash });
         if (provenance && !target.envelope.provenance) this.log.append('provenance_attached', { target_seq: target.seq, provenance });
-        const res = this.result(target.status === 'accepted' ? 'duplicate' : target.status, target.seq, agent, targetErrors);
-        if (content_hash !== target.hash) res.next.unshift(`The runtime had already recorded the output of ${agent} as log entry ${target.seq}; that copy is the one of record. Pass agent outputs unchanged.`);
+        const res = this.result(target.status, target.seq, agent, targetErrors);
+        res.next.unshift(`Already recorded by the runtime as log entry ${target.seq}; this submission only adds provenance.`);
+        if (content_hash !== target.hash) res.next.splice(1, 0, `The runtime had already recorded the output of ${agent} as log entry ${target.seq}; that copy is the one of record. Pass agent outputs unchanged.`);
         return res;
       }
     }

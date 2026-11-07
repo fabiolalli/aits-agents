@@ -62,10 +62,10 @@ export function createServer(): McpServer {
     {
       title: 'Answer a gate',
       description:
-        'Closes an open gate with the human\'s decision. When the client supports elicitation the engine first asks the human directly through a form; if nobody answers it (for example in a headless session) the decision and the human\'s own words passed in user_quote are recorded as relayed. Never answer a gate the human has not answered in the conversation.',
+        'Closes one or more open gates with the human\'s decision. Gates opened by the same agent output can be answered together by passing their ids separated by commas. When the client supports elicitation the engine first asks the human directly through a form; if nobody answers it (for example in a headless session) the decision and the human\'s own words passed in user_quote are recorded as relayed. Never answer a gate the human has not answered in the conversation.',
       inputSchema: {
         ...runArg,
-        gate_id: z.string(),
+        gate_id: z.string().describe('A gate id, or several separated by commas to answer them with one decision'),
         decision: z.enum(DECISIONS).optional(),
         user_quote: z.string().optional().describe('The human\'s words, verbatim'),
         justification: z.string().optional(),
@@ -74,15 +74,24 @@ export function createServer(): McpServer {
     async ({ run_id, gate_id, decision, user_quote, justification }) =>
       guard(async () => {
         const run = engine().open(run_id);
-        const gate = run.gates().find((g) => g.id === gate_id);
-        if (!gate) throw new Error(`gate ${gate_id} does not exist`);
+        const ids = gate_id.split(',').map((x) => x.trim()).filter(Boolean);
+        const selected = ids.map((id) => {
+          const g = run.gates().find((x) => x.id === id);
+          if (!g) throw new Error(`gate ${id} does not exist`);
+          return g;
+        });
+        const gate = { id: ids.join(', '), title: [...new Set(selected.map((g) => g.title))].join('; '), agents: [...new Set(selected.flatMap((g) => g.agents))] };
+        const answerAll = (d: GateDecision, via: 'elicitation' | 'agent_relayed', o: { justification?: string; user_quote?: string }) => {
+          const results = ids.map((id) => (run.state() === 'open' ? run.respondToGate(id, d, via, o) : undefined)).filter(Boolean);
+          return results.length === 1 ? results[0] : { gates: results };
+        };
         const e = engine();
         let unanswered = '';
         if (e.config.gates.elicitation !== 'never' && server.server.getClientCapabilities()?.elicitation) {
           let answer: { action: string; content?: Record<string, unknown> } | undefined;
           try {
             answer = await server.server.elicitInput({
-              message: `AITS gate ${gate.id}: ${gate.title}. Raised by ${gate.agents.join(', ')}. How do you want to proceed?`,
+              message: `AITS gate${ids.length > 1 ? 's' : ''} ${gate.id}: ${gate.title}. Raised by ${gate.agents.join(', ')}. How do you want to proceed?`,
               requestedSchema: {
                 type: 'object',
                 properties: {
@@ -98,7 +107,7 @@ export function createServer(): McpServer {
           }
           if (answer?.action === 'accept' && answer.content) {
             const c = answer.content as { decision: GateDecision; justification?: string };
-            return run.respondToGate(gate.id, c.decision, 'elicitation', { justification: c.justification, user_quote: c.justification });
+            return answerAll(c.decision, 'elicitation', { justification: c.justification, user_quote: c.justification });
           }
           // An explicit refusal of the form is the human's answer: the gate stays open.
           if (answer?.action === 'decline') return { gate: gate.id, status: 'still open', note: 'the human declined to answer the gate' };
@@ -112,7 +121,7 @@ export function createServer(): McpServer {
             note: `${unanswered ? unanswered + '. ' : ''}Ask the human in the conversation, then call again with decision and user_quote containing their own words.`,
           };
         }
-        return run.respondToGate(gate.id, decision, 'agent_relayed', { user_quote, justification: unanswered ? `${justification ?? ''} [${unanswered}]`.trim() : justification });
+        return answerAll(decision, 'agent_relayed', { user_quote, justification: unanswered ? `${justification ?? ''} [${unanswered}]`.trim() : justification });
       }),
   );
 

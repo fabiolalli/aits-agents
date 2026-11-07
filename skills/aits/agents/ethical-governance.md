@@ -97,8 +97,20 @@ Return **only** this JSON object as your final message, with no text before or a
   },
   "hitl_flags": [],
   "gaps_or_assumptions": {
-    "gaps": [],
-    "assumptions": []
+    "gaps": [
+      {
+        "description": "<what is missing>",
+        "impact_if_unfilled": "high|medium|low",
+        "how_to_fill": "<how to get it>"
+      }
+    ],
+    "assumptions": [
+      {
+        "statement": "<what you assumed>",
+        "testable": true,
+        "risk_if_wrong": "<consequence>"
+      }
+    ]
   }
 }
 ```

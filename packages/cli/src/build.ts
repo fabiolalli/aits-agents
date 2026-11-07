@@ -66,7 +66,10 @@ function envelopeBlock(agentId: string, withPredictions: boolean): string {
     summary: '<one paragraph>',
     main_output: Object.fromEntries(mainRequired.map((k) => [k, '<see the shape below>'])),
     hitl_flags: [],
-    gaps_or_assumptions: { gaps: [], assumptions: [] },
+    gaps_or_assumptions: {
+      gaps: [{ description: '<what is missing>', impact_if_unfilled: 'high|medium|low', how_to_fill: '<how to get it>' }],
+      assumptions: [{ statement: '<what you assumed>', testable: true, risk_if_wrong: '<consequence>' }],
+    },
     ...(withPredictions ? { predictions: [{ id: 'p1', statement: '<event that can be checked later>', probability: 0.3, resolve_by: '<ISO date>', source_ref: '<risk, premortem or scenario id>' }] } : {}),
   };
   const lead =

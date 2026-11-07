@@ -1,12 +1,12 @@
 {
   "name": "@fabiolalli/aits",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "AITS command line, MCP server (aits-mcp), A2A governance endpoint and adapter builder.",
   "license": "MIT",
   "type": "module",
   "bin": { "aits": "../../dist/aits.mjs" },
   "dependencies": {
-    "@fabiolalli/aits-core": "3.0.0",
+    "@fabiolalli/aits-core": "3.0.1",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "zod": "^4.6.7"
   }

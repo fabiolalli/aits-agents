@@ -68,6 +68,54 @@ At start:
 
 ## Output Contract
 
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"foresight"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `options_inventory`, `scenarios_inventory`, `options_scenarios_matrix`, `robustness_ranking`. Enumerated values take exactly one of the listed options: when none fits, use the neutral option the list offers (such as `unknown` or `none`) or leave out an optional field, never `N/A` or free text. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "foresight",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "options_inventory": "<see the shape below>",
+    "scenarios_inventory": "<see the shape below>",
+    "options_scenarios_matrix": "<see the shape below>",
+    "robustness_ranking": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": {
+    "gaps": [
+      {
+        "description": "<what is missing>",
+        "impact_if_unfilled": "high|medium|low",
+        "how_to_fill": "<how to get it>"
+      }
+    ],
+    "assumptions": [
+      {
+        "statement": "<what you assumed>",
+        "testable": true,
+        "risk_if_wrong": "<consequence>"
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "id": "p1",
+      "statement": "<event that can be checked later>",
+      "probability": 0.3,
+      "resolve_by": "<ISO date>",
+      "source_ref": "<risk, premortem or scenario id>"
+    }
+  ]
+}
+```
+
 Conforms to `/schemas/foresight.schema.json`. Main_output:
 
 ```json

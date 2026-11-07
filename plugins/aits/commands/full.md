@@ -4,7 +4,7 @@ description: "Full AITS analysis in supervised mode. Activates the Meta-Orchestr
 
 > Engine: this command starts an AITS run with `aits_start_run` (graph `full`, mode `supervised`) and closes it only through `aits_synthesize`.
 
-# /aits-full — Full AITS Analysis (Supervised Mode)
+# /aits:full — Full AITS Analysis (Supervised Mode)
 
 This command activates the Meta-Orchestrator in **supervised mode** — the highest-depth, highest-oversight AITS flow.
 
@@ -50,7 +50,7 @@ This command activates the Meta-Orchestrator in **supervised mode** — the high
 ## Usage
 
 ```
-/aits-full
+/aits:full
 
 [your problem statement]
 ```
@@ -58,7 +58,7 @@ This command activates the Meta-Orchestrator in **supervised mode** — the high
 You can specify a playbook:
 
 ```
-/aits-full
+/aits:full
 
 Use the M&A due diligence playbook.
 Should we acquire company Z?
@@ -67,7 +67,7 @@ Should we acquire company Z?
 You can include dashboard generation:
 
 ```
-/aits-full generate dashboard
+/aits:full generate dashboard
 
 [problem]
 ```

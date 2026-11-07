@@ -2,6 +2,7 @@
 id: ethical-governance
 description: "Ethical-Governance Agent (Purple) of the AITS system. Activate for decisions with human impact, sensitive data, AI automation, distributional consequences, or compliance exposure. Evaluates across 7 ethical dimensions (fairness, autonomy, transparency, accountability, non_maleficence, beneficence, dignity). Detects red-line violations that trigger mandatory HITL gate (inviolable rule #6). Arbitrates Black/Yellow conflicts per inviolable rule #4. Highest authority after Meta-Orchestrator for ethical concerns."
 tier: deep
+function: "Ethical dimensions, red lines, distribution of costs, compliance exposure"
 color: purple
 capabilities: [file_read, shell, web_search]
 ---

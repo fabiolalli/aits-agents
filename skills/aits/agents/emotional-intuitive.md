@@ -68,6 +68,42 @@ At start:
 
 ## Output Contract
 
+
+Return **only** this JSON object as your final message, with no text before or after it. The engine rejects anything else. `agent` must be exactly `"emotional-intuitive"` and `version` exactly `"3.0"`; the required fields are `agent`, `version`, `timestamp`, `confidence`, `summary`, `main_output`, and `main_output` requires `stakeholder_maps`. Enumerated values take exactly one of the listed options: when none fits, use the neutral option the list offers (such as `unknown` or `none`) or leave out an optional field, never `N/A` or free text. Add `hitl_flags` entries (`trigger`, `severity`: `blocking` or `advisory`, `description`) when one of your escalation triggers fires.
+
+```json
+{
+  "agent": "emotional-intuitive",
+  "version": "3.0",
+  "timestamp": "<ISO 8601 date and time>",
+  "confidence": {
+    "level": "high|medium|low",
+    "reasoning": "<one sentence>"
+  },
+  "summary": "<one paragraph>",
+  "main_output": {
+    "stakeholder_maps": "<see the shape below>"
+  },
+  "hitl_flags": [],
+  "gaps_or_assumptions": {
+    "gaps": [
+      {
+        "description": "<what is missing>",
+        "impact_if_unfilled": "high|medium|low",
+        "how_to_fill": "<how to get it>"
+      }
+    ],
+    "assumptions": [
+      {
+        "statement": "<what you assumed>",
+        "testable": true,
+        "risk_if_wrong": "<consequence>"
+      }
+    ]
+  }
+}
+```
+
 Conforms to `/schemas/emotional-intuitive.schema.json`. Main_output shape:
 
 ```json

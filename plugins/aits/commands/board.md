@@ -2,7 +2,7 @@
 description: "Generate or view the AITS decision dashboard. Shows the current state of an ongoing analysis (agents completed, findings, conflicts, open gates) or produces a self-contained HTML dashboard for a completed analysis. The dashboard includes agent flow graph, risk heatmap, confidence meter, conflict timeline, robustness matrix (if Foresight ran), action plan, and HITL log."
 ---
 
-# /aits-board — AITS Decision Dashboard
+# /aits:board — AITS Decision Dashboard
 
 This command either displays the current state of an in-flight analysis or generates a visual HTML dashboard for a completed analysis.
 
@@ -13,7 +13,7 @@ This command either displays the current state of an in-flight analysis or gener
 If an analysis is currently running:
 
 ```
-/aits-board
+/aits:board
 ```
 
 Displays:
@@ -32,7 +32,7 @@ Displays:
 For any completed analysis (including past decisions in `.aits/memory/`):
 
 ```
-/aits-board for [decision-id or title]
+/aits:board for [decision-id or title]
 ```
 
 Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with:
@@ -51,22 +51,22 @@ Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with
 ## Usage examples
 
 ```
-/aits-board
+/aits:board
 ```
 → Shows current state of in-flight analysis
 
 ```
-/aits-board for 2026-04-17_product-x-launch
+/aits:board for 2026-04-17_product-x-launch
 ```
 → Generates HTML dashboard for that past decision
 
 ```
-/aits-board for last
+/aits:board for last
 ```
 → Generates HTML dashboard for the most recent completed analysis
 
 ```
-/aits-board for pattern product-launch-cold-start
+/aits:board for pattern product-launch-cold-start
 ```
 → Generates an aggregated dashboard showing all past decisions matching this pattern with their retrospective outcomes
 
@@ -121,7 +121,7 @@ The HTML template (in `agents/aits-dashboard.md`) produces a self-contained sing
 
 ## Pattern dashboard
 
-The pattern view (when called with `/aits-board for pattern [pattern_id]`) shows:
+The pattern view (when called with `/aits:board for pattern [pattern_id]`) shows:
 
 - Count of decisions matching this pattern
 - % with completed retrospectives

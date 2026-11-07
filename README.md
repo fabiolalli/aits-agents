@@ -107,7 +107,16 @@ The engine needs Node.js 20 or later. Nothing else is installed: the engine ship
 /plugin install aits@aits-marketplace
 ```
 
-This installs the 11 agents, the dashboard template, 4 commands, 7 playbooks, 10 execution graphs, references, schemas and the engine. The plugin registers the engine as an MCP server (`aits`) and adds a hook that submits every sub-agent output to the engine automatically.
+This installs the 11 agents, the dashboard template, 4 commands, 7 playbooks, 10 execution graphs, references, schemas and the engine. The plugin registers the engine as an MCP server (`aits`) and adds three hooks: one at session start that tells the sub-agents where the plugin files are, and two that submit every sub-agent output to the engine automatically, whether the sub-agent runs in the foreground or in the background.
+
+To update an existing install:
+
+```
+/plugin marketplace update aits-marketplace
+/plugin update aits@aits-marketplace
+```
+
+Then restart Claude Code so the new hooks and MCP server are loaded.
 
 ### Any runtime that reads Agent Skills
 
@@ -127,11 +136,11 @@ Point the client to the engine bundled in the skill folder:
 }
 ```
 
-Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly and any decision sent by the model is ignored.
+Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly through a form and a decision sent by the model is ignored. If nobody answers the form (headless sessions such as `claude -p`), the engine accepts the human's words relayed by the model in `user_quote` and records the gate as `agent_relayed`; set `gates.elicitation: never` to skip the form.
 
 ### Configuration
 
-Copy `aits.config.example.yaml` to `aits.config.yaml` in your project. Map each tier to the models you want, give each model a family label, and choose the memory embedder (local hashing by default, or any OpenAI-compatible embeddings endpoint, including a local one). To build the Claude Code plugin with your own tier mapping:
+Copy `aits.config.example.yaml` to `aits.config.yaml` in your project. Without it the engine works, but it cannot tell which models produced the outputs: provenance stays empty and the report marks model diversity as unverified. Map each tier to the models you want, give each model a family label, and choose the memory embedder (local hashing by default, or any OpenAI-compatible embeddings endpoint, including a local one). To build the Claude Code plugin with your own tier mapping:
 
 ```
 node skills/aits/scripts/aits.mjs build --target claude-code --config aits.config.yaml --out .
@@ -148,11 +157,13 @@ v2 envelopes are accepted by the v3 engine. If you installed v2 as a plugin, upd
 ### Claude Code
 
 ```
-/aits-full   Should we launch Product X in the EU market in Q2?
-/aits-quick  Approve this marketing budget reallocation?
-/aits-diverge We're stuck between hiring and outsourcing. What else is possible?
-/aits-board  for last
+/aits:full    Should we launch Product X in the EU market in Q2?
+/aits:quick   Approve this marketing budget reallocation?
+/aits:diverge We're stuck between hiring and outsourcing. What else is possible?
+/aits:board   for last
 ```
+
+Claude Code namespaces plugin commands with the plugin name, so from 3.0.1 the commands are `/aits:full`, `/aits:quick`, `/aits:diverge` and `/aits:board` (in 3.0.0 they were `/aits:aits-full` and so on).
 
 ### Command line
 

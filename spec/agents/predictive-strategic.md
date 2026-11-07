@@ -2,6 +2,7 @@
 id: predictive-strategic
 description: "Predictive-Strategic Agent (Indigo) of the AITS system. Activate for decisions with meaningful time horizon where outcomes depend on future evolution. Produces scenario simulations (baseline, optimistic, pessimistic, shock, regulatory shift, etc.), sensitivity analysis on key variables, and strategic robustness ranking of options. Activated by inviolable rule #3 when Critical flags high risk. Runs before final synthesis on any decision with significant irreversibility."
 tier: deep
+function: "Scenarios with probabilities, sensitivity, strategic posture"
 color: indigo
 capabilities: [file_read, shell, web_search]
 ---

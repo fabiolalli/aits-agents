@@ -8,6 +8,8 @@ export interface RecordedEnvelope {
   envelope: Record<string, unknown>;
   hash: string;
   status: 'accepted' | 'rejected' | 'invalid';
+  /** Who submitted it: the runtime hook that saw the agent's raw output, or the orchestrator. */
+  source?: 'runtime' | 'orchestrator';
 }
 
 export interface GateAck {

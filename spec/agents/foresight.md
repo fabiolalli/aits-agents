@@ -2,6 +2,7 @@
 id: foresight
 description: "Foresight Agent (Magenta) of the AITS system. Activate when multiple options exist and the future is uncertain — produces the options-scenarios matrix that ranks options by robustness across plausible futures. Triggered automatically by inviolable rule #5 when Green generates ≥ 4 viable options. Distinct from Predictive — Predictive simulates futures for one option; Foresight compares many options across many futures. Arbitrates Green-Black conflicts when options are being killed prematurely."
 tier: deep
+function: "Options against scenarios, robustness, early warnings"
 color: magenta
 capabilities: [file_read, shell]
 ---

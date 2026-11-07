@@ -1,8 +1,42 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { Engine, exportRun, generateSigningKey, getSpec, loadSigner, planGraph, readLog, validateEnvelope, verifyLog, aggregateRuns, calibrationReport, matchPatterns, toOtlp } from '../src/index.ts';
+import { Engine, normalizeAgentId, exportRun, generateSigningKey, getSpec, loadSigner, planGraph, readLog, validateEnvelope, verifyLog, aggregateRuns, calibrationReport, matchPatterns, toOtlp } from '../src/index.ts';
 import { analytical, critical, creative, ethical, optimizer, predictive, synthesis, tmpDir, envelope } from './fixtures.ts';
+
+describe('agent names', () => {
+  it('maps runtime names to spec ids and leaves unknown names alone', () => {
+    const known = Object.keys(getSpec().agents);
+    for (const n of ['aits:aits-analytical', 'aits-analytical', 'analytical-agent', 'Analytical', 'analytical']) expect(normalizeAgentId(n, known)).toBe('analytical');
+    expect(normalizeAgentId('aits:aits-meta-orchestrator', known)).toBe('meta-orchestrator');
+    expect(normalizeAgentId('finance-bot', known)).toBe('finance-bot');
+  });
+});
+
+describe('runtime and orchestrator copies of one output', () => {
+  it('counts one attempt once, even when the orchestrator rewrites it', async () => {
+    const engine = new Engine(tmpDir());
+    const { run_id } = await engine.start({ problem: 'Copies', graph: 'quick' });
+    const run = engine.open(run_id);
+    const bad = { ...analytical(), gaps_or_assumptions: [] };
+    expect(run.submit(bad, { source: 'runtime' }).status).toBe('invalid');
+    expect(run.submit(bad, { source: 'runtime' }).seq).toBe(1);
+    const rewritten = run.submit({ ...bad, summary: 'shortened by the orchestrator' });
+    expect(rewritten.status).toBe('invalid');
+    expect(rewritten.seq).toBe(1);
+    expect(rewritten.next.join(' ')).toMatch(/one of record/);
+    expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(0);
+    run.submit({ ...bad, summary: 'second attempt, still wrong' }, { source: 'runtime' });
+    expect(run.gates().filter((g) => g.rule === 'R7')).toHaveLength(1);
+    const good = analytical();
+    run.submit(good, { source: 'runtime' });
+    const copy = run.submit({ ...good, provenance: { runtime: 'x', model_family: 'fam-a' } });
+    expect(copy.status).toBe('accepted');
+    expect(copy.next[0]).toMatch(/only adds provenance/);
+    expect(run.submit({ ...good, provenance: { runtime: 'x', model_family: 'fam-a' } }).status).toBe('duplicate');
+    expect(run.status().submitted.filter((x) => x.status === 'accepted')).toHaveLength(1);
+  });
+});
 
 describe('schema validation', () => {
   it('accepts a valid envelope and a 2.0 envelope', () => {

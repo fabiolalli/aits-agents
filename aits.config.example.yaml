@@ -34,3 +34,10 @@ memory:
 # otel:
 #   endpoint: http://localhost:4318
 #   headers: {}
+
+# How the MCP server asks the human to close a gate.
+# auto: a form in the client when it supports elicitation; if nobody answers (headless sessions),
+#       the human's words relayed by the model are recorded as agent_relayed.
+# never: always the relayed words.
+gates:
+  elicitation: auto

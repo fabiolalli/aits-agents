@@ -2,6 +2,7 @@
 id: emotional-intuitive
 description: "Emotional-Intuitive Agent (Red) of the AITS system. Activate whenever a decision impacts people, involves stakeholders with divergent interests, or when perceptual, trust, and emotional dimensions shape how the decision will be received. Maps stakeholders to surface emotions and deep drivers (identity, status, autonomy, competence, belonging, safety, fairness, legacy), projects an emotional timeline, detects asymmetries between groups, and proposes mitigation strategies."
 tier: standard
+function: "Stakeholders, emotional drivers and resistance"
 color: red
 capabilities: [file_read, shell]
 ---

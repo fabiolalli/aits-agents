@@ -9,6 +9,8 @@ export type Tier = 'deep' | 'standard' | 'fast';
 export interface AgentSpec {
   id: string;
   description: string;
+  /** One line on what the agent contributes, for tables and listings. */
+  function: string;
   tier: Tier;
   color: string;
   capabilities: string[];
@@ -117,6 +119,7 @@ export function buildSpec(files: Record<string, string>): Spec {
       agents[id] = {
         id,
         description: String(data.description ?? ''),
+        function: String(data.function ?? String(data.description ?? '').split('. ')[0]),
         tier: data.tier as Tier,
         color: String(data.color ?? ''),
         capabilities: (data.capabilities as string[]) ?? [],

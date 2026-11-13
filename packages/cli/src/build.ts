@@ -161,7 +161,7 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
         description:
           'AITS 3.0 — 11 cognitive agents and a dashboard template, 4 commands, 10 execution graphs, conflict matrix, pattern library and JSON schemas, enforced by a deterministic engine (MCP server and hook): rules and human gates, hash-chained decision log, model-diversity policy, semantic memory and calibration.',
         author: { name: 'Fabio Lalli', url: 'https://github.com/fabiolalli' },
-        homepage: 'https://github.com/fabiolalli/aits-agents',
+        homepage: 'https://aits.fabiolalli.com',
         repository: 'https://github.com/fabiolalli/aits-agents',
         license: 'MIT',
         keywords: ['aits', 'decision-making', 'multi-agent', 'thinking-hats', 'de-bono', 'orchestration', 'playbooks', 'governance', 'calibration'],

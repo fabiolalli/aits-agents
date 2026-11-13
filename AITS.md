@@ -4,7 +4,7 @@
 
 **Author**: Fabio Lalli
 **Version**: 3.0
-**Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025)
+**Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *La mente adattiva. Pensare insieme alle macchine* (Fabio Lalli, Egea, 2025)
 
 ---
 
@@ -20,7 +20,7 @@ The *Six Thinking Hats* got the core right: separating thinking modes, and integ
 
 ### 2025: the book
 
-The book *Adaptive Intelligence Thinking System*, written in Rome in 2025, is the first attempt to update De Bono for the era of hybrid intelligence. The starting question was narrow and direct: how do we keep thinking well when AI generates, suggests, and simulates alongside us? The answer proposed in the book is built on three moves.
+The book *La mente adattiva. Pensare insieme alle macchine* (Egea, 2025), written in Rome in 2025, is the first attempt to update De Bono for the era of hybrid intelligence. The starting question was narrow and direct: how do we keep thinking well when AI generates, suggests, and simulates alongside us? The answer proposed in the book is built on three moves.
 
 First, turn the hats into **agents**. The hat was a metaphor for a mental mode. The agent is a functional unit, embodiable by a human, by an AI, or more often by a human-AI pair dedicated to a specific cognitive function. Agents can work in sequence, but also in parallel, with feedback loops between them. It is a leap: no longer only metaphors guiding human thought, but operational cognitive units that have capabilities, interfaces, and interactions.
 

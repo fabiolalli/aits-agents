@@ -1,6 +1,6 @@
 # AITS — Adaptive Intelligence Thinking System
 
-**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli)
+**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
 
 A decision-making framework evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system for decisions: separate cognitive perspectives, formal rules, human gates, memory, and a deterministic engine that enforces all of it whatever model or runtime you use.
 
@@ -27,7 +27,7 @@ See [`AITS.md`](./AITS.md) for the manifesto and design principles.
 
 ### The book (2025)
 
-AITS started as a book, *Adaptive Intelligence Thinking System*, written in Rome in 2025. The book asked one question: in an era where AI generates, suggests and simulates, how do we keep thinking well, together? Not thinking instead of machines, not thinking like machines, thinking with them, in a way that structures complexity rather than ignoring it.
+AITS started as a book, *La mente adattiva. Pensare insieme alle macchine* (Egea, 2025), written in Rome in 2025. The book asked one question: in an era where AI generates, suggests and simulates, how do we keep thinking well, together? Not thinking instead of machines, not thinking like machines, thinking with them, in a way that structures complexity rather than ignoring it.
 
 The answer proposed in the book was to take De Bono's *Six Thinking Hats* (1985), recognise what it got right (separating cognitive modes and integrating them on purpose) and evolve it for the age of hybrid intelligence. The metaphor of the "hat" became something more operational, a cognitive agent: not a role a person wears, but a functional unit that can be embodied by a human, by an AI, or more often by a human-AI pairing working on a specific dimension of the problem.
 
@@ -285,8 +285,9 @@ MIT. See [`LICENSE`](./LICENSE).
 
 ## Links
 
+- **Website**: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) · [versione italiana](https://aits.fabiolalli.com) · [demo](https://aits.fabiolalli.com/en/demo)
 - **Author**: [Fabio Lalli](https://www.fabiolalli.com) · [GitHub](https://github.com/fabiolalli)
-- **Origin book**: *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025), the theoretical foundation this repository implements
+- **Origin book**: *La mente adattiva. Pensare insieme alle macchine* (Fabio Lalli, Egea, 2025), the theoretical foundation this repository implements ([about the book](https://fabiolalli.com/2025/10/03/la-mente-adattiva-pensare-insieme-alle-macchine/))
 - **Other books**: *Spatial Shift*, *L'AI non è quello che pensi*, *Sport Digital Transformation*
 - **Standards used**: [Agent Skills](https://agentskills.io), [Model Context Protocol](https://modelcontextprotocol.io), [A2A](https://a2a-protocol.org), [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
 

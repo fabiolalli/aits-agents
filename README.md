@@ -1,6 +1,6 @@
 # AITS — Adaptive Intelligence Thinking System
 
-**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
+**Version 3.0.1** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
 
 A decision-making framework evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system for decisions: separate cognitive perspectives, formal rules, human gates, memory, and a deterministic engine that enforces all of it whatever model or runtime you use.
 
@@ -57,9 +57,17 @@ v2 defined the rules; v3 makes them hold. In v2 the inviolable rules, the schema
 
 Four changes define the release. **Enforcement**: schemas, rules (now declared in `rules.yaml`) and gates are evaluated by code, gates are closed only by a human answer recorded with the channel it came through, and every event goes into an append-only log whose hash chain makes later edits visible. **Independence from models**: the spec is separated from the runtime; agents declare a capability tier (`deep`, `standard`, `fast`) instead of a model, and research on multi-agent debate showed that agents of the same model family share errors, so the perspectives that estimate risk and probability now run independently, on different families when configured, aggregated without debate, with minority positions preserved. **Learning**: memory moves from tag matching to semantic recall, every prediction is stored with a field for its outcome, and calibration (Brier score by agent, model family and tier) feeds back into the confidence the engine reports. **Portability**: the same spec is built into a Claude Code plugin, a portable Agent Skills package with the engine as a script, an MCP server usable by any MCP client, and an A2A endpoint for governance review.
 
+### Version 3.0.1 — tested in real sessions (November 2026)
+
+Before announcing 3.0, the plugin was run in real Claude Code sessions on an Italian go/no-go case: a manufacturing SME with 80 employees planning to cut customer care from six operators to two with an AI agent. On the substance the system did its job: Critical-Validator showed the plan needed 67% automation against a realistic 40%, Ethical-Governance raised a red line on four layoffs resting on an unverified assumption, and the engine stopped the run until a human chose a phased pilot. The integration, on the other hand, broke in ways the automated tests could not see, because those tests talked to the engine directly, with no model in between.
+
+3.0.1 removes the orchestrator from the path between an agent and the record. In 3.0 every check still depended on the orchestrator handing outputs to the engine unchanged, and in the sessions it shortened them. Now a `SubagentStop` hook submits each sub-agent's last message as soon as it finishes, in the foreground or in the background; that runtime copy is the one of record, and the orchestrator's later copy is logged as a `resubmission` that only adds provenance. Rule R7 therefore counts the agent's attempts, not the orchestrator's submissions. A `SessionStart` hook tells sub-agents where the plugin files are, each agent file opens its Output Contract with the exact envelope generated from the schemas (tested against them at every build), runtime agent names are mapped to spec ids, and plugin commands are now `/aits:full`, `/aits:quick`, `/aits:diverge`, `/aits:board`. Gates also close in sessions with nobody at the screen: when no one answers the elicitation form, the engine accepts the human's words relayed by the model, records the channel as `agent_relayed` with the reason, and still refuses a relayed answer without the human's words. Details in the [CHANGELOG](./CHANGELOG.md); the story of the project, in Italian, on [fabiolalli.com](https://fabiolalli.com/2026/11/07/aits-3-0-1-come-un-libro-sui-sei-cappelli-e-diventato-un-motore-per-decidere-con-lai/).
+
 ### Where it is going
 
-The next step is evidence. The eval harness in `eval/` replays past decisions with known outcomes; filling it with real cases will show, with numbers, whether v3 calibrates better than v2 at equal models. After twenty resolved predictions per agent the engine starts recalibrating their probabilities on its own.
+The same sessions exposed limits in the method that 3.1 will address. Every new output reporting the same data gap reopened a gate the human had already closed, so one quick decision raised twelve gates, ten of them on a single gap: a human acceptance should cover the same gap in later outputs. Gate answers need a way to say "change the plan", distinct from `proceed`. The diversity policy asks for several independent runs of Critical-Validator and Predictive-Strategic, but the orchestrator ran them once and the engine only reported it: quick mode needs an explicit choice between fewer runs and a blocking check.
+
+Then evidence. The eval harness in `eval/` replays past decisions with known outcomes, and for now it holds a single synthetic case; real cases will show, with numbers, whether v3 calibrates better than v2 at equal models. After twenty resolved predictions per agent the engine starts recalibrating their probabilities on its own. If you have a past decision whose outcome you now know, it is the most useful contribution you can make.
 
 ---
 
@@ -86,7 +94,7 @@ The next step is evidence. The eval harness in `eval/` replays past decisions wi
 ```
 spec/                 the method: agents, rules.yaml, graphs, schemas, references, playbooks (no vendor names)
 packages/core/        aits-core: the engine (validator, rules and gates, log, memory, calibration, export)
-packages/cli/         aits CLI, aits-mcp server, runtime hook, A2A endpoint, adapter builder, eval harness
+packages/cli/         aits CLI, aits-mcp server, runtime hooks, A2A endpoint, adapter builder, eval harness
 plugins/aits/         Claude Code adapter (generated from spec/)
 skills/aits/          Agent Skills adapter with the engine as scripts/aits.mjs (generated from spec/)
 aits.config.yaml      yours: which model serves each tier, memory embedder, signing key
@@ -136,11 +144,11 @@ Point the client to the engine bundled in the skill folder:
 }
 ```
 
-Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly through a form and a decision sent by the model is ignored. If nobody answers the form (headless sessions such as `claude -p`), the engine accepts the human's words relayed by the model in `user_quote` and records the gate as `agent_relayed`; set `gates.elicitation: never` to skip the form.
+Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly through a form and a decision sent by the model is ignored. If nobody answers the form (headless sessions such as `claude -p`), the engine accepts the human's words relayed by the model in `user_quote` and records the gate as `agent_relayed`; set `gates.elicitation: never` to skip the form. Gates raised by the same output can be answered with one decision by passing their ids separated by commas (`R2a#1,R8#1`).
 
 ### Configuration
 
-Copy `aits.config.example.yaml` to `aits.config.yaml` in your project. Without it the engine works, but it cannot tell which models produced the outputs: provenance stays empty and the report marks model diversity as unverified. Map each tier to the models you want, give each model a family label, and choose the memory embedder (local hashing by default, or any OpenAI-compatible embeddings endpoint, including a local one). To build the Claude Code plugin with your own tier mapping:
+Copy `aits.config.example.yaml` to `aits.config.yaml` in your project. Without it the engine works, but it cannot tell which models produced the outputs: provenance stays empty and the report marks model diversity as unverified. Map each tier to the models you want, give each model a family label, and choose the memory embedder (local hashing by default, or any OpenAI-compatible embeddings endpoint, including a local one). `gates.elicitation` (`auto` or `never`, also settable with `AITS_ELICITATION`) decides whether gates are first asked through the client's form. To build the Claude Code plugin with your own tier mapping:
 
 ```
 node skills/aits/scripts/aits.mjs build --target claude-code --config aits.config.yaml --out .
@@ -193,7 +201,7 @@ Declared in [`spec/rules.yaml`](./spec/rules.yaml) and evaluated by the engine a
 | R4 | Critical-Validator says stop and Optimizer says go | Ethical-Governance must arbitrate, blocking gate |
 | R5 | Creative-Generative proposes 4 or more options | Foresight must run, advisory gate |
 | R6 | Ethical-Governance finds a red line | Blocking gate |
-| R7 | The same agent fails schema validation twice | Blocking gate |
+| R7 | The same agent fails schema validation on two consecutive attempts (copies of one output count once) | Blocking gate |
 | R8 | Any agent raises a blocking `hitl_flag` | Blocking gate |
 
 A human answers a gate with `proceed`, `provide_context`, `override` (waives the rule requirement, needs a justification and caps the engine confidence) or `abort`. The synthesis is refused while a blocking gate is open, a requirement is unmet, or an agent required by the playbook graph has neither run nor been skipped by a human.
@@ -286,6 +294,8 @@ MIT. See [`LICENSE`](./LICENSE).
 ## Links
 
 - **Website**: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) · [versione italiana](https://aits.fabiolalli.com) · [demo](https://aits.fabiolalli.com/en/demo)
+- **Release notes**: [v3.0.1](https://github.com/fabiolalli/aits-agents/releases/tag/v3.0.1) · [CHANGELOG](./CHANGELOG.md)
+- **The story of the project** (Italian): [AITS 3.0.1: come un libro sui sei cappelli è diventato un motore per decidere con l'AI](https://fabiolalli.com/2026/11/07/aits-3-0-1-come-un-libro-sui-sei-cappelli-e-diventato-un-motore-per-decidere-con-lai/)
 - **Author**: [Fabio Lalli](https://www.fabiolalli.com) · [GitHub](https://github.com/fabiolalli)
 - **Origin book**: *La mente adattiva. Pensare insieme alle macchine* (Fabio Lalli, Egea, 2025), the theoretical foundation this repository implements ([about the book](https://fabiolalli.com/2025/10/03/la-mente-adattiva-pensare-insieme-alle-macchine/))
 - **Other books**: *Spatial Shift*, *L'AI non è quello che pensi*, *Sport Digital Transformation*

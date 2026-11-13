@@ -3,7 +3,7 @@
 ## Adaptive Intelligence Thinking System
 
 **Author**: Fabio Lalli
-**Version**: 3.0
+**Version**: 3.0.1
 **Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *La mente adattiva. Pensare insieme alle macchine* (Fabio Lalli, Egea, 2025)
 
 ---
@@ -43,6 +43,8 @@ Version 2 is the first release in which AITS behaves as a system rather than a c
 ### 3.0: the enforced, portable system
 
 Version 2 wrote the rules; version 3 makes them hold. In v2 the rules lived in the orchestrator's prompt, so their strength depended on the model following them. In v3 a deterministic engine validates every output, evaluates the rules, opens gates that only a human can close and records everything in a hash-chained log. The method is separated from the runtime and names no model: agents declare a capability tier, the user decides which model serves it. Perspectives that estimate risks and probabilities run independently, on different model families when available, because agents of the same family share their errors. Every prediction is scored against what actually happened, and that score changes how much the engine trusts each agent.
+
+Version 3.0.1 comes from running the system in real sessions. It moves the record of each agent output from the orchestrator to the runtime: the agent's own last message reaches the engine directly, and the orchestrator can no longer reshape what gets recorded. The same sessions showed what the method still lacks, in particular gates that reopen for a gap the human has already accepted; that is the work of 3.1.
 
 What stays constant, from De Bono to the book to v3.0, is the original insight: to think well you separate the modes, then integrate them on purpose, with a human always at the centre. Everything else is evolution.
 
@@ -146,6 +148,14 @@ AITS is implemented in four layers.
 The Meta-Orchestrator plans the agents in waves from the playbook graph, submits every output to the engine, presents the gates to the human, and closes the decision only when the engine accepts the synthesis. The result is a decision-making framework that produces a multi-dimensional analysis, traceable and repeatable, with the human always in control, on whatever model they trust.
 
 ---
+
+## What's new in 3.0.1
+
+- **The runtime keeps the record**: a sub-agent's output is submitted by a runtime hook when the agent finishes; the orchestrator's copy only adds provenance
+- **Attempts, not submissions**: rule R7 and multi-run counts follow the agent's attempts
+- **Exact envelope in every agent**, generated from the schemas and tested against them
+- **Gates in unattended sessions** close with the human's relayed words, recorded as such
+- **Plugin commands** `/aits:full`, `/aits:quick`, `/aits:diverge`, `/aits:board`
 
 ## What's new in 3.0
 

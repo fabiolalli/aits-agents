@@ -1,6 +1,6 @@
 # AITS — Adaptive Intelligence Thinking System
 
-**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli)
+**Version 3.0** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
 
 A decision-making framework evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system for decisions: separate cognitive perspectives, formal rules, human gates, memory, and a deterministic engine that enforces all of it whatever model or runtime you use.
 
@@ -285,6 +285,7 @@ MIT. See [`LICENSE`](./LICENSE).
 
 ## Links
 
+- **Website**: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) · [versione italiana](https://aits.fabiolalli.com) · [demo](https://aits.fabiolalli.com/en/demo)
 - **Author**: [Fabio Lalli](https://www.fabiolalli.com) · [GitHub](https://github.com/fabiolalli)
 - **Origin book**: *Adaptive Intelligence Thinking System* (Fabio Lalli, Rome, 2025), the theoretical foundation this repository implements
 - **Other books**: *Spatial Shift*, *L'AI non è quello che pensi*, *Sport Digital Transformation*

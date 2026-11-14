@@ -1,6 +1,6 @@
 # AITS — Adaptive Intelligence Thinking System
 
-**Version 3.0.1** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
+**Version 3.0.2** · by [Fabio Lalli](https://github.com/fabiolalli) · Website: [aits.fabiolalli.com](https://aits.fabiolalli.com/en) (English and Italian: docs, install guide and an [interactive demo](https://aits.fabiolalli.com/en/demo))
 
 A decision-making framework evolved from Edward de Bono's *Six Thinking Hats* (1985) into a multi-agent operating system for decisions: separate cognitive perspectives, formal rules, human gates, memory, and a deterministic engine that enforces all of it whatever model or runtime you use.
 
@@ -62,6 +62,12 @@ Four changes define the release. **Enforcement**: schemas, rules (now declared i
 Before announcing 3.0, the plugin was run in real Claude Code sessions on an Italian go/no-go case: a manufacturing SME with 80 employees planning to cut customer care from six operators to two with an AI agent. On the substance the system did its job: Critical-Validator showed the plan needed 67% automation against a realistic 40%, Ethical-Governance raised a red line on four layoffs resting on an unverified assumption, and the engine stopped the run until a human chose a phased pilot. The integration, on the other hand, broke in ways the automated tests could not see, because those tests talked to the engine directly, with no model in between.
 
 3.0.1 removes the orchestrator from the path between an agent and the record. In 3.0 every check still depended on the orchestrator handing outputs to the engine unchanged, and in the sessions it shortened them. Now a `SubagentStop` hook submits each sub-agent's last message as soon as it finishes, in the foreground or in the background; that runtime copy is the one of record, and the orchestrator's later copy is logged as a `resubmission` that only adds provenance. Rule R7 therefore counts the agent's attempts, not the orchestrator's submissions. A `SessionStart` hook tells sub-agents where the plugin files are, each agent file opens its Output Contract with the exact envelope generated from the schemas (tested against them at every build), runtime agent names are mapped to spec ids, and plugin commands are now `/aits:full`, `/aits:quick`, `/aits:diverge`, `/aits:board`. Gates also close in sessions with nobody at the screen: when no one answers the elicitation form, the engine accepts the human's words relayed by the model, records the channel as `agent_relayed` with the reason, and still refuses a relayed answer without the human's words. Details in the [CHANGELOG](./CHANGELOG.md); the story of the project, in Italian, on [fabiolalli.com](https://fabiolalli.com/2026/11/07/aits-3-0-1-come-un-libro-sui-sei-cappelli-e-diventato-un-motore-per-decidere-con-lai/).
+
+### Version 3.0.2 — a skill that travels (November 2026)
+
+3.0.2 does not change the method: it changes how AITS is packaged and what survives a session. The Agent Skills package now follows the open specification at [agentskills.io](https://agentskills.io/specification) to the letter: `license`, `compatibility` and `metadata` in the frontmatter, with the SHA-256 of the bundled engine, a description written for the runtime that decides when to load the skill, paths relative to the skill root, a list of sections at the top of every long file, and a protocol that no longer asks the model to read the JSON schemas up front, since the engine validates each envelope and returns the exact errors. A validator in CI (`scripts/check-skill.mjs`) fails the build when the package breaks the specification or points to a file it does not contain; on 3.0.1 it finds eleven such references, including the dashboard template.
+
+The memory also becomes portable. On claude.ai, through an API or in any temporary container, the `.aits/` folder disappears at the end of the session, and with it the outcomes that calibration needs. `aits memory export` writes a bundle of decisions, predictions with their outcomes and reviewed patterns; `aits memory import` merges it into another memory, fills in the outcomes it lacks and reports, without overwriting, the ones that disagree. The same operations are available as MCP tools.
 
 ### Where it is going
 
@@ -130,7 +136,9 @@ Then restart Claude Code so the new hooks and MCP server are loaded.
 
 Copy `skills/aits/` into the skills folder your runtime reads (for example `.agents/skills/aits/` in a project). The skill tells the orchestrating model to use the engine through MCP when available, otherwise through `node scripts/aits.mjs`, otherwise to declare `enforcement: absent`.
 
-For claude.ai, zip the content of `skills/aits/` (with `SKILL.md` at the root of the archive) and upload it as a skill.
+For claude.ai, download `aits-skill-<version>.zip` from the [latest release](https://github.com/fabiolalli/aits-agents/releases/latest) and upload it as a skill, or zip the content of `skills/aits/` yourself with `SKILL.md` at the root of the archive. claude.ai does not keep `.aits/` between conversations: at the end of a decision the skill exports the memory to a file, and you bring that file to the next conversation so that past decisions and their outcomes are not lost.
+
+The package is checked against the [Agent Skills specification](https://agentskills.io/specification) on every build with `node scripts/check-skill.mjs skills/aits`.
 
 ### Any MCP client
 
@@ -144,7 +152,7 @@ Point the client to the engine bundled in the skill folder:
 }
 ```
 
-Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly through a form and a decision sent by the model is ignored. If nobody answers the form (headless sessions such as `claude -p`), the engine accepts the human's words relayed by the model in `user_quote` and records the gate as `agent_relayed`; set `gates.elicitation: never` to skip the form. Gates raised by the same output can be answered with one decision by passing their ids separated by commas (`R2a#1,R8#1`).
+Tools: `aits_start_run`, `aits_plan`, `aits_submit`, `aits_status`, `aits_gate_respond`, `aits_skip_agent`, `aits_aggregate`, `aits_synthesize`, `aits_recall`, `aits_record_outcome`, `aits_calibration`, `aits_patterns`, `aits_memory_export`, `aits_memory_import`, `aits_verify`, `aits_export`. When the client supports MCP elicitation, gates are asked to the human directly through a form and a decision sent by the model is ignored. If nobody answers the form (headless sessions such as `claude -p`), the engine accepts the human's words relayed by the model in `user_quote` and records the gate as `agent_relayed`; set `gates.elicitation: never` to skip the form. Gates raised by the same output can be answered with one decision by passing their ids separated by commas (`R2a#1,R8#1`).
 
 ### Configuration
 
@@ -220,8 +228,13 @@ The confidence reported to the user is computed by the engine, not declared by t
 - Every closed decision stores its predictions: the ones agents declare, plus the risks of severity ≥ 10 and the scenario probabilities.
 - `aits outcome <decision> <prediction> 0|1` records what happened; `aits calibrate` reports Brier score, skill over the base rate and reliability by agent, model family and tier. From 20 resolved predictions per agent the engine fits a recalibration.
 - `aits patterns scan` proposes new archetypes from clusters of three or more similar decisions; a human approves or rejects them.
+- `aits memory export --out <file>` writes a portable bundle of decisions, predictions with outcomes and reviewed patterns; `aits memory import <file>` merges it into another memory. Records are matched by id, missing outcomes are filled in, conflicting outcomes are reported and never overwritten, vectors and calibration are rebuilt with the local embedder.
 
-Memory is local (`.aits/` in the project), can redact patterns before storing, and never leaves the machine unless you configure a remote embedder.
+Memory is local (`.aits/` in the project, or the folder in `AITS_HOME`), can redact patterns before storing, and never leaves the machine unless you configure a remote embedder.
+
+### Network
+
+The engine makes no network call by default. It contacts a server in two cases only, both configured by you: an OpenAI-compatible embeddings endpoint (`memory.embedder: http`), and an OpenTelemetry collector when you run `aits export --otel`. The bundle in `scripts/aits.mjs` is generated from `packages/` with `npm run bundle`; its SHA-256 is written in `metadata.engine-sha256` of `SKILL.md`, so you can rebuild it from the tagged sources and compare.
 
 ---
 
@@ -238,10 +251,13 @@ npm install
 npm test               # engine, MCP server, CLI, hook, build and A2A tests
 npm run typecheck
 npm run check:neutral  # fails if a model or vendor name enters spec/
+npm run check:skill    # validates skills/aits against the Agent Skills specification
 npm run build:adapters # regenerates plugins/aits and skills/aits from spec/
 node scripts/make-example.mjs
 node dist/aits.mjs eval eval
 ```
+
+`eval/triggers.json` holds the activation set for the skill description: see [`eval/README.md`](./eval/README.md).
 
 Edit the method in `spec/`, never in the generated adapters.
 

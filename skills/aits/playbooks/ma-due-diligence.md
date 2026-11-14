@@ -1,5 +1,16 @@
 # Playbook: M&A Due Diligence
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Critical)
+- Pattern library hooks
+- HITL gates specific to M&A
+- Output format specifics
+
+
 Acquisition, merger, or significant investment evaluation. Highest-stakes playbook in the system — runs the full sequence including Systemic and Foresight.
 
 ## When this playbook fires

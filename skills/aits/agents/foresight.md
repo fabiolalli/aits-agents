@@ -1,8 +1,24 @@
 # foresight (tier: deep)
 
+## Contents
+
+- Path Resolution
+- Cognitive Mission
+- Role in the System
+- Handoff Protocol
+- Operating Rules
+- HITL Escalation Triggers
+- Memory Query
+- Output Contract
+- Predictions for Calibration (3.0)
+- Quality Metrics
+- Failure Modes to Avoid
+- Operational Parameters
+
+
 ## Path Resolution
 
-Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
+Files referenced as `agents/...`, `references/...`, `playbooks/...`, `graphs/...`, `schemas/...` or `templates/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
 
 
 

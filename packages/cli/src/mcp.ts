@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
@@ -184,6 +186,42 @@ export function createServer(): McpServer {
         if (action === 'list') return m.readPatterns().map(({ centroid, ...p }) => p);
         if (!id) throw new Error('id is required');
         return m.setPatternStatus(id, action === 'approve' ? 'approved' : 'rejected');
+      }),
+  );
+
+  server.registerTool(
+    'aits_memory_export',
+    {
+      title: 'Export the memory',
+      description:
+        'Writes a portable bundle of past decisions, predictions with their outcomes and reviewed patterns. Use it at the end of a session whose .aits/ folder will not survive (a hosted sandbox, a temporary container), and keep the file where the user can find it again.',
+      inputSchema: { out: z.string().optional().describe('File to write; without it the bundle is returned inline') },
+    },
+    ({ out }) =>
+      guard(() => {
+        const bundle = engine().memory.exportBundle(ENGINE_VERSION);
+        if (!out) return bundle;
+        fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
+        fs.writeFileSync(out, JSON.stringify(bundle, null, 2));
+        return { file: path.resolve(out), records: bundle.records.length, patterns: bundle.patterns.length };
+      }),
+  );
+
+  server.registerTool(
+    'aits_memory_import',
+    {
+      title: 'Import a memory bundle',
+      description:
+        'Merges a bundle written by aits_memory_export into this memory: new decisions are added, outcomes missing here are filled in, conflicting outcomes are reported and never overwritten. The calibration is recomputed.',
+      inputSchema: { file: z.string().optional().describe('Path of the bundle file'), bundle: z.record(z.string(), z.unknown()).optional().describe('The bundle object, when there is no file') },
+    },
+    ({ file, bundle }) =>
+      guard(async () => {
+        if (!file && !bundle) throw new Error('pass file or bundle');
+        const e = engine();
+        const result = await e.memory.importBundle(file ? JSON.parse(fs.readFileSync(file, 'utf8')) : bundle);
+        const calibration = writeCalibration(e.memory, e.spec.policies.calibration.min_resolved_for_adjustment);
+        return { ...result, resolved_predictions: calibration.resolved, pending_predictions: calibration.pending };
       }),
   );
 

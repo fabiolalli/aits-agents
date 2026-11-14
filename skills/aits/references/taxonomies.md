@@ -1,5 +1,16 @@
 # Taxonomies — Shared Vocabulary
 
+## Contents
+
+- Risk taxonomy
+- Emotional taxonomy
+- Ethical taxonomy
+- Scenario taxonomy
+- Option taxonomy
+- Confidence taxonomy
+- Using the taxonomies
+
+
 AITS agents use a shared vocabulary. This ensures that when Analytical says "financial risk," Critical understands the same thing, and when Emotional says "loss of autonomy," Ethical recognizes the pattern.
 
 The taxonomies in this file are **normative**: agents must use these categories rather than inventing their own. New categories can be proposed through the contribution process.

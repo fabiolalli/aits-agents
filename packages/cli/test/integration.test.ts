@@ -31,7 +31,8 @@ describe('MCP server', () => {
 
   it('lists the engine tools', async () => {
     const tools = (await client.listTools()).tools.map((t) => t.name);
-    expect(tools).toEqual(expect.arrayContaining(['aits_start_run', 'aits_submit', 'aits_gate_respond', 'aits_synthesize', 'aits_recall', 'aits_calibration', 'aits_export']));
+    expect(tools).toEqual(expect.arrayContaining(['aits_start_run', 'aits_submit', 'aits_gate_respond', 'aits_synthesize', 'aits_recall', 'aits_calibration', 'aits_export', 'aits_memory_export', 'aits_memory_import']));
+    expect(tools).toHaveLength(16);
   });
 
   it('blocks a synthesis on a violated rule and asks the human through elicitation', async () => {
@@ -103,6 +104,14 @@ describe('CLI, hook and build', () => {
     run(['submit', '-'], JSON.stringify(optimizer()));
     expect(JSON.parse(run(['synthesize', '-'], JSON.stringify(synthesis()))).accepted).toBe(true);
     expect(JSON.parse(run(['recall', 'prodotto in Germania']))[0].problem).toMatch(/Germania/);
+
+    // The memory moves to a fresh folder, as between two sessions of a hosted sandbox.
+    const file = path.join(dir, 'memory.json');
+    expect(JSON.parse(run(['memory', 'export', '--out', file])).records).toBe(1);
+    const other = tmp();
+    const imported = JSON.parse(execFileSync('node', [BUNDLE, 'memory', 'import', file], { cwd: other, encoding: 'utf8' }));
+    expect(imported.added).toHaveLength(1);
+    expect(JSON.parse(execFileSync('node', [BUNDLE, 'recall', 'prodotto in Germania'], { cwd: other, encoding: 'utf8' }))[0].problem).toMatch(/Germania/);
   });
 
   it('the hook submits sub-agent outputs and attaches provenance later', () => {
@@ -189,6 +198,15 @@ describe('CLI, hook and build', () => {
     expect(skill.split('\n').length).toBeLessThan(500);
     expect(skill).not.toMatch(/of the AITS system \|/);
     expect(fs.existsSync(path.join(out, 'skills', 'aits', 'scripts', 'aits.mjs'))).toBe(true);
+    // The package follows the Agent Skills specification and every file it points to exists.
+    expect(skill).toMatch(/^license: MIT$/m);
+    expect(skill).toMatch(/^compatibility: /m);
+    expect(skill).toMatch(/^  engine-sha256: [0-9a-f]{64}$/m);
+    expect(skill).toContain('memory export');
+    const checked = execFileSync('node', [path.resolve(__dirname, '../../../scripts/check-skill.mjs'), path.join(out, 'skills', 'aits')], { encoding: 'utf8' });
+    expect(checked).toMatch(/valid Agent Skill/);
+    expect(fs.readFileSync(path.join(out, 'skills', 'aits', 'agents', 'meta-orchestrator.md'), 'utf8')).toContain('templates/dashboard.md');
+    expect(fs.readFileSync(path.join(plugin, 'agents', 'aits-meta-orchestrator.md'), 'utf8')).toContain('agents/aits-dashboard.md');
   });
 });
 

@@ -23,7 +23,7 @@ Every pattern has:
 - `title` — human-readable name
 - `problem_signature` — keywords, phrases, and structural features that signal this pattern
 - `typical_stakeholders` — who shows up in this archetype
-- `emotional_signature` — dominant drivers (from `taxonomies.md`) typically in play
+- `emotional_signature` — dominant drivers (from `references/taxonomies.md`) typically in play
 - `risk_signature` — risk categories and drivers typically material
 - `known_failure_modes` — how these decisions typically go wrong
 - `known_success_factors` — what separates successful instances from failures

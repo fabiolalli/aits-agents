@@ -1,0 +1,36 @@
+{
+  "description": "Activation set for skills/aits/SKILL.md. Each query is sent in a fresh session with the skill installed among others; should_trigger says whether the runtime must load AITS. Measure it per runtime and per model before changing the description.",
+  "queries": [
+    { "query": "We have to decide by Friday whether to launch our SaaS product in Germany in Q2 or wait for Q4. Can you help me decide?", "should_trigger": true },
+    { "query": "Dobbiamo decidere se chiudere la sede di Torino e accentrare tutto a Milano: sono 40 persone. Aiutami a decidere.", "should_trigger": true },
+    { "query": "Should we go ahead with the acquisition of a smaller competitor? Their revenue is 3M and they are asking for 12M.", "should_trigger": true },
+    { "query": "Devo scegliere tra assumere un CTO interno o affidarmi a un fornitore esterno per lo sviluppo della piattaforma. Valuta rischi e opportunità.", "should_trigger": true },
+    { "query": "Give me a go/no-go on raising the SMB plan from 29 to 35 euros per seat.", "should_trigger": true },
+    { "query": "Fammi una valutazione dei rischi strutturata sull'introduzione di un agente AI nel customer care, che ridurrebbe il team da sei a due persone.", "should_trigger": true },
+    { "query": "A competitor just launched a free tier that matches our paid plan. How should we respond? I want to see the options and the risks before choosing.", "should_trigger": true },
+    { "query": "We are stuck between building, buying or partnering for our data platform. Run a structured brainstorm and then help us pick.", "should_trigger": true },
+    { "query": "Is it ethical to use employee chat logs to train our internal assistant? I need an ethical impact analysis before the board meeting.", "should_trigger": true },
+    { "query": "Il consiglio vuole sapere se entrare nel mercato spagnolo nel 2027. Mi serve un'analisi con scenari e una raccomandazione.", "should_trigger": true },
+    { "query": "Run AITS on this: should the city council replace the bus line 12 with an on-demand service?", "should_trigger": true },
+    { "query": "We have three options for the new pricing model and the team disagrees. Compare them across risks, stakeholders and long-term effects.", "should_trigger": true },
+    { "query": "Valutiamo se lanciare il prodotto X a marzo o rimandare: il marketing spinge, l'ingegneria dice che non siamo pronti.", "should_trigger": true },
+    { "query": "Help me decide whether to accept a strategic investment that gives the investor a board seat and a veto on pivots.", "should_trigger": true },
+    { "query": "Prepara un'analisi di due diligence per l'acquisizione di una software house di 25 persone.", "should_trigger": true },
+
+    { "query": "What is the capital of Portugal?", "should_trigger": false },
+    { "query": "Write a LinkedIn post announcing our new product.", "should_trigger": false },
+    { "query": "Riassumi questo articolo in tre righe.", "should_trigger": false },
+    { "query": "Which is cheaper per month, plan A at 12 euros or plan B at 140 euros per year?", "should_trigger": false },
+    { "query": "Make me a quick pros and cons list of working from home.", "should_trigger": false },
+    { "query": "Fix this TypeScript error: Property 'id' does not exist on type 'never'.", "should_trigger": false },
+    { "query": "Che ore sono a Tokyo adesso?", "should_trigger": false },
+    { "query": "Translate this email into Spanish.", "should_trigger": false },
+    { "query": "Create a spreadsheet to track my monthly expenses.", "should_trigger": false },
+    { "query": "Spiegami cosa sono i Sei Cappelli di de Bono.", "should_trigger": false },
+    { "query": "Should I wear a jacket today in Rome?", "should_trigger": false },
+    { "query": "Rivedi i refusi di questa proposta prima che la mandi al cliente.", "should_trigger": false },
+    { "query": "Draft the agenda for tomorrow's team meeting.", "should_trigger": false },
+    { "query": "Which of these two fonts reads better on mobile?", "should_trigger": false },
+    { "query": "Calcola l'IVA su una fattura da 1.200 euro.", "should_trigger": false }
+  ]
+}

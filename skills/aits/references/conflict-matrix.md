@@ -1,5 +1,15 @@
 # Conflict Matrix — Agent Disagreement Resolution
 
+## Contents
+
+- Conflict severity scale
+- Pairwise conflict matrix
+- Extended conflicts
+- Escalation path
+- Escalation to human
+- Using this matrix
+
+
 When two AITS agents produce conflicting conclusions, the resolution is not left to improvisation. This matrix codifies, for every meaningful pairwise conflict, **who arbitrates**, **on what basis**, and **what escalation path** applies.
 
 The Meta-Orchestrator consults this matrix whenever it detects a conflict during integration. A conflict is detected when two agents produce recommendations that cannot both be acted on without contradiction.

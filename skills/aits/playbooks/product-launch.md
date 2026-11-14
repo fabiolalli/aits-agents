@@ -1,5 +1,16 @@
 # Playbook: Product Launch
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Critical)
+- Pattern library hooks
+- Output format specifics
+- HITL gates specific to this playbook
+
+
 Assessing launch readiness for a new product, feature, or service.
 
 ## When this playbook fires

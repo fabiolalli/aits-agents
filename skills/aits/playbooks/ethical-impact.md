@@ -1,5 +1,17 @@
 # Playbook: Ethical Impact
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Critical)
+- Output format specifics
+- Pattern library hooks
+- HITL gates specific to ethical impact
+- The ethical-impact playbook's prime directive
+
+
 Deep analysis of decisions with material ethical, social, or governance implications. Purple leads; other agents support.
 
 ## When this playbook fires

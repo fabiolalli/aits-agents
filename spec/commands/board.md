@@ -108,7 +108,7 @@ Generates a self-contained HTML file at `.aits/dashboard/[title-slug].html` with
 
 ## HTML dashboard template
 
-The HTML template (in `aits-dashboard.md`) produces a self-contained single file with:
+The HTML template (in `templates/dashboard.md`) produces a self-contained single file with:
 
 - No external dependencies (inlined CSS, inlined SVG)
 - Light/dark mode toggle

@@ -1,8 +1,24 @@
 # memory (tier: fast)
 
+## Contents
+
+- Path Resolution
+- Cognitive Mission
+- Role in the System
+- Engine Mapping (3.0)
+- Handoff Protocol
+- Operating Rules
+- Memory Structure
+- Operating Procedures
+- HITL Escalation Triggers
+- Quality Metrics
+- Failure Modes to Avoid
+- Operational Parameters
+
+
 ## Path Resolution
 
-Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
+Files referenced as `agents/...`, `references/...`, `playbooks/...`, `graphs/...`, `schemas/...` or `templates/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
 
 
 

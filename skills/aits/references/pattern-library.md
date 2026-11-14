@@ -1,5 +1,16 @@
 # Pattern Library — Recurring Decision Archetypes
 
+## Contents
+
+- How agents use this library
+- Pattern format
+- Organizational and people patterns
+- Market and product patterns
+- Strategic patterns
+- Technology patterns
+- Contributing new patterns
+
+
 AITS recognizes that most complex decisions fall into a relatively small number of archetypes. Each archetype has a known signature: typical stakeholders, typical emotional dynamics, typical risks, typical failure modes, lessons from repeated observation.
 
 This library pre-loads that knowledge so agents don't have to rediscover it every time. At the start of an analysis, agents consult this file to see if the current decision matches a known archetype. If it does, analysis starts from the archetype's baseline rather than from zero.
@@ -23,7 +34,7 @@ Every pattern has:
 - `title` — human-readable name
 - `problem_signature` — keywords, phrases, and structural features that signal this pattern
 - `typical_stakeholders` — who shows up in this archetype
-- `emotional_signature` — dominant drivers (from `taxonomies.md`) typically in play
+- `emotional_signature` — dominant drivers (from `references/taxonomies.md`) typically in play
 - `risk_signature` — risk categories and drivers typically material
 - `known_failure_modes` — how these decisions typically go wrong
 - `known_success_factors` — what separates successful instances from failures

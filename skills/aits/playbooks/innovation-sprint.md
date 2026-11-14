@@ -1,5 +1,17 @@
 # Playbook: Innovation Sprint
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Foresight and Optimizer)
+- Output format specifics
+- Pattern library hooks
+- HITL gates specific to innovation sprint
+- Time-boxing
+
+
 Rapid ideation plus rigorous validation. When the output needed is a new option set, tested for robustness, with quick tests to validate assumptions.
 
 ## When this playbook fires

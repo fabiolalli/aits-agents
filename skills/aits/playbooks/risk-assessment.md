@@ -1,5 +1,17 @@
 # Playbook: Risk Assessment
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Output format: Risk Register (mandatory)
+- Cognitive bias checklist (passed to Critical)
+- Pattern library hooks
+- HITL gates specific to risk assessment
+- Specialization parameters
+
+
 Comprehensive risk identification and mitigation design. Deployed when the user's primary question is "what could go wrong and how do we prepare?"
 
 ## When this playbook fires

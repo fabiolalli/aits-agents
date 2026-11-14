@@ -10,7 +10,7 @@
       "name": "aits",
       "source": "./plugins/aits",
       "description": "AITS 3.0 — 11 cognitive agents, 4 commands, 7 playbooks and 10 execution graphs, enforced by a deterministic engine (MCP server and hook): inviolable rules and human gates, hash-chained decision log, model-diversity policy, semantic memory and calibration.",
-      "version": "3.0.1",
+      "version": "3.0.2",
       "homepage": "https://aits.fabiolalli.com",
       "license": "MIT",
       "category": "agents",

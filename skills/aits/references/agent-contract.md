@@ -1,5 +1,14 @@
 # Agent Contract — Common Structural Template
 
+## Contents
+
+- Why a shared contract
+- The 10-section structure
+- Envelope field reference
+- Enforcement
+- Versioning
+
+
 This document defines the **shared structure** every AITS agent follows. It is the contract that guarantees interoperability, reproducibility, and predictability across the system.
 
 Every agent file in the repository (meta-orchestrator, analytical, emotional-intuitive, critical-validator, optimizer, creative-generative, ethical-governance, predictive-strategic, systemic, foresight, memory) conforms to this template.

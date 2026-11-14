@@ -4,6 +4,32 @@ All notable changes to the AITS repository are documented here.
 
 ---
 
+## [3.0.2] — 2026-11-14
+
+The Agent Skills package aligned with the open specification (agentskills.io) and the authoring guidance it links to, and a memory that survives sessions whose `.aits/` folder does not. The method, the rules and the envelopes are unchanged.
+
+### Added
+
+- **Portable memory.** `aits memory export [--out <file>]` writes a bundle with the decision records, their predictions and outcomes, and the reviewed pattern candidates. `aits memory import <file|->` merges a bundle: new records are added, outcomes missing locally are filled in, an outcome that differs from the local one is reported in `conflicts` and never overwritten, invalid records are listed and skipped, and pattern centroids are recomputed with the local embedder. Calibration is recomputed after the import. MCP tools `aits_memory_export` and `aits_memory_import` (the server now has 16 tools).
+- **`scripts/check-skill.mjs`** (`npm run check:skill`, run in CI): validates frontmatter fields and limits, name and folder, description, the SHA-256 of the bundled engine, every file reference in every Markdown file, and the list of sections in long files. Run on the 3.0.1 package it reports eleven references to files the skill does not contain.
+- **`eval/triggers.json`**: requests that must and must not load the skill, in English and Italian, with instructions in `eval/README.md` to measure them per runtime and model family.
+- README: how the memory travels on claude.ai, the release zip of the skill, and the only two network calls the engine can make.
+
+### Changed
+
+- **`SKILL.md` frontmatter**: `license: MIT`, `compatibility` (Node.js 20, offline, memory, network), `metadata` with version, author, homepage, repository and `engine-sha256`.
+- **Description** rewritten in the third person, with the triggers kept and two boundaries added: not for factual questions, single-criterion choices or a quick pros-and-cons list, and not for decisions that another installed skill is specifically built for. The generic trigger "should we" became "should we go ahead with".
+- **Protocol**: agents read their own file, whose Output Contract opens with the exact envelope, and no longer the JSON schema beforehand; the engine's error list drives the single retry. On a full run this leaves about 14k tokens of schemas out of the context.
+- **SKILL.md** gains a run checklist and a section on where the memory lives and what to do when it does not persist; the MCP server is named so that clients that prefix tool names still find the tools.
+- **Long files** in `agents/`, `references/`, `playbooks/` and `templates/` of the skill open with a `## Contents` list.
+
+### Fixed
+
+- **Dashboard template unreachable from the skill.** The Meta-Orchestrator pointed to `aits-dashboard.md`, a name that exists only in the plugin; in the skill the file is `templates/dashboard.md`. The spec now uses `templates/dashboard.md` and the plugin build maps it to `agents/aits-dashboard.md`.
+- **Bare file names** (`conflict-matrix.md`, `pattern-library.md`, `taxonomies.md`, the seven playbooks) are now written relative to the skill root.
+
+---
+
 ## [3.0.1] — 2026-11-07
 
 Fixes found by running the plugin in real Claude Code sessions on an Italian go/no-go decision.

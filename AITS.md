@@ -3,7 +3,7 @@
 ## Adaptive Intelligence Thinking System
 
 **Author**: Fabio Lalli
-**Version**: 3.0.1
+**Version**: 3.0.2
 **Origin**: Evolution of the Six Thinking Hats model (Edward de Bono, 1985), through the book *La mente adattiva. Pensare insieme alle macchine* (Fabio Lalli, Egea, 2025)
 
 ---
@@ -148,6 +148,12 @@ AITS is implemented in four layers.
 The Meta-Orchestrator plans the agents in waves from the playbook graph, submits every output to the engine, presents the gates to the human, and closes the decision only when the engine accepts the synthesis. The result is a decision-making framework that produces a multi-dimensional analysis, traceable and repeatable, with the human always in control, on whatever model they trust.
 
 ---
+
+## What's new in 3.0.2
+
+- The Agent Skills package follows the open specification: complete frontmatter (`license`, `compatibility`, `metadata` with the engine's SHA-256), paths relative to the skill root, a list of sections in every long file, and a protocol that lets the engine report schema errors instead of loading every schema up front. `scripts/check-skill.mjs` enforces it in CI.
+- Portable memory: `aits memory export` and `aits memory import` (and the MCP tools `aits_memory_export`, `aits_memory_import`) carry decisions, outcomes and reviewed patterns between machines and sessions, so calibration keeps working where `.aits/` does not survive.
+- `eval/triggers.json`, an activation set to measure when runtimes load the skill.
 
 ## What's new in 3.0.1
 

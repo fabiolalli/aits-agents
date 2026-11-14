@@ -114,6 +114,27 @@ export interface PatternCandidate {
   created_at: string;
 }
 
+export const MEMORY_BUNDLE_FORMAT = 'aits-memory-bundle';
+
+/** Portable copy of a memory, to carry decisions and outcomes between machines and sessions. */
+export interface MemoryBundle {
+  format: typeof MEMORY_BUNDLE_FORMAT;
+  bundle_version: 1;
+  engine_version: string;
+  exported_at: string;
+  records: MemoryRecord[];
+  patterns: Omit<PatternCandidate, 'centroid'>[];
+}
+
+export interface MemoryImportResult {
+  added: string[];
+  updated: string[];
+  unchanged: string[];
+  invalid: { id: string; errors: string[] }[];
+  conflicts: { id: string; prediction: string; local: 0 | 1; incoming: 0 | 1 }[];
+  patterns_added: number;
+}
+
 interface VectorFile {
   embedder: string;
   vectors: Record<string, number[]>;
@@ -271,6 +292,86 @@ export class MemoryStore {
     p.status = status;
     this.writePatterns(list);
     return p;
+  }
+
+  /**
+   * Everything the memory knows that cannot be recomputed: decision records with their predictions
+   * and outcomes, and the pattern candidates with their human review status. Vectors, index and
+   * calibration are derived and rebuilt on import, so the bundle does not depend on the embedder.
+   */
+  exportBundle(engineVersion: string): MemoryBundle {
+    return {
+      format: MEMORY_BUNDLE_FORMAT,
+      bundle_version: 1,
+      engine_version: engineVersion,
+      exported_at: new Date().toISOString(),
+      records: this.list(),
+      patterns: this.readPatterns().map(({ centroid, ...p }) => p),
+    };
+  }
+
+  /**
+   * Merges a bundle into this memory. Records are matched by id: a new record is added, an existing
+   * one keeps its content and gains any outcome the bundle has and it lacks. An outcome is never
+   * overwritten by a different one: the conflict is reported and the local value stays.
+   */
+  async importBundle(raw: unknown): Promise<MemoryImportResult> {
+    const bundle = raw as Partial<MemoryBundle>;
+    if (!bundle || typeof bundle !== 'object' || bundle.format !== MEMORY_BUNDLE_FORMAT) throw new Error(`not an AITS memory bundle: expected format "${MEMORY_BUNDLE_FORMAT}"`);
+    if (bundle.bundle_version !== 1) throw new Error(`unsupported memory bundle version ${String(bundle.bundle_version)}: this engine reads version 1`);
+    if (!Array.isArray(bundle.records)) throw new Error('memory bundle has no records array');
+    const result: MemoryImportResult = { added: [], updated: [], unchanged: [], invalid: [], conflicts: [], patterns_added: 0 };
+    const recordsDir = path.join(this.dir, 'records');
+    for (const incoming of bundle.records as MemoryRecord[]) {
+      const check = validateMemoryRecord(incoming);
+      if (!check.valid || !/^[\w.-]+$/.test(String(incoming?.id ?? ''))) {
+        result.invalid.push({ id: String(incoming?.id ?? '?'), errors: check.valid ? ['id may contain only letters, digits, dot, dash and underscore'] : check.errors });
+        continue;
+      }
+      const local = this.get(incoming.id);
+      if (!local) {
+        fs.writeFileSync(path.join(recordsDir, `${incoming.id}.json`), JSON.stringify(incoming, null, 2));
+        result.added.push(incoming.id);
+        continue;
+      }
+      let changed = false;
+      for (const p of incoming.predictions ?? []) {
+        if (p.outcome !== 0 && p.outcome !== 1) continue;
+        const mine = local.predictions?.find((x) => x.id === p.id);
+        if (!mine) continue;
+        if (mine.outcome === 0 || mine.outcome === 1) {
+          if (mine.outcome !== p.outcome) result.conflicts.push({ id: local.id, prediction: p.id, local: mine.outcome, incoming: p.outcome });
+          continue;
+        }
+        mine.outcome = p.outcome;
+        mine.resolved_at = p.resolved_at ?? new Date().toISOString();
+        mine.note = p.note ?? null;
+        changed = true;
+      }
+      if (changed) {
+        fs.writeFileSync(path.join(recordsDir, `${local.id}.json`), JSON.stringify(local, null, 2));
+        result.updated.push(local.id);
+      } else result.unchanged.push(local.id);
+    }
+    await this.reindex();
+    this.writeIndex();
+
+    const vf = this.vectorsFile();
+    const existing = this.readPatterns();
+    const known = new Set(existing.map((p) => [...p.members].sort().join('|')));
+    const fresh: PatternCandidate[] = [];
+    for (const p of (bundle.patterns ?? []) as Omit<PatternCandidate, 'centroid'>[]) {
+      const members = (p.members ?? []).filter((id) => vf.vectors[id]);
+      const key = [...members].sort().join('|');
+      if (!members.length || known.has(key)) continue;
+      known.add(key);
+      // The centroid is recomputed with this memory's embedder, so imported patterns match new problems here.
+      const centroid = vf.vectors[members[0]].map((_, i) => members.reduce((s, m) => s + vf.vectors[m][i], 0) / members.length);
+      fresh.push({ id: `candidate-${existing.length + fresh.length + 1}`, status: p.status === 'approved' || p.status === 'rejected' ? p.status : 'pending', members: [...members].sort(), top_terms: p.top_terms ?? [], centroid, created_at: p.created_at ?? new Date().toISOString() });
+    }
+    if (fresh.length) this.writePatterns([...existing, ...fresh]);
+    result.patterns_added = fresh.length;
+    return result;
   }
 
   /** Approved learned patterns close to a problem statement. */

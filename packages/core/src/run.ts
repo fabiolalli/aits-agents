@@ -12,7 +12,7 @@ import { MemoryStore, embedderFor, type MemoryPrediction, type MemoryRecord } fr
 import { agentReliability, readCalibration } from './calibration.ts';
 import { CONFIDENCE_ORDER, hashOf, minConfidence, slugify, type ConfidenceLevel } from './util.ts';
 
-export const ENGINE_VERSION = '3.0.1';
+export const ENGINE_VERSION = '3.0.2';
 
 export type Mode = 'supervised' | 'autonomous' | 'review';
 export type GateDecision = GateAck['decision'];

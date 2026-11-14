@@ -1,7 +1,7 @@
 {
   "name": "aits-agents",
   "private": true,
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "AITS — Adaptive Intelligence Thinking System. Runtime-neutral spec, deterministic engine and adapters.",
   "license": "MIT",
   "author": "Fabio Lalli",
@@ -20,7 +20,8 @@
     "bundle": "npm run spec && node scripts/bundle-cli.mjs",
     "build:adapters": "npm run bundle && node dist/aits.mjs build --target all --out .",
     "check:neutral": "node scripts/check-neutral.mjs",
-    "check:adapters": "npm run bundle && node scripts/check-adapters.mjs"
+    "check:adapters": "npm run bundle && node scripts/check-adapters.mjs",
+    "check:skill": "node scripts/check-skill.mjs skills/aits"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

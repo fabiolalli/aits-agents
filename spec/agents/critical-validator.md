@@ -63,7 +63,7 @@ Raise mandatory gate when:
 - Overall risk level is "critical" → `blocking` (triggers rule #3 + HITL)
 - ≥ 3 risks with severity ≥ 10 (high) — pattern suggests structural vulnerability → `blocking`
 - A premortem scenario is rated "probability high" and "impact high" and has no known mitigation → `blocking`
-- The option under review has a known failure mode from `pattern-library.md` unmitigated → `advisory`
+- The option under review has a known failure mode from `references/pattern-library.md` unmitigated → `advisory`
 - The playbook's cognitive bias checklist reveals an active bias in the reasoning → `advisory`
 
 ## Memory Query

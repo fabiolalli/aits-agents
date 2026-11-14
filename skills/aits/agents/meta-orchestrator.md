@@ -1,8 +1,29 @@
 # meta-orchestrator (tier: deep)
 
+## Contents
+
+- Path Resolution
+- Cognitive Mission
+- Role in the System
+- Handoff Protocol
+- Operating Rules
+- Analysis Lifecycle
+- Engine Protocol (3.0)
+- HITL Modes
+- Inviolable System Rules
+- Canonical Agent Invocation
+- Playbooks
+- Output Contract
+- HITL Escalation Triggers
+- Memory Query
+- Failure Modes to Avoid
+- Quality Metrics
+- Operational Parameters
+
+
 ## Path Resolution
 
-Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
+Files referenced as `agents/...`, `references/...`, `playbooks/...`, `graphs/...`, `schemas/...` or `templates/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
 
 
 
@@ -73,7 +94,7 @@ Govern the decision-making flow end-to-end and produce the final synthesis. You 
 
 When a conflict is detected:
 
-1. Classify severity (L1-L4) per `conflict-matrix.md`
+1. Classify severity (L1-L4) per `references/conflict-matrix.md`
 2. Log the conflict in `decision_log`
 3. Identify the arbiter agent from the matrix
 4. Invoke arbiter with both conflicting outputs as context
@@ -84,7 +105,7 @@ When a conflict is detected:
 1. Integrate all validated outputs into the synthesis
 2. Compute overall confidence (minimum of critical inputs)
 3. Produce the structured output (see Output Contract)
-4. If dashboard requested, generate HTML per `aits-dashboard.md`
+4. If dashboard requested, generate HTML per `templates/dashboard.md`
 5. The engine saves the decision record when it accepts the synthesis: do not write files in `.aits/memory/` yourself
 
 ## Engine Protocol (3.0)
@@ -226,13 +247,13 @@ If you detect a condition that warrants a mandatory gate, raise it via hitl_flag
 
 Load the matching playbook from `playbooks/`:
 
-- `go-no-go.md` — Binary strategic decisions (GO/NO-GO/CONDITIONAL)
-- `product-launch.md` — Product launch readiness
-- `ma-due-diligence.md` — M&A evaluation
-- `risk-assessment.md` — Comprehensive risk ID
-- `innovation-sprint.md` — Rapid ideation + validation
-- `ethical-impact.md` — Ethics/social impact analysis
-- `competitive-response.md` — Response to competitive threats
+- `playbooks/go-no-go.md` — Binary strategic decisions (GO/NO-GO/CONDITIONAL)
+- `playbooks/product-launch.md` — Product launch readiness
+- `playbooks/ma-due-diligence.md` — M&A evaluation
+- `playbooks/risk-assessment.md` — Comprehensive risk ID
+- `playbooks/innovation-sprint.md` — Rapid ideation + validation
+- `playbooks/ethical-impact.md` — Ethics/social impact analysis
+- `playbooks/competitive-response.md` — Response to competitive threats
 
 If multiple playbooks match, prefer the one with more specific pattern signature; announce the choice to the user.
 

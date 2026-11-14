@@ -1,5 +1,17 @@
 # Playbook: Competitive Response
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Critical)
+- Output format specifics
+- Pattern library hooks
+- HITL gates specific to competitive response
+- Autonomous mode specifics
+
+
 Rapid response to a competitive move — launch, pricing change, acquisition, regulatory filing, or market entry by a competitor. Time-sensitive by nature; runs in autonomous mode with aggressive auto-escalation.
 
 ## When this playbook fires

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import YAML from 'yaml';
 import { ENGINE_VERSION, getSpec, loadConfig, parseFrontmatter, type AitsConfig, type Tier } from '@fabiolalli/aits-core';
 
@@ -41,7 +42,7 @@ Project-local paths such as \`.aits/\` stay relative to the current project. The
 `,
   'agent-skills': `## Path Resolution
 
-Files referenced as \`references/...\`, \`playbooks/...\`, \`graphs/...\` or \`schemas/...\` are relative to the folder of this skill. Project-local paths such as \`.aits/\` stay relative to the current project.
+Files referenced as \`agents/...\`, \`references/...\`, \`playbooks/...\`, \`graphs/...\`, \`schemas/...\` or \`templates/...\` are relative to the folder of this skill. Project-local paths such as \`.aits/\` stay relative to the current project.
 `,
 };
 
@@ -92,6 +93,9 @@ function withEnvelope(agentId: string, body: string): string {
 /** Plugin commands are namespaced by Claude Code as /aits:<id>. */
 const pluginCommandNames = (text: string) => text.replace(/\/aits-(full|quick|diverge|board)\b/g, '/aits:$1');
 
+/** In the plugin the dashboard template is an agent file. */
+const pluginDashboardPath = (text: string) => text.replace(/templates\/dashboard\.md/g, 'agents/aits-dashboard.md');
+
 const CLAUDE_TOOLS: Record<string, string[]> = {
   file_read: ['Read', 'Glob', 'Grep'],
   file_write: ['Write'],
@@ -111,7 +115,7 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
     const fm: Record<string, unknown> = { name: `aits-${agent.id}`, description: agent.description, color: agent.color, model: modelFor(config, agent.tier, 'claude-code') };
     // The orchestrator inherits every tool, including the engine's MCP tools.
     if (agent.id !== 'meta-orchestrator') fm.tools = [...new Set(agent.capabilities.flatMap((c) => CLAUDE_TOOLS[c] ?? []))].join(', ');
-    const body = pluginCommandNames(withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code'])));
+    const body = pluginDashboardPath(pluginCommandNames(withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['claude-code']))));
     write(path.join(dir, 'agents', `aits-${agent.id}.md`), `---\n${YAML.stringify(fm).trim()}\n---\n\n${body.trimStart()}`);
   }
   const dash = parseFrontmatter(spec.files['templates/dashboard.md']);
@@ -122,7 +126,7 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
     const { data, body } = parseFrontmatter(content);
     const id = String(data.id);
     const engineNote = id === 'board' ? '' : `\n> Engine: this command starts an AITS run with \`aits_start_run\` (graph \`${data.graph}\`, mode \`${data.mode}\`) and closes it only through \`aits_synthesize\`.\n`;
-    write(path.join(dir, 'commands', `${id}.md`), `---\ndescription: ${JSON.stringify(String(data.description))}\n---\n${engineNote}\n${pluginCommandNames(body.replace(/aits-dashboard\.md/g, 'agents/aits-dashboard.md')).trimStart()}`);
+    write(path.join(dir, 'commands', `${id}.md`), `---\ndescription: ${JSON.stringify(String(data.description))}\n---\n${engineNote}\n${pluginDashboardPath(pluginCommandNames(body)).trimStart()}`);
   }
   copySpecFolder('playbooks', path.join(dir, 'playbooks'), undefined, pluginCommandNames);
   copySpecFolder('references', path.join(dir, 'references'), undefined, pluginCommandNames);
@@ -173,7 +177,37 @@ export function buildClaudeCode(outRoot: string, config: AitsConfig) {
   return dir;
 }
 
-function skillMd(): string {
+/** Description used by runtimes to decide when to load the skill: what it does and when, in the third person. */
+export const SKILL_DESCRIPTION =
+  'Runs AITS (Adaptive Intelligence Thinking System), a multi-perspective decision framework evolved from de Bono\'s Six Thinking Hats: eleven cognitive agents with one function each, human gates, and a deterministic engine that enforces the rules and computes the confidence. Use it when someone faces a complex or high-stakes decision, compares strategic options, or asks for a go/no-go, a risk assessment, an ethical impact analysis, a product launch or M&A review, or a structured brainstorm, including requests like "help me decide between", "should we go ahead with", "aiutami a decidere", "devo scegliere tra", "valuta rischi e opportunità", even without naming AITS. Not for factual questions, single-criterion choices or a quick pros-and-cons list, and not for decisions that another installed skill is specifically built for.';
+
+/** Environment requirements, as the Agent Skills specification asks (at most 500 characters). */
+export const SKILL_COMPATIBILITY =
+  'Node.js 20 or later runs the engine in scripts/aits.mjs: no packages to install, works offline. Without Node the skill runs as instructions only and says so. Decision memory lives in .aits/ of the working folder; where that folder does not survive the session, carry it with aits memory export and import. Network is used only if the user configures an embeddings or OpenTelemetry endpoint.';
+
+const sha256 = (file: string) => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+
+/**
+ * Adds a list of the second-level headings after the first title of a long file, so that a runtime
+ * that reads only the first lines still sees everything the file covers.
+ */
+export function withContents(text: string, minLines = 100): string {
+  const lines = text.split('\n');
+  if (lines.length <= minLines || /^## Contents$/m.test(text)) return text;
+  let fence = false;
+  const headings: string[] = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) fence = !fence;
+    else if (!fence && /^## /.test(line)) headings.push(line.slice(3).trim());
+  }
+  if (headings.length < 3) return text;
+  const at = lines.findIndex((l) => /^# /.test(l));
+  const block = ['', '## Contents', '', ...headings.map((h) => `- ${h}`), ''];
+  lines.splice(at >= 0 ? at + 1 : 0, 0, ...block);
+  return lines.join('\n');
+}
+
+function skillMd(engineHash: string): string {
   const spec = getSpec();
   const agents = Object.values(spec.agents)
     .map((a) => `| \`${a.id}\` | ${a.tier} | ${a.function.replace(/\|/g, '/')} |`)
@@ -181,12 +215,27 @@ function skillMd(): string {
   const graphs = Object.values(spec.graphs)
     .map((g) => `- \`${g.id}\`: ${g.title}`)
     .join('\n');
+  const frontmatter = YAML.stringify(
+    {
+      name: 'aits',
+      description: SKILL_DESCRIPTION,
+      license: 'MIT',
+      compatibility: SKILL_COMPATIBILITY,
+      metadata: {
+        version: ENGINE_VERSION,
+        author: 'Fabio Lalli',
+        homepage: 'https://aits.fabiolalli.com',
+        repository: 'https://github.com/fabiolalli/aits-agents',
+        'engine-sha256': engineHash,
+      },
+    },
+    { lineWidth: 0 },
+  ).trim();
   return `---
-name: aits
-description: Adaptive Intelligence Thinking System (AITS) 3.0, a multi-perspective decision framework evolved from de Bono's Six Thinking Hats, enforced by a deterministic engine. Use it whenever someone faces a complex decision, compares strategic options, asks for a go/no-go, a risk assessment, an ethical impact analysis or a structured brainstorm, or says things like "help me decide", "should we", "devo scegliere tra", "aiutami a decidere", "valuta rischi e opportunità", even without naming AITS.
+${frontmatter}
 ---
 
-# AITS 3.0
+# AITS ${ENGINE_VERSION}
 
 When this skill is active you are the **Meta-Orchestrator** of AITS. You govern a decision by running separate cognitive perspectives, one function each, and integrating them. You never close a decision by judgment alone: the AITS engine checks every step.
 
@@ -194,18 +243,39 @@ When this skill is active you are the **Meta-Orchestrator** of AITS. You govern 
 
 Use the first option available, and say which one you are using.
 
-1. **MCP tools** named \`aits_start_run\`, \`aits_submit\`, \`aits_gate_respond\`, \`aits_synthesize\` (and the others with the \`aits_\` prefix).
-2. **Command line**, if you can run shell commands and Node.js 20 or later is installed: \`node <path of this skill>/scripts/aits.mjs <command>\`, launched from the project directory so that \`.aits/\` is created there. Commands: \`start "<problem>" --graph <id> --mode <mode>\`, \`submit <file|->\`, \`status\`, \`gate <gate_id> <decision> --quote "<the human's words>"\`, \`skip <agent> --reason "..." --quote "..."\`, \`aggregate <agent>\`, \`synthesize <file|->\`, \`recall "<query>"\`, \`export\`.
+1. **MCP tools** of the server named \`aits\`: \`aits_start_run\`, \`aits_submit\`, \`aits_gate_respond\`, \`aits_synthesize\` and the others with the \`aits_\` prefix. Some clients show them with the server name in front, such as \`aits:aits_start_run\`.
+2. **Command line**, if you can run shell commands and Node.js 20 or later is installed: \`node scripts/aits.mjs <command>\` with the path of this skill in front, launched from the project directory so that \`.aits/\` is created there. Commands: \`start "<problem>" --graph <id> --mode <mode>\`, \`submit <file|->\`, \`status\`, \`gate <gate_id> <decision> --quote "<the human's words>"\`, \`skip <agent> --reason "..." --quote "..."\`, \`aggregate <agent>\`, \`synthesize <file|->\`, \`recall "<query>"\`, \`memory export --out <file>\`, \`memory import <file>\`, \`export\`.
 3. **No engine**: follow the protocol below as instructions and write \`enforcement: absent\` at the top of the synthesis. Rules then hold only as discipline.
+
+## Run checklist
+
+Copy it into your notes and tick it as you go.
+
+\`\`\`
+- [ ] Engine found (MCP, command line or none); memory bundle imported if the user gave one
+- [ ] Run started; playbook and HITL mode told to the user
+- [ ] Every wave run, every envelope submitted, every schema error fixed once
+- [ ] Every gate shown to the human and answered with their own words
+- [ ] Synthesis accepted by the engine, confidence reported as computed
+- [ ] Memory exported if .aits/ will not survive the session
+\`\`\`
 
 ## Protocol
 
 1. **Start** the run with the problem in the user's words, the playbook graph and the HITL mode (\`supervised\` for important or irreversible decisions, \`autonomous\` for quick ones, \`review\` for exploration). The engine returns the plan in waves, matching archetypes and similar past decisions: tell the user which playbook and why.
-2. **Run the perspectives wave by wave.** For each agent read its specification in \`agents/<id>.md\` and produce its JSON envelope exactly as specified in its Output Contract and in \`schemas/<id>.schema.json\`. Keep perspectives separate: never mix critique and optimism, or generation and evaluation, in the same output. If your runtime can invoke sub-agents, give each perspective its own sub-agent.
+2. **Run the perspectives wave by wave.** For each agent read its specification in \`agents/<id>.md\`: its Output Contract opens with the exact envelope to return. Do not read \`schemas/<id>.schema.json\` beforehand: the engine validates every envelope and lists the exact errors, so open a schema only to resolve an error it reported. Keep perspectives separate: never mix critique and optimism, or generation and evaluation, in the same output. If your runtime can invoke sub-agents, give each perspective its own sub-agent.
 3. **Submit every envelope** to the engine unchanged. Fill \`provenance\` (runtime, model family, model, tier, run index) only from configuration you know, never by guessing. On a schema error, redo the agent once with the engine's error list.
 4. **Multiple runs**: Critical-Validator, Predictive-Strategic and Foresight run several times independently when the engine plan says so. Submit each run, read the aggregation and report its minority positions. Runs never debate each other.
 5. **Gates**: when the engine opens a gate, stop, show the user the gate and the reason, and wait. Pass their decision and their own words to the engine. You never answer a gate for them.
-6. **Synthesis**: submit the Meta-Orchestrator envelope. If the engine refuses it, report why and resolve the reasons. Present the decision with the confidence the engine computed, and say why it differs from yours if it does.
+6. **Synthesis**: submit the Meta-Orchestrator envelope. If the engine refuses it, report why and resolve the reasons. Present the decision with the confidence the engine computed, and say why it differs from yours if it does. If the user asks for a dashboard, follow \`templates/dashboard.md\`.
+
+## Where the memory lives
+
+The engine keeps runs, decision memory and calibration in \`.aits/\` of the folder it is launched from (\`AITS_HOME\` overrides it). Calibration needs outcomes collected over many decisions, so the memory has to outlive the session.
+
+- If \`.aits/\` persists (a local project, a mounted folder), there is nothing to do.
+- If it does not (a hosted sandbox, a temporary container, code execution through an API): when the user provides a memory bundle, import it before starting the run; after every closed decision, export it and hand the file to the user, asking them to bring it next time.
+- An empty memory means no past decisions are known: never invent them.
 
 ## Agents
 
@@ -236,12 +306,13 @@ Each graph is in \`graphs/<id>.yaml\`; the narrative playbook with focus areas a
 
 ## Reference files
 
-Read only what the current step needs.
+Read only what the current step needs. Files longer than 100 lines open with a list of their sections.
 
 - \`references/agent-contract.md\`: the envelope every agent produces
 - \`references/conflict-matrix.md\`: who arbitrates which disagreement
 - \`references/taxonomies.md\`: risk categories, emotional drivers, ethical dimensions, scenario frames
 - \`references/pattern-library.md\`: recurring decision archetypes
+- \`templates/dashboard.md\`: the HTML dashboard, only when the user asks for one
 - \`aits.spec.yaml\`: tiers, diversity and calibration policies
 
 The final decision always belongs to the human. You are the structured process that helps them decide well.
@@ -253,19 +324,20 @@ export function buildAgentSkills(outRoot: string) {
   const spec = getSpec();
   const dir = path.join(outRoot, 'skills', 'aits');
   fs.rmSync(dir, { recursive: true, force: true });
-  write(path.join(dir, 'SKILL.md'), skillMd());
+  const engine = bundlePath();
+  write(path.join(dir, 'SKILL.md'), skillMd(sha256(engine)));
   for (const agent of Object.values(spec.agents)) {
-    write(path.join(dir, 'agents', `${agent.id}.md`), `# ${agent.id} (tier: ${agent.tier})\n\n${withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills'])).trimStart()}`);
+    write(path.join(dir, 'agents', `${agent.id}.md`), withContents(`# ${agent.id} (tier: ${agent.tier})\n\n${withEnvelope(agent.id, agent.body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills'])).trimStart()}`));
   }
-  copySpecFolder('playbooks', path.join(dir, 'playbooks'));
-  copySpecFolder('references', path.join(dir, 'references'));
+  copySpecFolder('playbooks', path.join(dir, 'playbooks'), undefined, withContents);
+  copySpecFolder('references', path.join(dir, 'references'), undefined, withContents);
   copySpecFolder('schemas', path.join(dir, 'schemas'));
   copySpecFolder('graphs', path.join(dir, 'graphs'));
-  write(path.join(dir, 'templates', 'dashboard.md'), parseFrontmatter(spec.files['templates/dashboard.md']).body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills']));
+  write(path.join(dir, 'templates', 'dashboard.md'), withContents(parseFrontmatter(spec.files['templates/dashboard.md']).body.replace('<!-- aits:runtime-paths -->', RUNTIME_PATHS['agent-skills']).trimStart()));
   write(path.join(dir, 'rules.yaml'), spec.files['rules.yaml']);
   write(path.join(dir, 'aits.spec.yaml'), spec.files['aits.spec.yaml']);
   fs.mkdirSync(path.join(dir, 'scripts'), { recursive: true });
-  fs.copyFileSync(bundlePath(), path.join(dir, 'scripts', 'aits.mjs'));
+  fs.copyFileSync(engine, path.join(dir, 'scripts', 'aits.mjs'));
   return dir;
 }
 

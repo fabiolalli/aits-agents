@@ -1,5 +1,16 @@
 # Playbook: Go / No-Go
 
+## Contents
+
+- When this playbook fires
+- Sequence
+- Focus areas per agent
+- Cognitive bias checklist (passed to Critical)
+- Output format (mandatory for this playbook)
+- Pattern library hooks
+- When the playbook recommends against GO
+
+
 Binary strategic decisions where the output must be unambiguous — GO, NO-GO, or CONDITIONAL GO with explicit conditions.
 
 ## When this playbook fires

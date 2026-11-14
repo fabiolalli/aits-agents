@@ -1,11 +1,22 @@
-
 ## Path Resolution
 
-Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
+Files referenced as `agents/...`, `references/...`, `playbooks/...`, `graphs/...`, `schemas/...` or `templates/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
 
 
 
 # aits-dashboard — HTML Dashboard Template
+
+## Contents
+
+- Path Resolution
+- When this is used
+- Output location
+- Placeholder syntax
+- Full template
+- Placeholders to fill
+- Generation rules
+- Pattern-mode dashboard variant
+
 
 This file defines the template the Meta-Orchestrator uses to produce HTML dashboards for AITS analyses. The template is a single self-contained HTML file with inlined CSS and inlined SVG.
 

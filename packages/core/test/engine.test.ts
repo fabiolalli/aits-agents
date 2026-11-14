@@ -236,6 +236,60 @@ describe('memory, patterns and calibration', () => {
   });
 });
 
+describe('portable memory', () => {
+  async function decide(engine: Engine, problem: string) {
+    const { run_id } = await engine.start({ problem, graph: 'quick' });
+    const run = engine.open(run_id);
+    run.submit(analytical());
+    run.submit(critical());
+    run.submit(optimizer());
+    run.submit(predictive());
+    expect((await run.synthesize(synthesis())).accepted).toBe(true);
+  }
+
+  it('carries decisions, outcomes and reviewed patterns to another memory and merges without overwriting', async () => {
+    const a = new Engine(tmpDir());
+    for (const problem of ['Ristrutturazione del personale nella divisione retail', 'Ristrutturazione del personale nella divisione logistica', 'Ristrutturazione del personale nella divisione vendite']) await decide(a, problem);
+    const [first] = a.memory.list();
+    const [p1, p2] = first.predictions!;
+    a.memory.recordOutcome(first.id, p1.id, 1);
+    const candidates = await a.memory.patternCandidates();
+    expect(candidates.length).toBeGreaterThan(0);
+    a.memory.setPatternStatus(candidates[0].id, 'approved');
+
+    const bundle = a.memory.exportBundle('test');
+    expect(bundle.records).toHaveLength(3);
+    expect(JSON.stringify(bundle.patterns)).not.toMatch(/centroid/);
+
+    const b = new Engine(tmpDir());
+    const first_import = await b.memory.importBundle(JSON.parse(JSON.stringify(bundle)));
+    expect(first_import.added).toHaveLength(3);
+    expect(first_import.patterns_added).toBe(1);
+    expect(b.memory.readPatterns()[0].status).toBe('approved');
+    expect((await b.memory.recall('ristrutturazione del personale', 1))[0].problem).toMatch(/Ristrutturazione/);
+    expect(calibrationReport(b.memory.list(), 20).resolved).toBe(1);
+
+    // A new outcome on the source fills the gap; a different local outcome is kept and reported.
+    a.memory.recordOutcome(first.id, p2.id, 0);
+    b.memory.recordOutcome(first.id, p1.id, 0);
+    const second = await b.memory.importBundle(a.memory.exportBundle('test'));
+    expect(second.updated).toEqual([first.id]);
+    expect(second.unchanged).toHaveLength(2);
+    expect(second.patterns_added).toBe(0);
+    expect(second.conflicts).toEqual([{ id: first.id, prediction: p1.id, local: 0, incoming: 1 }]);
+    expect(b.memory.get(first.id)!.predictions!.find((p) => p.id === p1.id)!.outcome).toBe(0);
+    expect(b.memory.get(first.id)!.predictions!.find((p) => p.id === p2.id)!.outcome).toBe(0);
+  });
+
+  it('refuses files that are not bundles and reports invalid records', async () => {
+    const b = new Engine(tmpDir());
+    await expect(b.memory.importBundle({ records: [] })).rejects.toThrow(/not an AITS memory bundle/);
+    const r = await b.memory.importBundle({ format: 'aits-memory-bundle', bundle_version: 1, records: [{ id: '../escape', version: '3.0' }], patterns: [] });
+    expect(r.invalid).toHaveLength(1);
+    expect(b.memory.list()).toHaveLength(0);
+  });
+});
+
 describe('export', () => {
   it('produces a report, a verifiable log and an OTLP trace', async () => {
     const engine = new Engine(tmpDir());

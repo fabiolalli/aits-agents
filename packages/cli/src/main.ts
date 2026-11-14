@@ -23,6 +23,8 @@ Memory and calibration
   aits outcome <decision_id> <prediction_id> <0|1> [--note "..."]
   aits calibrate
   aits patterns [scan|list|approve <id>|reject <id>]
+  aits memory export [--out <file>]           portable bundle of decisions, outcomes and patterns (stdout without --out)
+  aits memory import <file|->                 merge a bundle into this memory and refresh the calibration
 
 Tools
   aits validate <file|->
@@ -33,7 +35,8 @@ Tools
   aits a2a [--port 8765]                      A2A governance-review endpoint
   aits hook post-tool-use|subagent-stop|session-start   runtime hooks, read JSON on stdin
 
-Data lives in .aits/ of the project directory (AITS_HOME to override).`;
+Data lives in .aits/ of the project directory (AITS_HOME to override). Where that folder does not
+survive between sessions, export the memory at the end and import it at the start of the next one.`;
 
 function parseArgs(argv: string[]) {
   const pos: string[] = [];
@@ -163,6 +166,24 @@ export async function main(argv: string[]) {
       if (action === 'scan') return out(await m.patternCandidates());
       if (action === 'approve' || action === 'reject') return out(m.setPatternStatus(pos[1], action === 'approve' ? 'approved' : 'rejected'));
       return out(m.readPatterns().map(({ centroid, ...p }) => p));
+    }
+    case 'memory': {
+      const e = engine();
+      if (pos[0] === 'export') {
+        const bundle = e.memory.exportBundle(ENGINE_VERSION);
+        const file = str(flags.out);
+        if (!file) return out(bundle);
+        fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+        fs.writeFileSync(file, JSON.stringify(bundle, null, 2));
+        return out({ file: path.resolve(file), records: bundle.records.length, patterns: bundle.patterns.length });
+      }
+      if (pos[0] === 'import') {
+        const result = await e.memory.importBundle(JSON.parse(await readInput(pos[1])));
+        const calibration = writeCalibration(e.memory, e.spec.policies.calibration.min_resolved_for_adjustment);
+        if (result.invalid.length) process.exitCode = 1;
+        return out({ ...result, resolved_predictions: calibration.resolved, pending_predictions: calibration.pending });
+      }
+      throw new Error('usage: aits memory export [--out <file>] | aits memory import <file|->');
     }
     case 'validate': {
       const env = extractEnvelope(await readInput(pos[0]));

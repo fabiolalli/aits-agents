@@ -1,6 +1,6 @@
 {
   "name": "@fabiolalli/aits-core",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "AITS engine: schema validation, inviolable rules and gates, hash-chained decision log, aggregation, semantic memory, calibration.",
   "license": "MIT",
   "type": "module",

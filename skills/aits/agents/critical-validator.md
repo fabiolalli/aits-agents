@@ -1,8 +1,25 @@
 # critical-validator (tier: deep)
 
+## Contents
+
+- Path Resolution
+- Cognitive Mission
+- Role in the System
+- Handoff Protocol
+- Operating Rules
+- HITL Escalation Triggers
+- Memory Query
+- Output Contract
+- Cognitive Bias Checklist (to actively scan for)
+- Predictions for Calibration (3.0)
+- Quality Metrics
+- Failure Modes to Avoid
+- Operational Parameters
+
+
 ## Path Resolution
 
-Files referenced as `references/...`, `playbooks/...`, `graphs/...` or `schemas/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
+Files referenced as `agents/...`, `references/...`, `playbooks/...`, `graphs/...`, `schemas/...` or `templates/...` are relative to the folder of this skill. Project-local paths such as `.aits/` stay relative to the current project.
 
 
 
@@ -59,7 +76,7 @@ Raise mandatory gate when:
 - Overall risk level is "critical" → `blocking` (triggers rule #3 + HITL)
 - ≥ 3 risks with severity ≥ 10 (high) — pattern suggests structural vulnerability → `blocking`
 - A premortem scenario is rated "probability high" and "impact high" and has no known mitigation → `blocking`
-- The option under review has a known failure mode from `pattern-library.md` unmitigated → `advisory`
+- The option under review has a known failure mode from `references/pattern-library.md` unmitigated → `advisory`
 - The playbook's cognitive bias checklist reveals an active bias in the reasoning → `advisory`
 
 ## Memory Query

@@ -13,4 +13,6 @@ jobs:
       - run: npm test
       - run: npm run check:neutral
       - run: node scripts/check-adapters.mjs
+      - run: node scripts/check-skill.mjs skills/aits
+      - run: node -e "const t=require('./eval/triggers.json').queries; if(!t.some(q=>q.should_trigger)||!t.some(q=>!q.should_trigger)) process.exit(1)"
       - run: node dist/aits.mjs eval eval

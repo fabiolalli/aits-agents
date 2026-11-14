@@ -26,6 +26,7 @@ The Agent Skills package aligned with the open specification (agentskills.io) an
 ### Fixed
 
 - **Dashboard template unreachable from the skill.** The Meta-Orchestrator pointed to `aits-dashboard.md`, a name that exists only in the plugin; in the skill the file is `templates/dashboard.md`. The spec now uses `templates/dashboard.md` and the plugin build maps it to `agents/aits-dashboard.md`.
+- **claude.ai packaging.** The README said to zip the content of `skills/aits/` with `SKILL.md` at the root; claude.ai expects the archive to contain the `aits/` folder, whose name matches the `name` field. The release asset `aits-skill-<version>.zip` is built that way.
 - **Bare file names** (`conflict-matrix.md`, `pattern-library.md`, `taxonomies.md`, the seven playbooks) are now written relative to the skill root.
 
 ---

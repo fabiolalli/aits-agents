@@ -136,7 +136,7 @@ Then restart Claude Code so the new hooks and MCP server are loaded.
 
 Copy `skills/aits/` into the skills folder your runtime reads (for example `.agents/skills/aits/` in a project). The skill tells the orchestrating model to use the engine through MCP when available, otherwise through `node scripts/aits.mjs`, otherwise to declare `enforcement: absent`.
 
-For claude.ai, download `aits-skill-<version>.zip` from the [latest release](https://github.com/fabiolalli/aits-agents/releases/latest) and upload it as a skill, or zip the content of `skills/aits/` yourself with `SKILL.md` at the root of the archive. claude.ai does not keep `.aits/` between conversations: at the end of a decision the skill exports the memory to a file, and you bring that file to the next conversation so that past decisions and their outcomes are not lost.
+For claude.ai, download `aits-skill-<version>.zip` from the [latest release](https://github.com/fabiolalli/aits-agents/releases/latest) and upload it as a skill, or build the archive yourself from the `skills/` folder with `zip -r aits.zip aits`: the archive must contain the `aits/` folder with `SKILL.md` inside it, because the folder name has to match the `name` field. claude.ai does not keep `.aits/` between conversations: at the end of a decision the skill exports the memory to a file, and you bring that file to the next conversation so that past decisions and their outcomes are not lost.
 
 The package is checked against the [Agent Skills specification](https://agentskills.io/specification) on every build with `node scripts/check-skill.mjs skills/aits`.
 
